@@ -1,0 +1,110 @@
+{
+  "$comment": [
+    "Which photograph shows which machine, stated rather than inferred.",
+    "",
+    "286 product photographs arrived on 12 August in OneDrive, print resolution, 1.72 GB.",
+    "Every one of these entries was chosen by LOOKING at the photograph on a contact",
+    "sheet, not by reading its filename — because the filenames are close enough to",
+    "matching to be dangerous. 'Axim_ALP_PL4500_palettecodingshrinkwrap_apples.jpg'",
+    "is a photograph of apples with a label on them; 'DIAG_LCIJ_HR2600 384E Printhead' is",
+    "a print head and not the machine; and 'Corvus_CIJ_6400Series_printhead.jpg' shows a",
+    "print head rather than an 6400. A wrong photograph on a quote is worse than none, so",
+    "an unmapped model simply keeps the website capture it already had.",
+    "",
+    "MODELS is keyed by the model string the catalogue uses, which is not always what the",
+    "photograph is called. The thermal jet is the case worth knowing: the catalogue calls",
+    "its machines 'HP 0.5\"' and 'HP 1.0\"' after the print height, and the photographs call",
+    "them TJ500 and TJ1000. Same machines.",
+    "",
+    "APPLICATIONS is for the customer-facing quote: a photograph of this kind of marking",
+    "on this kind of material. `substrate` is matched against the profile's substrate text,",
+    "so it has to be the words a rep would type. `caption` is what the customer reads, and",
+    "it says 'a line like this' rather than implying it is their own product — these are",
+    "Axim's photographs of other people's lines, and a quote that suggests otherwise",
+    "is a quote that misleads."
+  ],
+  "models": {
+    "PL6300/LS7100": "ALP/DIAG_ALP_PL6300 Tamp_Left Angle Tamp Down on Box_RETCH.jpg",
+    "LB5200/LS7000": "ALP/DIAG_ALP_LB5200 Tamp Front Full System_RETCH.jpg",
+    "T400 Series": "TTO/Thorne TTO T400 2+ - 8.jpg",
+    "6440": "CIJ/Corvus_CIJ_6440_bottle.jpg",
+    "6440PLUS": "CIJ/Corvus_CIJ_6440_bottle.jpg",
+    "HP 0.5\"": "TIJ/DIAG_LCIJ_TJ500 Printhead.jpg",
+    "HP 1.0\"": "TIJ/DIAG_LCIJ_TJ1000 Printhead.jpg",
+    "IV18": "LCIJ/DIAG_LCIJ_IV 18Dot Printhead.jpg",
+    "IV9": "LCIJ/DIAG_LCIJ_IV 9Dot Printhead.jpg"
+  },
+  "$modelsNotMapped": [
+    "6400, 6410, 6420 and their PLUS variants: every CIJ photograph in the set is either",
+    "an 6440 on a bottling line or a print head. The 6440 shot is not used for them,",
+    "because the 6400 series cabinet is a different machine and a rep telling them apart",
+    "by the photograph is the entire point of having one.",
+    "",
+    "Mark 2 and Mark 4 (impulse jet): the photographs are of the HR2600 system and the",
+    "384E and 768E print heads, which are the earlier Trident heads. Not the same parts.",
+    "",
+    "E-TAMP, E-FASA: there are tamp and swing-arm photographs, but which module each one",
+    "shows is a question for somebody who can tell an E-TAMP from a High Speed Tamp by",
+    "sight. I cannot, so they wait.",
+    "",
+    "CSL10, CSL30, CSL60, FSL20, FSL50: there is a good CSL10/CSL30 photograph, and no",
+    "laser in the catalogue to attach it to. It becomes usable the moment the laser part",
+    "numbers are decoded — PLAN.md item 1."
+  ],
+  "applications": [
+    {
+      "file": "CIJ/Corvus_CIJ_6400Pigmented_blue1033onextrusion.jpg",
+      "technology": "CIJ",
+      "substrate": "extrusion,extruded,pipe,cable,wire,hose,profile",
+      "caption": "Blue pigmented code on black extruded plastic, on a line like this one."
+    },
+    {
+      "file": "CIJ/Corvus_CIJ_6400series_petfoodsubstrate.jpg",
+      "technology": "CIJ",
+      "substrate": "carton,folding carton,paperboard,box",
+      "caption": "Date, lot and a 2D code on a printed carton."
+    },
+    {
+      "file": "CIJ/Corvus_CIJ_codeonplasticfitting.jpg",
+      "technology": "CIJ",
+      "substrate": "moulded plastic,molded plastic,fitting,coupling,part,component",
+      "caption": "Code on a moulded plastic part."
+    },
+    {
+      "file": "CIJ/Corvus_CIJ_6440_bottle.jpg",
+      "technology": "CIJ",
+      "substrate": "bottle,glass,PET,beverage",
+      "caption": "Coding glass bottles on a filling line."
+    },
+    {
+      "file": "TTO/TTO_coffee stick pack_Application photo.png",
+      "technology": "TTO",
+      "substrate": "film,sachet,stick pack,pouch,wrapper,flow wrap,laminate",
+      "caption": "Thermal transfer print on a film stick pack."
+    },
+    {
+      "file": "LCIJ/Axim_LCIJ_VJ2600_integrated_valve_jet_print_message.jpg",
+      "technology": "VIJ",
+      "substrate": "corrugat,case,carton,box,shipper",
+      "caption": "Large-character valve jet message printed straight onto the case."
+    },
+    {
+      "file": "ALP/Axim_ALP_caselabeling_corrugate.JPG",
+      "technology": "PALM",
+      "substrate": "corrugat,case,carton,box,shipper",
+      "caption": "Printed label applied to a corrugated case."
+    },
+    {
+      "file": "ALP/Axim_ALP_traypackshrinkwraplabeling_food.JPG",
+      "technology": "PALM",
+      "substrate": "shrink,tray,traypack,film,multipack",
+      "caption": "Label applied to a shrink-wrapped tray pack."
+    },
+    {
+      "file": "Laser/Corvus_Laser_CSL10_PET Bottle.jpg",
+      "technology": "LSR",
+      "substrate": "PET,bottle,glass,preform",
+      "caption": "Laser mark on a PET bottle — no ink, no consumable."
+    }
+  ]
+}

@@ -1,0 +1,468 @@
+{
+ "$comment": [
+  "Structure rules: what makes a quote complete, and what makes it redundant.",
+  "",
+  "Separate from application-rules.json, and deliberately so. Those rules carry a",
+  "figure off a datasheet and cite the document and line it came from. These",
+  "carry a judgement about how a quote is put together, and no datasheet states",
+  "how many poles a customer needs.",
+  "",
+  "The reasoning, and how the alternative families were identified, is in",
+  "data/quote-completeness.md. Every rule here cites it.",
+  "",
+  "Nothing here blocks. A rep may have a reason to quote two poles, and a tool",
+  "that refuses would be wrong more often than the rep is."
+ ],
+ "rules": [
+  {
+   "ruleCode": "Q-BARE-MOUNT",
+   "technologyCode": null,
+   "ruleType": "note",
+   "severity": "warn",
+   "summary": "A printer is quoted with no accessory to hold or trigger it.",
+   "detail": "Nothing on the quote has the accessory role — no stand, pole, bracket or conveyor mount. A coder has to be held somewhere, and the mount is the part most often forgotten because it is the one the customer never asks about. Scoped to the role because that is the only shape a trigger has: any accessory answers it, so a UPS on the quote reads as a mount. Splitting 'mounting' from 'accessory' needs a classification finer than the one the catalogue carries, and inventing that split here would make the rule precise and wrong.",
+   "sourceRef": "data/quote-completeness.md",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "role",
+     "itemRole": "printer"
+    },
+    {
+     "triggerType": "role",
+     "itemRole": "accessory",
+     "compareOp": "ne"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "No stand, bracket, mount or sensor on this quote. Check how the head is held and how it is triggered."
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-BARE-INSTALL",
+   "technologyCode": null,
+   "ruleType": "note",
+   "severity": "info",
+   "summary": "A printer is quoted with no installation.",
+   "detail": "Nothing on the quote has the service role. Not every sale is installed by Axim, so this is a question rather than a warning — but an uninstalled coder that a customer expected fitted is a bad first week.",
+   "sourceRef": "data/quote-completeness.md",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "role",
+     "itemRole": "printer"
+    },
+    {
+     "triggerType": "role",
+     "itemRole": "service",
+     "compareOp": "ne"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "No installation on this quote. Confirm the customer is fitting it themselves."
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-ONE-POLE",
+   "technologyCode": "CIJ",
+   "ruleType": "duplicate",
+   "severity": "warn",
+   "summary": "The stand poles are lengths of one pole, not a set.",
+   "detail": "12\", 23\", 36\", 60\", 72\", 1.0 m and 0.5 m of the same printhead stand pole. One line needs one length. Two is a two-head installation, which is why this asks rather than blocks.",
+   "sourceRef": "data/quote-completeness.md",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "always"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "pickOne",
+     "itemNo": "797711"
+    },
+    {
+     "actionType": "pickOne",
+     "itemNo": "380413"
+    },
+    {
+     "actionType": "pickOne",
+     "itemNo": "774936"
+    },
+    {
+     "actionType": "pickOne",
+     "itemNo": "559427"
+    },
+    {
+     "actionType": "pickOne",
+     "itemNo": "091570"
+    },
+    {
+     "actionType": "pickOne",
+     "itemNo": "RG28566"
+    },
+    {
+     "actionType": "pickOne",
+     "itemNo": "EH98306"
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-ONE-BRACKET",
+   "technologyCode": "CIJ",
+   "ruleType": "duplicate",
+   "severity": "warn",
+   "summary": "A printhead is mounted one way, not five.",
+   "detail": "T-base, cabinet mount, conveyor mount, pole mount and cart. Each is a way of mounting one head; more than one on a quote is usually every option added while deciding.",
+   "sourceRef": "data/quote-completeness.md",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "always"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "pickOne",
+     "itemNo": "YD40176"
+    },
+    {
+     "actionType": "pickOne",
+     "itemNo": "ZF24718"
+    },
+    {
+     "actionType": "pickOne",
+     "itemNo": "HB41301"
+    },
+    {
+     "actionType": "pickOne",
+     "itemNo": "LY03715"
+    },
+    {
+     "actionType": "pickOne",
+     "itemNo": "CR23741"
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-ONE-ALARM",
+   "technologyCode": "CIJ",
+   "ruleType": "duplicate",
+   "severity": "warn",
+   "summary": "One alarm beacon per line.",
+   "detail": "Single or multistage, audible or silent. These are the same alarm specified four ways.",
+   "sourceRef": "data/quote-completeness.md",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "always"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "pickOne",
+     "itemNo": "0108032QBE7"
+    },
+    {
+     "actionType": "pickOne",
+     "itemNo": "9016210GKV2NAP"
+    },
+    {
+     "actionType": "pickOne",
+     "itemNo": "8661724HQT5"
+    },
+    {
+     "actionType": "pickOne",
+     "itemNo": "2052759BRV7ZAG"
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-MANY-SERVICE",
+   "technologyCode": null,
+   "ruleType": "duplicate",
+   "severity": "warn",
+   "summary": "Three or more separate service items on one quote.",
+   "detail": "One line is installed once. Three or more distinct service lines is usually the service list added wholesale while deciding, not three visits that were each costed. Counts distinct items, not quantity — two days of the same install is a two-day install.",
+   "sourceRef": "data/quote-completeness.md",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "role",
+     "itemRole": "service",
+     "minCount": 3
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "Three or more separate service items. Confirm each one is actually being sold."
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-MANY-SPARE",
+   "technologyCode": null,
+   "ruleType": "duplicate",
+   "severity": "warn",
+   "summary": "Four or more spares on one quote.",
+   "detail": "Spares are chosen against a maintenance interval and a risk, not added as a set. Four or more distinct spare parts on a new machine usually means the whole maintenance-kit list went on.",
+   "sourceRef": "data/quote-completeness.md",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "role",
+     "itemRole": "spare",
+     "minCount": 4
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "Four or more spare parts. Check these against what the customer actually stocks."
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-MANY-ACCESSORY",
+   "technologyCode": null,
+   "ruleType": "duplicate",
+   "severity": "warn",
+   "summary": "Six or more accessories on one quote.",
+   "detail": "A coder needs a mount, a sensor, maybe a stand and an alarm. Six or more distinct accessories is worth a second look — usually several are alternatives to each other rather than additions.",
+   "sourceRef": "data/quote-completeness.md",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "role",
+     "itemRole": "accessory",
+     "minCount": 6
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "Six or more accessories. Several may be alternatives rather than additions."
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-MANY-CONSUMABLE",
+   "technologyCode": null,
+   "ruleType": "duplicate",
+   "severity": "warn",
+   "summary": "Five or more different consumables on one quote.",
+   "detail": "One machine prints with one ink and one solvent. Five or more distinct consumables means either several colours the line does not run, or the consumables page added in bulk.",
+   "sourceRef": "data/quote-completeness.md",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "role",
+     "itemRole": "consumable",
+     "minCount": 5
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "Five or more different consumables. One machine normally runs one ink and one solvent."
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-BARE-CONSUMABLE-CIJ",
+   "technologyCode": "CIJ",
+   "ruleType": "note",
+   "severity": "warn",
+   "summary": "A CIJ printer is quoted with no solvent or cleaning fluid.",
+   "detail": "CORRECTS a rule that said 'nothing to print with' while triggering on the role `consumable`. Ink carries the role `ink`, so the message was about the one thing this rule cannot see: a quote WITH ink was warned about ink, and a quote with solvent and no ink said nothing. A continuous inkjet consumes both — the supplied 7300 starter package lists startup ink, startup solvent and cleaning fluid as three separate lines. This one is the solvent side. Nothing on the quote has the consumable role — no ink, ribbon, solvent or cleaning fluid. The machine will not mark anything on the day it arrives. Scoped to CIJ, which marks with ink and make-up. This rule applied to every price book, laser included — and a laser marks with light, so a laser quote was told off for having nothing to print with, for ever, with nothing that could be added to satisfy it.",
+   "sourceRef": "data/quote-completeness.md, A CIJ needs ink and solvent, and they are different roles",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "role",
+     "itemRole": "printer"
+    },
+    {
+     "triggerType": "role",
+     "itemRole": "consumable",
+     "compareOp": "ne"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "No solvent or cleaning fluid on the quote. A continuous inkjet consumes solvent as well as ink, and a starter package carries both."
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-BARE-CONSUMABLE-TIJ",
+   "technologyCode": "TIJ",
+   "ruleType": "note",
+   "severity": "warn",
+   "summary": "A printer is quoted with nothing to print with.",
+   "detail": "Nothing on the quote has the consumable role — no ink, ribbon, solvent or cleaning fluid. The machine will not mark anything on the day it arrives. Scoped to TIJ, which marks with cartridges. This rule applied to every price book, laser included — and a laser marks with light, so a laser quote was told off for having nothing to print with, for ever, with nothing that could be added to satisfy it.",
+   "sourceRef": "data/quote-completeness.md",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "role",
+     "itemRole": "printer"
+    },
+    {
+     "triggerType": "role",
+     "itemRole": "consumable",
+     "compareOp": "ne"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "No ink, ribbon or fluid on this quote. The machine cannot print on arrival."
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-BARE-CONSUMABLE-VIJ",
+   "technologyCode": "VIJ",
+   "ruleType": "note",
+   "severity": "warn",
+   "summary": "A printer is quoted with nothing to print with.",
+   "detail": "Nothing on the quote has the consumable role — no ink, ribbon, solvent or cleaning fluid. The machine will not mark anything on the day it arrives. Scoped to VIJ, which marks with ink. This rule applied to every price book, laser included — and a laser marks with light, so a laser quote was told off for having nothing to print with, for ever, with nothing that could be added to satisfy it.",
+   "sourceRef": "data/quote-completeness.md",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "role",
+     "itemRole": "printer"
+    },
+    {
+     "triggerType": "role",
+     "itemRole": "consumable",
+     "compareOp": "ne"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "No ink, ribbon or fluid on this quote. The machine cannot print on arrival."
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-BARE-CONSUMABLE-PIJ",
+   "technologyCode": "PIJ",
+   "ruleType": "note",
+   "severity": "warn",
+   "summary": "A printer is quoted with nothing to print with.",
+   "detail": "Nothing on the quote has the consumable role — no ink, ribbon, solvent or cleaning fluid. The machine will not mark anything on the day it arrives. Scoped to PIJ, which marks with ink. This rule applied to every price book, laser included — and a laser marks with light, so a laser quote was told off for having nothing to print with, for ever, with nothing that could be added to satisfy it.",
+   "sourceRef": "data/quote-completeness.md",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "role",
+     "itemRole": "printer"
+    },
+    {
+     "triggerType": "role",
+     "itemRole": "consumable",
+     "compareOp": "ne"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "No ink, ribbon or fluid on this quote. The machine cannot print on arrival."
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-BARE-CONSUMABLE-TTO",
+   "technologyCode": "TTO",
+   "ruleType": "note",
+   "severity": "warn",
+   "summary": "A printer is quoted with nothing to print with.",
+   "detail": "Nothing on the quote has the consumable role — no ink, ribbon, solvent or cleaning fluid. The machine will not mark anything on the day it arrives. Scoped to TTO, which marks with ribbon. This rule applied to every price book, laser included — and a laser marks with light, so a laser quote was told off for having nothing to print with, for ever, with nothing that could be added to satisfy it.",
+   "sourceRef": "data/quote-completeness.md",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "role",
+     "itemRole": "printer"
+    },
+    {
+     "triggerType": "role",
+     "itemRole": "consumable",
+     "compareOp": "ne"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "No ink, ribbon or fluid on this quote. The machine cannot print on arrival."
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-BARE-CONSUMABLE-PALM",
+   "technologyCode": "PALM",
+   "ruleType": "note",
+   "severity": "warn",
+   "summary": "A printer is quoted with nothing to print with.",
+   "detail": "Nothing on the quote has the consumable role — no ink, ribbon, solvent or cleaning fluid. The machine will not mark anything on the day it arrives. Scoped to PALM, which marks with labels and ribbon. This rule applied to every price book, laser included — and a laser marks with light, so a laser quote was told off for having nothing to print with, for ever, with nothing that could be added to satisfy it.",
+   "sourceRef": "data/quote-completeness.md",
+   "author": "Axim CPQ, quote completeness",
+   "triggers": [
+    {
+     "triggerType": "role",
+     "itemRole": "printer"
+    },
+    {
+     "triggerType": "role",
+     "itemRole": "consumable",
+     "compareOp": "ne"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "No ink, ribbon or fluid on this quote. The machine cannot print on arrival."
+    }
+   ]
+  },
+  {
+   "ruleCode": "Q-BARE-INK-CIJ",
+   "technologyCode": "CIJ",
+   "ruleType": "requires",
+   "severity": "warn",
+   "summary": "A CIJ printer is quoted with no ink.",
+   "detail": "A continuous inkjet prints with ink and the catalogue files ink under its own role, so the consumable check could never see it. The supplied 7300 starter package lists the ink as its own line — 'Startup ink (3103 black), JZT1227/6E' — alongside the solvent and the cleaning fluid.",
+   "sourceRef": "data/quote-completeness.md, A CIJ needs ink and solvent, and they are different roles",
+   "author": "Quote review, CIJ starter package",
+   "triggers": [
+    {
+     "triggerType": "role",
+     "itemRole": "printer"
+    },
+    {
+     "triggerType": "role",
+     "itemRole": "ink",
+     "compareOp": "ne"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "No ink on the quote. A continuous inkjet does not print without it, and the ink is chosen with the machine rather than after it."
+    }
+   ]
+  }
+ ]
+}

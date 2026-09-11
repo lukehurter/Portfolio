@@ -1,0 +1,110 @@
+{
+ "$comment": [
+  "How a Corvus 7300-series part number is put together.",
+  "",
+  "Transcribed from the guidance supplied 21 August 2026: \"HOW TO INTERPRET CORVUS",
+  "7300-SERIES PART NUMBERS\". Every code, label and compatibility note below is from",
+  "that sheet. Nothing is inferred.",
+  "",
+  "The same positional grammar runs the 6400 series, which is how the reading was",
+  "checked before anything was built: all 947 CIJ part numbers in the catalogue",
+  "decode against it, and their descriptions agree at every position. Z167N714HJU is",
+  "\"6400 2M PH4 Standard\" — model 890, head U, length 0 — and H922H657DPG is \"6440 IP65",
+  "SPEC PH4 MIDI+ 2M\", which confirms both that 6 means Prism and that D is the",
+  "Standard Plus for Prism. The length codes are confirmed the same way: 1 is 2M90D,",
+  "3 is 4M90D, 7 is 6M90D, and 90D is the right angle.",
+  "",
+  "WHAT IS NOT HERE. The 6400 series is not modelled as a configurator, because two",
+  "of its positions are not settled by this sheet: it uses 43 specific ink codes",
+  "rather than the 7300's five ink categories, and it has a suffix position (SSC or",
+  "HPC) that the 7300 does not — 38 of those 43 ink codes appear with both suffixes,",
+  "so the suffix is an independent choice and not something derivable. Guessing at",
+  "either would put a part number that cannot be ordered onto a quote.",
+  "",
+  "NO PRICE. No price page carries the 7300 series, so this composes a part number",
+  "and says what it means; it cannot cost one. See announced-machines.json."
+ ],
+ "code": "CIJ7300",
+ "name": "Corvus 7300 Series",
+ "technology": "CIJ",
+ "example": "K414-W2-72-CVS",
+ "format": "P99{printer}-{printhead}{length}-{ink}-LNX",
+ "positions": [
+  {
+   "key": "printer",
+   "label": "Printer",
+   "note": "The model selector fills P99x. The 7340 Prism takes 6, not 5.",
+   "options": [
+    { "code": "0", "label": "7300 printer" },
+    { "code": "1", "label": "7310 printer" },
+    { "code": "2", "label": "7320 printer" },
+    { "code": "4", "label": "7340 printer" },
+    { "code": "6", "label": "7340 Prism printer" }
+   ]
+  },
+  {
+   "key": "printhead",
+   "label": "Printhead",
+   "options": [
+    { "code": "U", "label": "PH4 Standard (62 microns)", "family": "midi" },
+    { "code": "X", "label": "PH4 Standard (62 microns), HP-resistant conduit", "family": "midi",
+      "hpConduit": true },
+    { "code": "H", "label": "PH4 Standard (62 microns) for Prism printers", "family": "midi",
+      "requires": { "printer": ["6"], "ink": ["74"] },
+      "why": "For Prism printers, and 1316 ink only." },
+    { "code": "W", "label": "PH4 Standard Plus (75 microns)", "family": "midiPlus" },
+    { "code": "D", "label": "PH4 Standard Plus (75 microns) for Prism printers",
+      "family": "midiPlus", "requires": { "printer": ["6"] },
+      "why": "For Prism printers." },
+    { "code": "1", "label": "PH4 Compact (50 microns)", "family": "mini" },
+    { "code": "2", "label": "PH4 Compact (50 microns), HP-resistant conduit", "family": "mini",
+      "hpConduit": true },
+    { "code": "3", "label": "PH4 Compact (50 microns) for Prism printers", "family": "mini",
+      "requires": { "printer": ["6"], "ink": ["74"] },
+      "why": "For Prism printers, and 1316 ink only." }
+   ]
+  },
+  {
+   "key": "length",
+   "label": "Conduit length and type",
+   "options": [
+    { "code": "0", "label": "2 m straight" },
+    { "code": "1", "label": "2 m right-angled",
+      "excludes": { "printhead": ["X", "2"] },
+      "why": "Unavailable with HP-resistant conduits." },
+    { "code": "2", "label": "4 m straight" },
+    { "code": "3", "label": "4 m right-angled",
+      "excludes": { "printhead": ["X", "2"] },
+      "why": "Unavailable with HP-resistant conduits." },
+    { "code": "6", "label": "6 m straight",
+      "excludes": { "printer": ["6"], "printhead": ["1", "2", "3"] },
+      "why": "Unavailable with the 7340 Prism or the PH4 Compact." },
+    { "code": "7", "label": "6 m right-angled",
+      "excludes": { "printer": ["6"], "printhead": ["X", "2", "1", "3"] },
+      "why": "Unavailable with HP-resistant conduit, the 7340 Prism or the PH4 Compact." }
+   ]
+  },
+  {
+   "key": "ink",
+   "label": "Ink category",
+   "note": "A category, not one ink. The ink itself is chosen during commissioning — refer to the Ink Guide.",
+   "options": [
+    { "code": "27", "label": "1121 UV-readable",
+      "requires": { "printhead": ["U", "X", "H", "1", "2", "3"] },
+      "why": "For PH4 Standard or PH4 Compact. Uses an alternative pressure transducer." },
+    { "code": "17", "label": "Other dye-based inks",
+      "requires": { "printhead": ["U", "X", "H", "W", "D", "1", "2", "3"] },
+      "why": "Use with PH4 Standard; some also support PH4 Standard Plus or Compact. Choose the dye ink during commissioning." },
+    { "code": "72", "label": "Soft-pigmented: 1009, 1033, 1079, 1088",
+      "requires": { "printhead": ["W"] },
+      "why": "Requires PH4 Standard Plus. Choose the ink during commissioning." },
+    { "code": "67", "label": "Hard-pigmented: 1043, 1053, 1059, 1069, 1306, 1311, 1320",
+      "requires": { "printer": ["6"], "printhead": ["D"] },
+      "why": "Requires Prism plus PH4 Standard Plus for Prism. Choose during commissioning." },
+    { "code": "74", "label": "1316 Brilliant White",
+      "requires": { "printer": ["6"], "printhead": ["H", "3"] },
+      "why": "Requires a Prism printer and an PH4 Standard or Compact printhead." }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,1042 @@
+@font-face { font-family:'Open Sans'; font-style:normal; font-weight:400 700; font-display:swap;
+  src:url('./fonts/OpenSans-400_700.woff2') format('woff2'); }
+@font-face { font-family:'Archivo'; font-style:normal; font-weight:500 800; font-display:swap;
+  src:url('./fonts/Archivo-500_800.woff2') format('woff2'); }
+@font-face { font-family:'IBM Plex Mono'; font-style:normal; font-weight:400; font-display:swap;
+  src:url('./fonts/IBMPlexMono-400.woff2') format('woff2'); }
+@font-face { font-family:'IBM Plex Mono'; font-style:normal; font-weight:500; font-display:swap;
+  src:url('./fonts/IBMPlexMono-500.woff2') format('woff2'); }
+@font-face { font-family:'IBM Plex Mono'; font-style:normal; font-weight:600; font-display:swap;
+  src:url('./fonts/IBMPlexMono-600.woff2') format('woff2'); }
+
+/*
+  THEME
+  --------------------------------------------------------------------------
+  Every colour in the app resolves to one of these, so a theme is a change of
+  values rather than a change of six hundred class names.
+
+  The steel ramp inverts, and can: it is used with total discipline — 400 to 900
+  are always ink, 50 to 300 are always fills and borders, and nothing in the app
+  uses text-steel-50 or bg-steel-900. So the ramp names a role and inverting it
+  keeps every meaning; steel-600 is still "secondary text", it is simply light.
+
+  The navy ramp does not invert. It is the chrome, and it was already dark in
+  light mode: navy-900 is a band, navy-100 and navy-300 are the text on it. Those
+  work unchanged. Only the light end used as a tint behind content moves.
+
+  Which is why navy-900 cannot also be the heading colour, and was. In light mode
+  #023B74 is both a surface a rep looks AT and ink a rep reads — the same value
+  serving two opposite roles, which only holds while the page behind it is white.
+  Give it a dark value for dark mode and the surfaces stay right and every heading
+  in the app disappears into the band under it. --c-heading is that second role,
+  named: navy in light, a blue-cast near-white in dark, kept a step below body ink
+  the way navy sits a step above it on paper. Same split, same reason, for --c-edge,
+  the heavier structural rule that closes a band and outlines a dialog.
+
+  Status colours keep their hue and change their step. On a dark surface the
+  600-800 steps are unreadable, so dark mode uses the light end of each ramp for
+  ink and a deep desaturated version for fills — a red that still reads as red.
+*/
+:root {
+    --c-steel-900: 27 34 38;
+    --c-steel-800: 41 49 55;
+    --c-steel-700: 59 68 75;
+    --c-steel-600: 79 88 95;
+    --c-steel-500: 107 116 123;
+    --c-steel-400: 139 148 155;
+    --c-steel-300: 182 190 196;
+    --c-steel-200: 220 225 229;
+    --c-steel-100: 234 237 239;
+    --c-steel-50: 245 247 248;
+    --c-navy-950: 2 47 94;
+    --c-navy-900: 2 59 116;
+    --c-navy-800: 4 72 144;
+    --c-navy-700: 13 79 156;
+    --c-navy-600: 25 99 174;
+    --c-navy-500: 40 117 189;
+    --c-navy-300: 157 182 205;
+    --c-navy-100: 215 227 238;
+    --c-navy-50: 242 246 250;
+    --c-instr-800: 2 59 116;
+    --c-instr-700: 0 78 122;
+    --c-instr-600: 0 98 152;
+    --c-instr-500: 11 127 184;
+    --c-instr-400: 0 175 215;
+    --c-instr-300: 105 179 231;
+    --c-instr-200: 185 222 240;
+    --c-instr-100: 226 241 248;
+    --c-signal-800: 103 75 17;
+    --c-signal-700: 131 96 22;
+    --c-signal-600: 183 134 31;
+    --c-signal-500: 234 170 0;
+    --c-signal-200: 240 217 168;
+    --c-signal-100: 249 240 220;
+    --c-fit-800: 23 92 60;
+    --c-fit-700: 36 121 79;
+    --c-fit-600: 51 153 102;
+    --c-fit-200: 180 223 200;
+    --c-fit-100: 224 242 232;
+    --c-alert-800: 117 35 26;
+    --c-alert-700: 146 43 33;
+    --c-alert-600: 192 57 43;
+    --c-alert-200: 238 185 180;
+    --c-alert-100: 248 228 226;
+    --c-ground: 242 244 246;
+    --c-surface: 255 255 255;
+    --c-rule: 220 225 229;
+    --c-band: 215 227 238;
+    --c-heading: 2 59 116;
+    /* Status words on the fascia, and only there.
+       The status ramps invert, because their 100 and 200 steps are washes behind
+       content and a wash has to be dark when the page is. The fascia does not
+       invert — it is navy in both themes — so ink sitting on it must not either.
+       These three are the light-mode 200 steps, fixed: declared once, never
+       overridden, legal only on navy. */
+    --c-fascia-alert: 238 185 180;
+    --c-fascia-signal: 240 217 168;
+    --c-fascia-fit: 180 223 200;
+    --c-edge: 2 59 116;
+    --c-plate-hi: 255 255 255 / .85;
+}
+
+/* The default is the system's. An explicit choice is stamped on <html> and wins. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+      --c-steel-900: 244 247 249;
+      --c-steel-800: 228 233 237;
+      --c-steel-700: 205 212 218;
+      --c-steel-600: 175 184 191;
+      --c-steel-500: 142 151 158;
+      --c-steel-400: 151 160 167;
+      --c-steel-300: 73 82 90;
+      --c-steel-200: 54 62 69;
+      --c-steel-100: 40 47 53;
+      --c-steel-50: 31 38 43;
+      --c-navy-950: 4 24 44;
+      --c-navy-900: 8 39 68;
+      --c-navy-800: 13 52 89;
+      --c-navy-700: 19 64 112;
+      --c-navy-600: 26 82 136;
+      --c-navy-500: 36 101 162;
+      --c-navy-300: 157 182 205;
+      --c-navy-100: 215 227 238;
+      --c-navy-50: 18 35 58;
+      --c-instr-800: 166 217 242;
+      --c-instr-700: 143 203 232;
+      --c-instr-600: 121 190 223;
+      --c-instr-500: 58 160 210;
+      --c-instr-400: 47 195 228;
+      --c-instr-300: 121 192 236;
+      --c-instr-200: 27 76 99;
+      --c-instr-100: 19 47 61;
+      --c-signal-800: 242 207 126;
+      --c-signal-700: 217 180 92;
+      --c-signal-600: 195 154 58;
+      --c-signal-500: 234 170 0;
+      --c-signal-200: 74 58 20;
+      --c-signal-100: 46 38 17;
+      --c-fit-800: 127 211 165;
+      --c-fit-700: 95 190 139;
+      --c-fit-600: 63 168 115;
+      --c-fit-200: 27 70 50;
+      --c-fit-100: 18 41 30;
+      --c-alert-800: 244 167 156;
+      --c-alert-700: 224 133 121;
+      --c-alert-600: 214 88 74;
+      --c-alert-200: 90 36 29;
+      --c-alert-100: 51 21 18;
+      --c-ground: 14 18 21;
+      --c-surface: 23 28 32;
+      --c-rule: 43 50 56;
+      --c-band: 20 38 60;
+      --c-heading: 207 228 247;
+      --c-edge: 38 66 99;
+      --c-plate-hi: 255 255 255 / .07;
+  }
+}
+
+:root[data-theme="dark"] {
+    --c-steel-900: 244 247 249;
+    --c-steel-800: 228 233 237;
+    --c-steel-700: 205 212 218;
+    --c-steel-600: 175 184 191;
+    --c-steel-500: 142 151 158;
+    --c-steel-400: 151 160 167;
+    --c-steel-300: 73 82 90;
+    --c-steel-200: 54 62 69;
+    --c-steel-100: 40 47 53;
+    --c-steel-50: 31 38 43;
+    --c-navy-950: 4 24 44;
+    --c-navy-900: 8 39 68;
+    --c-navy-800: 13 52 89;
+    --c-navy-700: 19 64 112;
+    --c-navy-600: 26 82 136;
+    --c-navy-500: 36 101 162;
+    --c-navy-300: 157 182 205;
+    --c-navy-100: 215 227 238;
+    --c-navy-50: 18 35 58;
+    --c-instr-800: 166 217 242;
+    --c-instr-700: 143 203 232;
+    --c-instr-600: 121 190 223;
+    --c-instr-500: 58 160 210;
+    --c-instr-400: 47 195 228;
+    --c-instr-300: 121 192 236;
+    --c-instr-200: 27 76 99;
+    --c-instr-100: 19 47 61;
+    --c-signal-800: 242 207 126;
+    --c-signal-700: 217 180 92;
+    --c-signal-600: 195 154 58;
+    --c-signal-500: 234 170 0;
+    --c-signal-200: 74 58 20;
+    --c-signal-100: 46 38 17;
+    --c-fit-800: 127 211 165;
+    --c-fit-700: 95 190 139;
+    --c-fit-600: 63 168 115;
+    --c-fit-200: 27 70 50;
+    --c-fit-100: 18 41 30;
+    --c-alert-800: 244 167 156;
+    --c-alert-700: 224 133 121;
+    --c-alert-600: 214 88 74;
+    --c-alert-200: 90 36 29;
+    --c-alert-100: 51 21 18;
+    --c-ground: 14 18 21;
+    --c-surface: 23 28 32;
+    --c-rule: 43 50 56;
+    --c-band: 20 38 60;
+    --c-heading: 207 228 247;
+    --c-edge: 38 66 99;
+    --c-plate-hi: 255 255 255 / .07;
+}
+
+/* Any element can opt back into light, not just the root.
+   The customer's document does: it is a sheet of paper inside an app that may be
+   dark, and it is the thing that gets printed. Declaring the light values again here
+   rather than on :root alone is what makes that possible. */
+[data-theme="light"] {
+    --c-steel-900: 27 34 38;
+    --c-steel-800: 41 49 55;
+    --c-steel-700: 59 68 75;
+    --c-steel-600: 79 88 95;
+    --c-steel-500: 107 116 123;
+    --c-steel-400: 139 148 155;
+    --c-steel-300: 182 190 196;
+    --c-steel-200: 220 225 229;
+    --c-steel-100: 234 237 239;
+    --c-steel-50: 245 247 248;
+    --c-navy-950: 2 47 94;
+    --c-navy-900: 2 59 116;
+    --c-navy-800: 4 72 144;
+    --c-navy-700: 13 79 156;
+    --c-navy-600: 25 99 174;
+    --c-navy-500: 40 117 189;
+    --c-navy-300: 157 182 205;
+    --c-navy-100: 215 227 238;
+    --c-navy-50: 242 246 250;
+    --c-instr-800: 2 59 116;
+    --c-instr-700: 0 78 122;
+    --c-instr-600: 0 98 152;
+    --c-instr-500: 11 127 184;
+    --c-instr-400: 0 175 215;
+    --c-instr-300: 105 179 231;
+    --c-instr-200: 185 222 240;
+    --c-instr-100: 226 241 248;
+    --c-signal-800: 103 75 17;
+    --c-signal-700: 131 96 22;
+    --c-signal-600: 183 134 31;
+    --c-signal-500: 234 170 0;
+    --c-signal-200: 240 217 168;
+    --c-signal-100: 249 240 220;
+    --c-fit-800: 23 92 60;
+    --c-fit-700: 36 121 79;
+    --c-fit-600: 51 153 102;
+    --c-fit-200: 180 223 200;
+    --c-fit-100: 224 242 232;
+    --c-alert-800: 117 35 26;
+    --c-alert-700: 146 43 33;
+    --c-alert-600: 192 57 43;
+    --c-alert-200: 238 185 180;
+    --c-alert-100: 248 228 226;
+    --c-ground: 242 244 246;
+    --c-surface: 255 255 255;
+    --c-rule: 220 225 229;
+    --c-band: 215 227 238;
+    --c-heading: 2 59 116;
+    --c-edge: 2 59 116;
+    --c-plate-hi: 255 255 255 / .85;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-paper text-steel-800 font-sans antialiased;
+    font-size: 14px;
+    line-height: 1.45;
+    /* The surface the instruments are mounted on.
+       A brushed hairline at 3px and around two percent: at arm's length it is a
+       texture rather than a pattern, and it only ever shows in the gutters between
+       sheets, which is exactly where a panel surface should be visible. Anything
+       coarser becomes stripes, and a dot grid reads as graph paper. */
+    background-image: repeating-linear-gradient(
+      0deg,
+      rgba(2, 59, 116, .022) 0px,
+      rgba(2, 59, 116, .022) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  }
+  :focus-visible {
+    outline: 2px solid theme('colors.instr.500');
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+  .num { @apply font-mono tabular-nums; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+
+  /*
+    A citation, which is usually a filename followed by a URL.
+
+    Those URLs run to 120 characters with no space in them, and a token with no
+    break opportunity does not wrap — it widens its parent instead. On a phone that
+    made the quote detail 959px wide inside a 375px viewport, so the whole page
+    scrolled sideways to accommodate one reference nobody was trying to read.
+
+    `anywhere` rather than `break-word`: break-word will not split a single
+    unbroken token that is already on its own line, which is exactly the case here.
+    Applied to the citation rather than to .num, because .num is also prices and
+    part numbers and neither should ever break mid-figure.
+  */
+  .cite { overflow-wrap: anywhere; word-break: break-word; }
+}
+
+/*
+  THE INSTRUMENT PANEL
+  --------------------------------------------------------------------------
+  The structural language of this app. Palette and type are not decided here —
+  BRAND.md owns those and Planning Analytics shares them. What is decided here is
+  how a surface is divided, where a number sits, and what a corner means.
+
+  It is drawn from the machines these reps sell: a Corvus cabinet, a TouchPro
+  console, an T400 control unit. Flat panels, hard divisions, silkscreen legends,
+  one reserved action colour, and a readout you can take in from arm's length.
+  Instrument LAYOUT, never instrument costume — no bezels, no knurling, no glow.
+  For an Operate surface the borrowed thing is the discipline: state is explicit,
+  targets are unambiguous, and the value being read is the largest thing present.
+
+  Four rules carry most of it.
+
+  RADIUS MEANS SOMETHING. Structure is square; only what you can press is
+  rounded. Everything used to be rounded-md, which made a panel and a button the
+  same kind of object.
+
+  NO SHADOW ON STRUCTURE. Panels sat on a shadow, so every one of them floated and
+  nothing was above anything else. One shadow now exists, for things that are
+  genuinely detached.
+
+  RULES DIVIDE, NOT GAPS. Sections are separated by a hairline with a legend
+  sitting on it, not by margin between floating cards. The old grid of white
+  rounded boxes on grey was the same arrangement on every screen.
+
+  FIGURES SHARE A COLUMN. Numbers are mono, tabular, right-aligned, and a table
+  header aligns to the same edge as the data beneath it.
+*/
+@layer components {
+  /* Square, flat, hairline. A sheet, not a card. */
+  .panel      { @apply bg-surface border border-rule; }
+
+  /* A silkscreen legend, not a card title: small, tracked, on a tinted band with
+     a heavier navy rule under it so a section reads as stamped rather than boxed.
+     Wraps rather than squeezing — at 375px "When can they have it" was folding to
+     two lines to make room for the note beside it.
+
+     navy-100, not navy-50. At #F2F6FA the band was two percent away from the white
+     sheet it sits on, so on a laptop screen at an angle — which is where a rep
+     actually reads this — the headings floated in the page instead of sitting on a
+     band, and a production-readiness review said so. #D7E3EE is still quiet enough
+     to be structure rather than decoration, and it is unmistakably a band. */
+  .panel-head {
+    @apply flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 bg-band
+           px-4 py-2 border-b-2;
+    border-bottom-color: rgb(var(--c-edge));
+    /* A one-pixel highlight along the top edge, so a legend band reads as a plate
+       stamped onto the sheet rather than a stripe of tint painted on it. The same
+       move as the fascia, at the scale a 32px band can carry. */
+    /* The lit top edge that makes a legend read as a plate stamped on the sheet.
+       At .85 on a dark band it was not a highlight, it was a white rule. */
+    box-shadow: inset 0 1px 0 rgb(var(--c-plate-hi));
+  }
+  .panel-head > h2 { @apply min-w-0; }
+
+  /* The one section that outranks the others.
+     The application is what every recommendation, grade and price on the screen is
+     derived from — get it wrong and everything downstream is confidently wrong — so
+     it is the one panel that reverses out rather than tinting. Reserved for that:
+     a second strong band would make neither of them strong. */
+  .panel-head-strong {
+    @apply flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 bg-navy-900
+           px-4 py-2.5 border-b-2 border-instr-400;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10);
+  }
+  .panel-head-strong > h2 { @apply min-w-0 text-white; }
+  .panel-head-strong .h-display { @apply text-white; }
+  /* The aside carries steel-600 for the tinted band, which on navy came to about
+     2:1 — "13 of 28 answered" was legible as a shape and not as words. Everything
+     in this band reverses, not just the heading. */
+  .panel-head-strong :not(h2) { @apply !text-navy-100; }
+  /* Last, so it beats the blanket rule above: the title is white, everything else
+     in the band is a step quieter. A band where the heading and its aside carry
+     the same weight is a band with no hierarchy inside it. */
+  .panel-head-strong .h-display { @apply !text-white; }
+  .panel-head-strong .step-head:hover .h-display { @apply !text-instr-400; }
+
+  /* The fascia: navy that reads as a surface rather than a fill.
+     A one-pixel lit edge along the top and a shallow fall to the bottom, which is
+     what any panel does under a room light. Two percent of gradient — enough that
+     the eye reads a plane, not enough to notice as a gradient. */
+  .fascia {
+    background-image: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, .09) 0px,
+      rgba(255, 255, 255, .09) 1px,
+      rgba(255, 255, 255, .035) 1px,
+      rgba(0, 0, 0, .10) 100%
+    );
+  }
+
+  /* The rail is the largest single surface in the app and was carrying nothing.
+     Same brushed hairline as the page ground, struck on navy instead of paper, plus
+     the fascia's lit edge down its trailing side where it meets the sheets. */
+  .fascia-rail {
+    background-image:
+      linear-gradient(90deg, rgba(255,255,255,.05) 0px, rgba(255,255,255,.05) 1px,
+                     transparent 1px, transparent 100%),
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, .028) 0px,
+        rgba(255, 255, 255, .028) 1px,
+        transparent 1px,
+        transparent 4px
+      ),
+      linear-gradient(180deg, rgba(255,255,255,.045), rgba(0,0,0,.10));
+  }
+
+  /* A sheet of US Letter, at 96dpi, whatever the screen.
+     The preview used to be a 52rem box that the container squeezed, so on a narrow
+     screen a rep saw a document their customer will never receive — different line
+     breaks, a different table, a different number of pages. Paper does not reflow.
+     The page keeps 8.5x11 and the viewer scales it down to fit, which is what every
+     tool that previews a document does, because the alternative is previewing
+     something else. */
+  .paper {
+    width: 816px;          /* 8.5in */
+    min-height: 1056px;    /* 11in  */
+    transform-origin: top left;
+  }
+
+  /* A component in a tray. The machine photographs sat on white with a hairline,
+     which is a picture; recessing them makes them a part sitting in the panel, and
+     costs one inset shadow. */
+  .part-well {
+    @apply border border-steel-200 bg-steel-50;
+    box-shadow: inset 0 1px 3px rgba(2, 59, 116, .13);
+  }
+
+  /* A hard division inside a sheet, with room for a legend sitting on it. */
+  .band { @apply border-t border-rule; }
+  .band-legend {
+    @apply flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1
+           px-4 pt-3 pb-1 text-2xs font-semibold uppercase tracking-wider text-instr-800;
+  }
+
+  /* There was a `.kv` label-gutter here — labels right-aligned into a fixed gutter
+     so figures shared one vertical line. It is gone, unused. This app's label/value
+     content is either a table, which already aligns its own columns, or a 21rem
+     summary rail, which is too narrow for a gutter to earn its width. Defining it
+     and finding nowhere for it was the answer: a class nothing needs is not a
+     system, and forcing it in to justify having written it would have been worse
+     than deleting it. */
+
+  /* The value being read, at the size it deserves. One per block: a readout that
+     competes with another readout is a dashboard, and this is not one.
+
+     It is a LIT WELL, not big text. This class was declared with the world and then
+     never used once — every screen reached for .readout-sm instead — so the single
+     device the whole form is named after was the one thing the app did not do. An
+     instrument's defining feature is a recessed display that is brighter than the
+     fascia around it, and that is the move the rest of the vocabulary already
+     implies: the bands, the silkscreen legends and the mono figures are all waiting
+     for something to be the readout.
+
+     Cyan on navy-950 measures 5.02:1, past the 3:1 large-text floor and past the 4.5
+     body floor as well. The inset carries an offset and a blur; a zero-offset ring
+     would be a halo. */
+  /* On navy only.
+     A recessed well is a hole in a fascia, and a hole in a white sheet of paper is
+     just a dark rectangle — on the summary rail and against the machine price it read
+     as a block of colour dropped onto the page rather than as an instrument. It stays
+     on the status band, which is the fascia, and figures on white are figures. */
+  .readout {
+    @apply inline-flex items-baseline bg-navy-950 px-3 py-1.5 font-mono tabular-nums
+           text-2xl font-medium leading-none text-instr-400;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, .38), inset 0 1px 0 rgba(0, 175, 215, .22);
+  }
+
+  /* The same value, stated on a light surface. */
+  .readout-light {
+    @apply font-mono tabular-nums text-2xl font-medium leading-none text-heading;
+  }
+  /* The quiet variant, unchanged. Per-row prices are figures, not readouts, and
+     lighting forty of them would be the dashboard this world refuses. */
+  .readout-sm { @apply font-mono tabular-nums text-lg font-medium leading-none text-heading; }
+
+  /* The reading has changed.
+     One authored moment, on the only number a rep is actually negotiating. It brightens
+     from an already-visible default and settles — nothing enters, nothing moves, and a
+     figure that flew in would be a figure you cannot read while it arrives. */
+  .readout-live { animation: readout-settle 620ms cubic-bezier(.16, 1, .3, 1); }
+  @keyframes readout-settle {
+    0%   { box-shadow: inset 0 2px 6px rgba(0,0,0,.38), inset 0 1px 0 rgba(0,175,215,.22),
+                       0 0 0 0 rgba(0,175,215,.55); }
+    35%  { box-shadow: inset 0 2px 6px rgba(0,0,0,.28), inset 0 1px 0 rgba(0,175,215,.5),
+                       0 0 0 3px rgba(0,175,215,.28); }
+    100% { box-shadow: inset 0 2px 6px rgba(0,0,0,.38), inset 0 1px 0 rgba(0,175,215,.22),
+                       0 0 0 0 rgba(0,175,215,0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .readout-live { animation: none; }
+  }
+
+  /* block, so a control always starts on its own line. As an inline span the
+     machine filters aligned by accident of label length: "Printer type" pushed its
+     select to the next line and "Ink" left it sitting alongside, in the same row of
+     four. */
+  .label      { @apply block text-2xs font-semibold uppercase tracking-wider text-steel-600; }
+
+  /*
+    An answer this station holds itself, rather than taking from the first solution.
+
+    The station application shows twenty-six fields of which a rep typically overrides
+    one or two, so the readable signal is the exception, not the rule. Saying "from the
+    first solution" under every field, as this did first, prints the default twenty-six
+    times and the exception never — the reader has to compare all of them to find the
+    two that matter.
+
+    Square, because in this world a round mark is a lamp reporting machine state and
+    this is a person's decision. 5px matches the key mark on .stat.
+  */
+  .own-dot { @apply mr-1 inline-block h-[5px] w-[5px] translate-y-[-1px] bg-instr-600 align-middle; }
+  .h-display  { @apply font-display font-bold tracking-tight text-heading; }
+
+  /*
+    Table language.
+
+    A 2px navy rule under the header and hairlines between rows; no palisade, no
+    rounded corners, no card around it. A numeric column is mono, tabular and
+    right-aligned, and its header is right-aligned too — headers that centred over
+    right-aligned figures were the misalignment worth fixing first.
+
+    Hover marks the row in a 3px cyan bar at its leading edge rather than washing
+    the whole row, so the figures never change contrast while being read.
+  */
+  .tbl { @apply w-full border-collapse text-xs; }
+  .tbl > thead > tr {
+    @apply border-b-2 text-left;
+    border-bottom-color: rgb(var(--c-edge));
+  }
+  .tbl th {
+    @apply px-3 py-2 text-2xs font-semibold uppercase tracking-wider text-instr-800 align-bottom;
+  }
+  .tbl td { @apply px-3 py-2 align-top; }
+  .tbl > tbody > tr { @apply border-b border-rule; }
+  .tbl th.n, .tbl td.n { @apply text-right; }
+  .tbl td.n { @apply font-mono tabular-nums; }
+  /* A group legend inside a table: a labelled division, the same device `.band`
+     gives a sheet. Lets one table carry several labelled blocks without giving up
+     a shared column grid — 66 rules read as seven price books rather than one
+     undifferentiated list. */
+  .tbl tr.group > th {
+    @apply border-y border-instr-200 bg-navy-50 px-3 py-1.5 text-left text-2xs
+           font-semibold uppercase tracking-wider text-instr-800;
+  }
+  .tbl tbody:first-of-type tr.group > th { @apply border-t-0; }
+
+  /* The second division, inside a group: the kind of rule within a price book.
+     Quieter than the legend above it and louder than a row, so the two levels read
+     as a hierarchy rather than as two competing headings. */
+  .tbl tr.subgroup > td {
+    @apply border-y border-steel-200 bg-steel-50 px-3 py-1 pl-5;
+  }
+
+  .tbl > tbody > tr.pick { @apply cursor-pointer; }
+  .tbl > tbody > tr.pick > td:first-child { @apply relative; }
+  .tbl > tbody > tr.pick > td:first-child::before {
+    content: ''; @apply absolute left-0 top-0 bottom-0 w-[3px] bg-transparent;
+  }
+  .tbl > tbody > tr.pick:hover > td:first-child::before { @apply bg-instr-400; }
+  .tbl > tbody > tr.pick:hover { @apply bg-navy-50; }
+
+  /*
+   * A pressable is at least 44px on a touch screen.
+   *
+   * The instrument-panel density is right at a desk, where a mouse is precise and a
+   * rep is reading a lot of figures at once — the buttons come to 30px there and
+   * should stay that way. On a phone the same 30px is under both the iOS 44pt and the
+   * Android 48dp guidance, and nine controls on the builder were measured at 27-30px.
+   *
+   * So the floor is applied on touch input rather than by screen width: a small laptop
+   * keeps the dense layout, and a tablet gets the bigger targets it needs. The padding
+   * is unchanged; only the minimum grows, so nothing shifts on a desktop.
+   */
+  @media (pointer: coarse) {
+    /*
+     * The floor has to name the controls that were actually failing.
+     *
+     * The first version listed .btn-* and .field and was reported as done — and a
+     * later measurement found ten of fifteen interactive elements on the builder
+     * still under 44px, all ten outside those four classes: the role switcher at
+     * 27px, the nav links at 33px, the section headers at 28px, the segmented
+     * filters at 24px. A floor applied to the controls that already passed.
+     */
+    .btn-primary, .btn-quiet, .btn-danger, .field,
+    .seg-btn, .chip, .step-head, .nav-link, select, [data-tap='chip'] {
+      @apply min-h-[44px];
+    }
+    /* The hit area grows, the box does not: a 12px checkbox with a 44px label is
+       still a 12px checkbox to look at, and ticking it silences a fit rule.
+
+       That was written as an intention and never as a rule. Measured on a phone at
+       375px, the "Any / does not matter" boxes were 12x12 and the Remove buttons on
+       the quote lines were 43x16 — the destructive one, at a third of the floor.
+
+       The label carries the height so the whole row is tappable; the box itself grows
+       only to 18px, which is a control you can see rather than a target you can hit. */
+    label:has(input[type='checkbox']) {
+      @apply flex min-h-[44px] items-center;
+    }
+    input[type='checkbox'] {
+      @apply h-[18px] w-[18px];
+    }
+    /* An inline text button is still a button. Padding rather than min-height, so it
+       keeps sitting on the text baseline it belongs to. */
+    .btn-inline {
+      @apply -my-3 py-3;
+    }
+
+    /* 16px, or Safari zooms the page the moment you tap the field.
+       iOS enlarges any input whose text is under 16px and does not zoom back out, so
+       a rep filling in the application ends up panning a magnified page one field at
+       a time. The alternative fix is maximum-scale on the viewport tag, which takes
+       pinch-zoom away from everybody to work around a font size.
+       The visual scale of the app is unchanged: this applies only to what you type
+       into, and only on a touch screen. */
+    input[type='text'], input[type='search'], input[type='email'], input[type='number'],
+    input:not([type]), select, textarea {
+      /* !important because a Tailwind text-* utility outranks this layer, and the
+         controls carrying one are exactly the small ones Safari zooms. */
+      font-size: 16px !important;
+    }
+  }
+
+  /* A button that lives inside a line of text — Remove on a quote line, Change on a
+     chosen customer. It carries no chrome on purpose; the touch floor above gives it
+     a hit area without giving it a box. */
+  .btn-inline { @apply font-semibold transition-colors; }
+
+  /* Rounded because you can press it. Structure stays square. */
+  .field {
+    @apply w-full bg-surface border border-steel-300 rounded-[2px] px-2.5 py-1.5 text-steel-900
+           placeholder:text-steel-500 focus:border-instr-600 disabled:bg-steel-50
+           disabled:text-steel-500 disabled:cursor-not-allowed;
+  }
+
+  /* Room between a figure and its spinner.
+     REPORTED: "the up and down arrows are too close to the numbers so it's ugly."
+     A number input draws its spinner hard against the text box's right padding, and
+     these are right-aligned figures, so the last digit sat under the arrows. The
+     spinner is given its own margin rather than the field more padding, because
+     padding would move every other field to fix one kind. */
+  .field[type='number'] { padding-right: 0.375rem; }
+  .field[type='number']::-webkit-inner-spin-button,
+  .field[type='number']::-webkit-outer-spin-button {
+    margin-left: 0.5rem;
+  }
+
+  /* The slider, with room for its own handle.
+     REPORTED: "the discount slider circles get cut off on the bottom." The track is
+     6px tall and the handle is 16px, and the handle is centred on the track — so it
+     stands 5px proud top and bottom, and the flex row it sits in was exactly as tall
+     as the track. Giving the INPUT the handle's height rather than the track's is the
+     fix; the track is drawn separately and keeps its 6px. */
+  .slider {
+    @apply w-full min-w-0 flex-1 appearance-none bg-transparent;
+    height: 1rem;
+  }
+  .slider:focus { outline: none; }
+  .slider:focus-visible { outline: 2px solid rgb(var(--c-instr-600)); outline-offset: 2px; }
+  .slider::-webkit-slider-runnable-track {
+    height: 0.375rem;
+    border-radius: 2px;
+    background: rgb(var(--c-steel-200));
+  }
+  .slider::-moz-range-track {
+    height: 0.375rem;
+    border-radius: 2px;
+    background: rgb(var(--c-steel-200));
+  }
+  .slider::-webkit-slider-thumb {
+    @apply appearance-none;
+    height: 1rem;
+    width: 1rem;
+    border-radius: 9999px;
+    background: rgb(var(--c-instr-600));
+    border: 2px solid rgb(var(--c-surface));
+    /* Half the difference between the handle and the track, so it rides centred. */
+    margin-top: -0.3125rem;
+  }
+  .slider::-moz-range-thumb {
+    height: 1rem;
+    width: 1rem;
+    border: 2px solid rgb(var(--c-surface));
+    border-radius: 9999px;
+    background: rgb(var(--c-instr-600));
+  }
+
+  /* Navy, not instrument blue.
+     instr-600 #006298 sits a few degrees off the navy the chrome, the bands and the
+     enquiry door are painted in, so a primary button next to any of them read as a
+     near-miss rather than a match. The action colour is now the same navy as the
+     surfaces it appears on, which is what makes a reserved colour reserved. */
+  /* The primary action: the strongest contrast against whatever it sits on.
+     It has been four colours and each failed the same way — by being one colour. A
+     single fill cannot work on both surfaces this button appears on: #006298 clashed
+     with the navy beside it, navy-900 matched the band exactly and vanished into it,
+     amber read as caution on a screen where signal-500 already means caution, and the
+     instrument cyan was simply the wrong weight for the one thing on screen you are
+     meant to press.
+     So it is not one colour. On a light panel it is solid navy with white text, which
+     is what a primary action looks like in a serious tool. On a navy band it inverts:
+     white with navy text. Two treatments, one rule, and the rule is the thing that is
+     consistent — the button is always the highest-contrast object on its surface. */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-[2px] border px-3 py-1.5 font-semibold
+           transition-colors bg-navy-900 border-navy-950 text-white
+           hover:bg-navy-800 active:bg-navy-950
+           disabled:bg-steel-200 disabled:border-steel-300 disabled:text-steel-500
+           disabled:cursor-not-allowed;
+  }
+
+  /* Reversed out on every navy surface: the chrome, the status bands, a dialog's
+     header. .fascia is what marks one, so a band added later inherits this rather
+     than needing to remember it.
+
+     Written as plain declarations rather than @apply. Applying variant utilities
+     inside a descendant selector made Tailwind emit a SECOND bare `.btn-primary`
+     rule carrying the reversed fill — same specificity as the real one and later in
+     the file, so every primary button on the app went white, light panels included.
+     It looked like a colour that had not taken; it was a selector that had escaped. */
+  .fascia .btn-primary,
+  .panel-head-strong .btn-primary {
+    background-color: #FFFFFF;
+    border-color: #FFFFFF;
+    color: theme('colors.navy.900');
+  }
+  .fascia .btn-primary:hover,
+  .panel-head-strong .btn-primary:hover {
+    background-color: theme('colors.navy.100');
+    border-color: theme('colors.navy.100');
+  }
+  .fascia .btn-primary:active,
+  .panel-head-strong .btn-primary:active {
+    background-color: theme('colors.navy.100');
+  }
+  .fascia .btn-primary:disabled,
+  .panel-head-strong .btn-primary:disabled {
+    background-color: theme('colors.navy.800');
+    border-color: theme('colors.navy.700');
+    color: theme('colors.navy.300');
+  }
+
+  .btn-primary:active {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, .25);
+  }
+  .btn-quiet {
+    @apply inline-flex items-center justify-center gap-2 rounded-[2px] border px-3 py-1.5 font-semibold
+           transition-colors bg-surface border-steel-300 text-steel-700
+           hover:bg-steel-50 hover:border-steel-400 active:bg-steel-100
+           disabled:text-steel-400 disabled:border-steel-200 disabled:bg-steel-50
+           disabled:cursor-not-allowed;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-[2px] border px-3 py-1.5 font-semibold
+           transition-colors bg-surface border-alert-200 text-alert-700
+           hover:bg-alert-100 hover:border-alert-600 active:bg-alert-200;
+  }
+
+  /* ------------------------------------------------------------------ status
+     A state, as a reading with its key mark on the trailing edge.
+
+     What it replaces is a rounded, bordered, tinted pill used everywhere the app states
+     a status — the last rounded object in an interface whose rule is that structure is
+     square and only a pressable thing gets a radius. It also gave a retired rule as much
+     voice as a late order, which is how 740 identical gold chips became the loudest
+     thing on the Classify screen.
+
+     The mark sits on the trailing edge and the field fades into it, so the marks stack
+     into one strip down the outer edge of a list however long the words are. Three
+     things had to be true before that read as a strip rather than as damage, and the
+     first build of this got all three wrong:
+
+     - EQUAL WIDTH. Sized to their text, five statuses in one list came out 153, 68, 73,
+       68 and 66px wide, so the washes were five different lengths and the column looked
+       broken rather than ruled. min-width fixes the footprint; the text still
+       right-aligns against the mark.
+     - INSET FROM THE CASE. The mark landed at x=1423 with the panel border at 1424 —
+       one pixel — so the panel's own edge read as cut into. It sits at the column's
+       gutter now, the same 12px every other column uses, and the strip is a line inside
+       the case rather than a bite out of it.
+     - THE MARK CARRIES THE COLOUR, NOT THE WASH. At 24-30% the fade was a highlighter
+       stroke behind text. Halved, with the mark taken to 5px, the colour is in the mark
+       where it can be seen at a distance and the wash only points at it. */
+  .stat {
+    @apply relative inline-flex flex-none items-center justify-end self-stretch
+           whitespace-nowrap pl-4 pr-3 text-right;
+    min-width: 9.5rem;
+    color: rgb(var(--stat-ink));
+    background: linear-gradient(to right,
+      transparent 0%, rgb(var(--stat-tint) / var(--stat-wash)) 100%);
+  }
+  .stat::after {
+    content: ''; @apply absolute right-0 top-0 bottom-0;
+    width: var(--stat-bar, 5px);
+    background: rgb(var(--stat-mark));
+  }
+
+  /* Two lines when there is a count: the figure is the reading and the words are its
+     legend. The app's own readout grammar, on a light sheet rather than on navy. */
+  .stat-n { @apply flex-col items-end gap-px py-1.5 leading-none; }
+  .stat-figure {
+    @apply font-mono tabular-nums text-base font-semibold leading-none;
+    letter-spacing: -.01em;
+  }
+  .stat-legend {
+    @apply font-semibold uppercase leading-none;
+    font-size: .625rem; letter-spacing: .08em; opacity: .88;
+  }
+
+  /* One line when there is not.
+     Uppercase, like every other legend in the app — the fit grades are worded lowercase
+     in the data ("not recommended", "not assessed") and setting them as written left
+     three states shouting in caps and three whispering in lower. Sized above the
+     two-line legend rather than at it, because a state with no number sitting at legend
+     size read as a hollow version of one that had it. */
+  .stat-word {
+    @apply py-2.5 font-semibold uppercase leading-none;
+    font-size: .6875rem; letter-spacing: .06em;
+  }
+
+  /* The compact form, for a dense row or a phone.
+     The SAME object at a smaller size, which is the thing it was not: it had a 3px mark
+     against the full form's 5px, so it read as a different component rather than as the
+     same one with less room. The mark matches now and only the type and the padding
+     come down. */
+  .stat-compact {
+    @apply py-2.5 pl-3 pr-2.5 font-semibold uppercase leading-none;
+    font-size: .65625rem; letter-spacing: .05em; min-width: 7rem; --stat-bar: 4px;
+  }
+
+  /* ---- and the form for a status that is NOT at the end of a row.
+     A trailing mark means "the edge of this row". In a page header, beside a date, or
+     mid-sentence there is no edge and nothing to line up with — measured at 838px from
+     the nearest one — so the same treatment was a coloured blob floating in the middle
+     of a heading, borrowing the grammar of a strip that was not there.
+     Here the mark leads, there is no wash, and it takes as much room as its words. */
+  .stat-inline {
+    @apply relative inline-flex flex-none items-center gap-2 whitespace-nowrap
+           py-0.5 pl-0 pr-0 font-semibold uppercase leading-none;
+    font-size: .625rem; letter-spacing: .06em; min-width: 0; background: none;
+  }
+  .stat-inline::after { content: none; }
+  .stat-inline::before {
+    content: ''; @apply inline-block h-3 w-[3px] flex-none;
+    background: rgb(var(--stat-mark));
+  }
+
+  /* Tone carries three values, never one: the ink, the mark, and how strong the wash
+     is. Ink uses the 800 steps because those invert for the dark theme; the marks use
+     the vivid mid steps, which do not, so a mark is the same colour in both. */
+  .stat-info   { --stat-ink: var(--c-steel-700);  --stat-mark: var(--c-steel-400);  --stat-tint: var(--c-steel-500);  --stat-wash: .10; }
+  .stat-warn   { --stat-ink: var(--c-signal-800); --stat-mark: var(--c-signal-500); --stat-tint: var(--c-signal-500); --stat-wash: .16; }
+  .stat-block  { --stat-ink: var(--c-alert-800);  --stat-mark: var(--c-alert-600);  --stat-tint: var(--c-alert-600);  --stat-wash: .13; }
+  .stat-ok     { --stat-ink: var(--c-fit-800);    --stat-mark: var(--c-fit-600);    --stat-tint: var(--c-fit-600);    --stat-wash: .13; }
+  .stat-active { --stat-ink: var(--c-instr-800);  --stat-mark: var(--c-instr-400);  --stat-tint: var(--c-instr-400);  --stat-wash: .13; }
+  /* Unlit, and still a lamp. Almost no wash and a grey mark: a retired rule stops
+     competing with anything live, but the strip does not go missing a tooth. */
+  .stat-muted  { --stat-ink: var(--c-steel-500);  --stat-mark: var(--c-steel-300);  --stat-tint: var(--c-steel-500);  --stat-wash: .05; }
+
+  /* The cell a status lives in.
+     Right-aligned, and carrying the same 12px right gutter every other column uses, so
+     the mark lands at the column's edge instead of on the panel's border. `height: 1px`
+     is the table-layout trick that gives the cell a definite height, so `height: 100%`
+     on the status resolves to the row: without it the fade is a 29px band floating in a
+     49px row and reads as separate tabs rather than one edge. */
+  .tbl td.stat-cell { @apply py-0 pl-0 pr-3 text-right align-middle; height: 1px; }
+  .tbl td.stat-cell > .stat { height: 100%; }
+
+  .rule-chip {
+    @apply inline-flex shrink-0 items-center gap-1 whitespace-nowrap font-mono text-2xs
+           font-semibold rounded-[2px] border px-1.5 py-0.5 align-middle transition-colors;
+  }
+
+  /* Loading uses skeletons, not a spinner parked in the middle of the content. */
+  .skel { @apply rounded-[2px] bg-steel-100; animation: pulse 1.4s ease-in-out infinite; }
+}
+
+@keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .55 } }
+
+@keyframes slide-in {
+  from { transform: translateX(12px); opacity: 0 }
+  to   { transform: translateX(0);    opacity: 1 }
+}
+.slide-in { animation: slide-in 180ms cubic-bezier(.22,1,.36,1); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+  .slide-in { animation: none }
+  .skel { animation: none; opacity: .8 }
+}
+
+/* ---------------------------------------------------------------------------
+   The customer's copy.
+
+   A quote is printed or saved as PDF far more often than anyone plans for, and
+   what came out was the application: navigation, the findings panel, the approval
+   state, the rule codes. All of it internal, and all of it on a page a customer
+   might read.
+
+   So printing is treated as a real output rather than an accident. When the quote
+   document is on screen it is the only thing that prints, at full width, with the
+   interface removed — the browser's own PDF writer then produces a better document
+   than this app could assemble: real fonts, selectable text, correct pagination,
+   and no dependency in a build that has to stay one openable file.
+   --------------------------------------------------------------------------- */
+@media print {
+  /* Everything off, then the document and the chain of elements it hangs from back
+     on. This was `visibility: hidden`, which hides a thing and keeps its space — so
+     the nav, the rail and the controls were still laid out, still several pages tall,
+     and the printer dutifully printed them as blanks before reaching the quote.
+
+     :has() is what makes the ancestor chain restorable without every screen carrying
+     print-specific markup: anything containing the document is shown again, and a
+     screen added later is still hidden by default. */
+  /* Everything except the document, the chain it hangs from, and what is inside it.
+     This used to be `body * { display: none }` followed by
+     `.quote-doc * { display: revert }` to bring the contents back, and `revert` is
+     the trap: it reverts to the BROWSER's default, not to the author's. So every
+     display Tailwind had set inside the document was thrown away — the letterhead
+     stopped being a flex row and stacked, "Prepared for" and "Application" stopped
+     being two columns, and the application restatement and the specification, both
+     grids, came out as one long column.
+
+     REPORTED: "the print preview is where I saw the issue, things were not in the
+     same place as it's shown regularly." They were not, and this is why.
+
+     Nothing inside the document is hidden now, so nothing has to be un-hidden, so
+     the author's layout survives untouched. What prints is what is on screen. */
+  body *:not(:has(.quote-doc)):not(.quote-doc):not(.quote-doc *) {
+    display: none !important;
+  }
+  /* Shown again, and stripped.
+     Restoring the ancestors put them back with everything they were wearing: a
+     scaled preview frame, a grey mat, a border and a shadow. On a white page in
+     light mode that was invisible enough to miss. In dark mode the mat is #171C20
+     and the border is #2B3238, and the rule below forces backgrounds to print — so
+     the quote came out on a black ground inside a black rule.
+
+     Nothing between <body> and the sheet is part of the document. It is all screen
+     furniture, and on paper it is white. */
+  body *:has(.quote-doc) {
+    display: block !important;
+    background: #fff !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    max-width: none !important;
+  }
+  /* The six table rules that used to live here are gone with the revert that made
+     them necessary: they were putting back display values that the revert had just
+     destroyed. */
+
+  body, html {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* The preview scales an 816px page down to whatever the window allows. On paper
+     the page IS the paper, so the transform and the height it reserved both go.
+
+     This said `.paper-frame > *` and the transform is on the level below that, which
+     is why a printed quote came out at whatever fraction of the width the window
+     happened to be — the reset was landing on the element above the one doing the
+     scaling. Named now, so it cannot miss by a level again. */
+  /* The on-screen page-break guides. The preview is one continuous sheet and draws
+     a dashed rule where the paper would run out; printing has real page breaks and
+     does not need a picture of one. */
+  .paper-guide { display: none !important; }
+
+  .paper-frame, .paper-scroll, .paper-fit, .paper-sheet {
+    transform: none !important;
+    /* The screen frame scrolls sideways on a phone; paper does not. */
+    overflow: visible !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .quote-doc {
+    position: static !important;
+    width: auto !important;
+    max-width: none !important;
+    min-height: 0 !important;   /* 1056px inside a 14mm margin is a second page */
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Marked for the rep's file copy, never for the customer's. */
+  .internal-only { display: none !important; }
+
+  /* A table split mid-line reads as a different quote on the second page. */
+  .quote-doc tr { break-inside: avoid; }
+  /* The specification is often taller than what is left of a page, and refusing to
+     break it pushes the whole table over and leaves a hand's width of white behind.
+     Its heading stays with it and its rows stay whole; the block itself may break,
+     which is what a long table on paper is supposed to do. */
+  .quote-doc .spec-block { break-inside: auto; }
+  .quote-doc .spec-block h2 { break-after: avoid; }
+  .quote-doc .spec-block > dl > div { break-inside: avoid; }
+  .quote-doc tfoot { break-inside: avoid; }
+  /* Not `section`: the specification is one, and a section that may not break is a
+     section that leaves the page early. Small blocks that must stay together say so
+     themselves. */
+  .quote-doc figure { break-inside: avoid; }
+
+  /* Backgrounds carry the brand rules and the totals bar; without this they
+     silently vanish and the document loses its structure. */
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  @page { size: letter; margin: 14mm; }
+}

@@ -1,0 +1,80 @@
+{
+ "$comment": [
+  "What the application rules out before anything is graded.",
+  "",
+  "ASKED: \"Do the rules drive the application fit logic or is there a hidden layer",
+  "in code?\" Grading was always entirely rule-driven. This was the hidden layer: two",
+  "comparisons in narrowFromProfile that removed candidates before any rule saw them,",
+  "with no rule code, no citation and nothing on the screen. On a porous, black-ink",
+  "application it took 284 of 947 CIJ printer configurations and half the VIJ book.",
+  "",
+  "They are rules now. They still narrow rather than grade — see",
+  "application-narrowing.md for why grading would put back the noise the narrowing",
+  "exists to remove, and would re-break the counts that \"VIJ says 8 good when there's",
+  "only 4\" was reported about. What changed is that a narrowing says who it is, cites",
+  "the judgement it came from, and the screen shows what it took away.",
+  "",
+  "`matcher` names the comparison instead of spelling it in trigger primitives,",
+  "because both comparisons are more particular than any primitive: \"Non-porous\"",
+  "contains the word \"porous\", and \"black\" has to match \"Black Thermo\" without",
+  "matching \"Sky Blue\". The rule carries the what and the why; the matcher name says",
+  "which comparison implements it, and the comparisons are tested by name and held",
+  "identical across both engines by engine-cases.json."
+ ],
+ "rules": [
+  {
+   "ruleCode": "N-POROSITY",
+   "technologyCode": null,
+   "ruleType": "narrowing",
+   "severity": "info",
+   "summary": "A porous application is not offered non-porous ink, or the reverse.",
+   "detail": "Porosity is the first thing a rep establishes and it rules out most of a book. An item is removed only when it CARRIES the fact and states the other value: a Surface attribute of the opposite porosity, or, for inks and consumables, the opposite porosity in the description. A bracket has no porosity and stays. Exact on the attribute, because 'Non-porous' contains the word 'porous' and a looser comparison keeps precisely the inks the application rules out.",
+   "sourceRef": "data/application-narrowing.md, Porosity",
+   "author": "Quote review, application narrowing",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "porosity",
+     "compareOp": "in",
+     "compareValue": "porous,nonPorous"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "narrow",
+     "matcher": "porosity",
+     "attribute": "Surface",
+     "denyRoles": "ink,consumable,part",
+     "message": "The application is on a {porosity} substrate, so {n} that state the opposite are not offered."
+    }
+   ]
+  },
+  {
+   "ruleCode": "N-INK-COLOUR",
+   "technologyCode": null,
+   "ruleType": "narrowing",
+   "severity": "info",
+   "summary": "An application that names an ink colour is not offered the other colours.",
+   "detail": "Matched by word rather than by substring, so 'black ink' means Black and Black Thermo and does not mean Sky Blue. 'Grey' and 'gray' are one colour spelt two ways and asking for one never denies the other. Machines are narrowed on the Color attribute because a Corvus part number is the machine already filled; no machine is denied on a word in its description, because a machine can be refilled.",
+   "sourceRef": "data/application-narrowing.md, Ink colour",
+   "author": "Quote review, application narrowing",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "inkType",
+     "compareOp": "matchesColour",
+     "compareValue": "black,white,red,blue,green,yellow,orange,silver,brown,purple,grey,gray"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "narrow",
+     "matcher": "inkColour",
+     "attribute": "Color",
+     "denyRoles": "ink,consumable,part",
+     "message": "The application asks for {colour}, so {n} in other colours are not offered."
+    }
+   ]
+  }
+ ]
+}

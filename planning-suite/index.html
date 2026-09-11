@@ -1,0 +1,2663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Axim Planning Analytics</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Axim brand palette (supplied): #023B74 navy, #006298 blue,
+       #00AFD7 cyan, #339966 green, #DEAB40 gold, white. */
+    --dg-navy:#023B74; --dg-blue:#006298; --dg-cyan:#00AFD7; --dg-gold:#DEAB40; --dg-green:#339966;
+    /* navy rail surfaces derived from the brand navy */
+    --ink:#032D59; --ink-2:#0A3C6E; --ink-3:#12497F; --ink-line:#1D578F;
+    --canvas:#F2F4F6; --card:#FFFFFF; --card-2:#F5F7F8; --line:#DCE1E5; --line-2:#EAEDEF;
+    --tx:#293137; --tx-2:#4F585F; --tx-3:#8B949B; --tx-inv:#F2F6FA; --tx-inv-2:#9DB6CD;
+    /* cadence accents drawn from the brand family; gold and green darkened
+       for small-text contrast on white (fills use the raw brand hues) */
+    --act:#B9861F; --plan:#006298; --money:#24794F; --trust:#023B74;
+    --red:#C4442A; --red-bg:#FBEAE6; --green:#24794F; --amber:#B9861F;
+    --shadow:0 1px 2px rgba(2,59,116,.05),0 4px 16px rgba(2,59,116,.05);
+    --shadow-lg:0 8px 40px rgba(2,44,87,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Open Sans',system-ui,sans-serif;background:var(--ink);color:var(--tx);
+    -webkit-font-smoothing:antialiased;line-height:1.45;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;font-feature-settings:"tnum"}
+  .num{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+  /* ---------- shell ---------- */
+  .app{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+  .rail{background:var(--ink);border-right:1px solid var(--ink-line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+  .brand{padding:24px 22px 20px;border-bottom:1px solid var(--ink-line);flex:none}
+  .brand-logo{display:block;width:162px;height:auto}
+  .brand-logo.broken{display:none}
+  .brand-fallback{display:none;font-family:'Archivo';font-weight:800;font-size:17px;letter-spacing:.03em;color:var(--tx-inv)}
+  .brand-logo.broken+.brand-fallback{display:block}
+  .brand-sub{font-size:10.5px;color:var(--tx-inv-2);letter-spacing:.09em;text-transform:uppercase;margin-top:9px}
+
+  /* the nav list is the one part of the rail that can legitimately outgrow
+     its box (short landscape-phone viewports); let it scroll internally
+     rather than clipping items with no way to reach them */
+  .nav{padding:14px 12px;flex:1;overflow-y:auto;min-height:0}
+  .nav-ey{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx-3);padding:6px 10px 8px;font-weight:600}
+  .nav-item{width:100%;text-align:left;background:none;border:0;cursor:pointer;display:flex;align-items:center;gap:12px;
+    padding:11px 12px;border-radius:8px;color:var(--tx-inv-2);position:relative;font-family:inherit;transition:background .12s,color .12s}
+  .nav-item:hover{background:var(--ink-2);color:var(--tx-inv)}
+  .nav-item.on{background:var(--ink-2);color:var(--tx-inv)}
+  .nav-item.on .nav-bar{opacity:1;transform:scaleY(1)}
+  .nav-bar{position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:2px;opacity:0;transform:scaleY(.4);transition:.16s}
+  .nav-ico{width:22px;height:22px;flex:none;display:grid;place-items:center}
+  .nav-tx{flex:1}
+  .nav-title{display:block;font-size:13.5px;font-weight:600;line-height:1.1}
+  .nav-cadence{display:block;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx-3);margin-top:4px}
+  .nav-item.on .nav-cadence{color:var(--tx-inv-2)}
+
+  /* ---------- main ---------- */
+  .main{background:var(--canvas);min-width:0;display:flex;flex-direction:column}
+  .top{background:var(--card);border-bottom:1px solid var(--line);padding:0 30px;height:60px;display:flex;align-items:center;
+    justify-content:space-between;position:sticky;top:0;z-index:20}
+  .top::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--dg-navy),var(--dg-blue) 52%,var(--dg-cyan))}
+  .top-l{display:flex;align-items:baseline;gap:14px}
+  .top-title{font-family:'Archivo';font-weight:700;font-size:19px;color:var(--dg-navy);letter-spacing:-.01em}
+  .top-cadence{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;padding:3px 9px;border-radius:20px}
+  .top-r{display:flex;align-items:center;gap:20px}
+  .fresh{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--tx-2)}
+  .pulse{width:7px;height:7px;border-radius:50%;background:var(--dg-green);box-shadow:0 0 0 0 rgba(51,153,102,.5);animation:pulse 2.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(51,153,102,.45)}70%{box-shadow:0 0 0 7px rgba(51,153,102,0)}100%{box-shadow:0 0 0 0 rgba(51,153,102,0)}}
+  .fresh b{color:var(--tx);font-weight:600}
+  .ethos{font-size:11.5px;color:var(--tx-3);font-style:italic;max-width:230px;text-align:right;line-height:1.3}
+
+  .page{padding:26px 30px 60px;max-width:1320px;width:100%;margin:0 auto;animation:rise .32s cubic-bezier(.2,.7,.3,1)}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .hidden{display:none}
+
+  .lead{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;gap:20px;flex-wrap:wrap}
+  .lead h1{font-family:'Archivo';font-weight:700;font-size:24px;letter-spacing:-.015em;color:var(--dg-navy);line-height:1.05}
+  .lead p{font-size:13.5px;color:var(--tx-2);margin-top:7px;max-width:640px}
+
+  /* cards */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+  .ch{padding:15px 18px 0;display:flex;justify-content:space-between;align-items:flex-start}
+  .ch h3{font-size:13px;font-weight:600;color:var(--tx);letter-spacing:.005em}
+  .ch .sub{font-size:11.5px;color:var(--tx-3);margin-top:2px}
+  .tag{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;padding:3px 8px;border-radius:5px}
+
+  /* ACT summary cards */
+  .act-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .sc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 17px;position:relative;overflow:hidden;box-shadow:var(--shadow);
+    cursor:pointer;transition:transform .16s ease-out,box-shadow .16s ease-out,border-color .16s;font-family:inherit;text-align:left;width:100%}
+  .sc-k{font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:600;color:var(--tx-2);display:flex;align-items:center;gap:7px}
+  .sc-v{font-family:'Archivo';font-weight:700;font-size:29px;color:var(--tx);letter-spacing:-.02em;margin-top:10px;line-height:1}
+  .sc-m{font-size:12px;color:var(--tx-3);margin-top:6px}
+  .sc-m b{font-weight:600}
+
+  /* queue */
+  .q{width:100%;border-collapse:collapse}
+  .q thead th{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--tx-3);font-weight:600;text-align:left;
+    padding:11px 14px;border-bottom:1px solid var(--line)}
+  .q thead th.r,.q td.r{text-align:right}
+  .q tbody tr{border-bottom:1px solid var(--line-2);cursor:pointer;transition:background .1s}
+  .q tbody tr:hover{background:var(--card-2)}
+  .q tbody tr:last-child{border-bottom:0}
+  .q td{padding:12px 14px;font-size:13px;color:var(--tx);vertical-align:middle}
+  .kind{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+  .kdot{width:8px;height:8px;border-radius:2px;flex:none}
+  .part{font-weight:600;color:var(--tx)}
+  .desc{color:var(--tx-3);font-size:11.5px;margin-top:2px}
+  .dollar{font-weight:600;font-size:13.5px}
+  .instruct{color:var(--tx-2);font-size:12px}
+  .due{font-size:12px}
+  .due.over{color:var(--red);font-weight:600}
+  .chip{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:5px;letter-spacing:.02em}
+  .chip.red{background:var(--red-bg);color:var(--red)} .chip.amber{background:#FAF1DC;color:#96700F}
+  .chip.teal{background:#E3F0F6;color:#00577F} .chip.gray{background:var(--card-2);color:var(--tx-2)}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid2-wide{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
+  /* grid items default to an intrinsic min-width from their content (an SVG
+     chart's viewBox, a wide table) which can exceed the track's available
+     space and force the whole grid wider than its container ("grid blowout").
+     min-width:0 lets tracks actually shrink to fit. */
+  .grid2>*,.grid2-wide>*,.act-cards>*,.kpis>*{min-width:0}
+  .mt16{margin-top:16px}
+
+  /* horizon strip signature */
+  .horizon{padding:18px}
+  .hz-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px}
+  .hz-legend{display:flex;gap:16px;font-size:11.5px;color:var(--tx-2)}
+  .hz-legend span{display:inline-flex;align-items:center;gap:6px}
+  .hz-legend i{width:10px;height:10px;border-radius:2px}
+  .strip{display:grid;grid-template-columns:64px 1fr;gap:0}
+  .strip-lbl{font-size:10.5px;color:var(--tx-3);display:flex;align-items:center;height:34px;font-weight:500}
+  .strip-row{display:grid;grid-template-columns:repeat(13,1fr);gap:3px}
+  .wk{height:34px;border-radius:4px;position:relative;display:grid;place-items:center;font-size:0}
+  .wk-num{grid-column:1/-1;display:grid;grid-template-columns:repeat(13,1fr);gap:3px;margin-top:8px}
+  .wk-num div{font-size:9.5px;color:var(--tx-3);text-align:center;font-family:'IBM Plex Mono'}
+  .pos-cell{background:var(--card-2);border:1px solid var(--line-2);border-radius:4px;height:34px;display:grid;place-items:center;position:relative}
+  .pos-fill{position:absolute;left:0;right:0;bottom:0;background:var(--plan);opacity:.16;border-radius:0 0 3px 3px}
+  .pos-cell.trigger{border-color:var(--act);background:#FAF1DC}
+  .pos-cell.trigger .pos-fill{background:var(--act);opacity:.2}
+  .pos-cell.dated{border-color:var(--trust);background:#E9F0F7}
+  .pos-cell.stockout .pos-fill{background:var(--red);opacity:.22}
+  .pos-cell.stockout{border-color:var(--red)}
+  .marker{position:absolute;top:-6px;width:16px;height:16px;border-radius:50%;display:grid;place-items:center;font-size:8px;
+    font-weight:800;color:#fff;font-family:'Archivo';z-index:2}
+  .marker.o{background:var(--act)} .marker.d{background:var(--trust)}
+  .hz-note{margin-top:16px;font-size:11.5px;color:var(--tx-3);border-top:1px dashed var(--line);padding-top:12px;line-height:1.5}
+
+  /* svg chart wraps */
+  .chart-wrap{padding:8px 16px 16px}
+  svg{display:block;width:100%;overflow:visible}
+  .axis{font-size:10.5px;fill:var(--tx-3);font-family:'IBM Plex Mono'}
+  .glabel{font-size:11px;fill:var(--tx-2)}
+  .gval{font-size:11px;fill:var(--tx);font-family:'IBM Plex Mono';font-weight:500}
+
+  /* list rows */
+  .lrow{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--line-2);cursor:pointer}
+  .lrow:hover{background:var(--card-2)} .lrow:last-child{border-bottom:0}
+  .lrow-l{display:flex;align-items:center;gap:12px;min-width:0}
+  .flag{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;flex:none;font-family:'IBM Plex Mono';font-weight:600;font-size:11px}
+  .lrow-tx{min-width:0}
+  .lrow-t{font-size:13px;font-weight:600;color:var(--tx)}
+  .lrow-s{font-size:11.5px;color:var(--tx-3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lrow-r{text-align:right;flex:none;padding-left:12px}
+
+  /* MONEY bridge legend */
+  .bridge-foot{display:flex;gap:22px;padding:0 18px 18px;flex-wrap:wrap}
+  .bf{display:flex;flex-direction:column;gap:2px}
+  .bf-k{font-size:11px;color:var(--tx-3);display:flex;align-items:center;gap:7px}
+  .bf-k i{width:9px;height:9px;border-radius:2px}
+  .bf-v{font-family:'IBM Plex Mono';font-weight:600;font-size:14px;color:var(--tx);padding-left:16px}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 16px;box-shadow:var(--shadow)}
+  .kpi-k{font-size:11px;color:var(--tx-3);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+  .kpi-v{font-family:'Archivo';font-weight:700;font-size:25px;color:var(--tx);margin-top:9px;letter-spacing:-.02em;line-height:1}
+  .kpi-d{font-size:12px;margin-top:6px;display:flex;align-items:center;gap:5px}
+  .kpi-d.up{color:var(--green)} .kpi-d.down{color:var(--red)} .kpi-d.flat{color:var(--tx-3)}
+
+  /* TRUST */
+  .mape-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line-2)}
+  .mape-row:last-child{border-bottom:0}
+  .mape-cls{width:92px;font-size:12.5px;font-weight:600;color:var(--tx)}
+  .mape-cls small{display:block;font-weight:400;color:var(--tx-3);font-size:10.5px}
+  .mape-track{flex:1;height:9px;background:var(--card-2);border-radius:5px;overflow:hidden;position:relative}
+  .mape-fill{height:100%;border-radius:5px}
+  .mape-val{width:52px;text-align:right;font-family:'IBM Plex Mono';font-weight:600;font-size:13px}
+  .health-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0}
+  .hcell{padding:14px 16px;border-bottom:1px solid var(--line-2);border-right:1px solid var(--line-2)}
+  .hcell:nth-child(even){border-right:0}
+  .hcell-v{font-family:'Archivo';font-weight:700;font-size:22px;color:var(--tx);letter-spacing:-.02em}
+  .hcell-v.ok{color:var(--green)} .hcell-v.warn{color:var(--amber)} .hcell-v.bad{color:var(--red)}
+  .hcell-k{font-size:11.5px;color:var(--tx-2);margin-top:4px}
+  .hcell-t{font-size:10.5px;margin-top:6px;font-weight:600}
+  .hcell-t.dn{color:var(--green)} .hcell-t.up{color:var(--red)}
+
+  /* drawer */
+  .scrim{position:fixed;inset:0;background:rgba(20,24,31,.44);opacity:0;pointer-events:none;transition:opacity .22s;z-index:40}
+  .scrim.on{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,94vw);background:var(--canvas);z-index:50;
+    transform:translateX(100%);transition:transform .28s cubic-bezier(.3,.8,.3,1);box-shadow:var(--shadow-lg);
+    display:flex;flex-direction:column;overflow:hidden}
+  .drawer.on{transform:none}
+  .dhead{background:var(--ink);color:var(--tx-inv);padding:20px 24px;display:flex;justify-content:space-between;align-items:flex-start}
+  .dhead .part-no{font-family:'IBM Plex Mono';font-weight:600;font-size:19px;letter-spacing:-.01em}
+  .dhead .part-desc{font-size:12.5px;color:var(--tx-inv-2);margin-top:5px}
+  .dseg{display:flex;gap:6px;margin-top:12px}
+  .seg{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:5px;
+    background:var(--ink-3);color:var(--tx-inv-2)}
+  .seg.hot{background:rgba(222,171,64,.22);color:#E7C36C}
+  .dclose{background:var(--ink-3);border:0;color:var(--tx-inv);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:17px;flex:none}
+  .dclose:hover{background:var(--ink-line)}
+  .dbody{overflow-y:auto;padding:20px 24px 40px;flex:1}
+  .dsec{margin-bottom:22px}
+  .dsec-h{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx-3);font-weight:600;margin-bottom:11px}
+  .gauge{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:16px}
+  .dfacts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .fact{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:11px 13px}
+  .fact-k{font-size:10.5px;color:var(--tx-3);letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+  .fact-v{font-family:'IBM Plex Mono';font-weight:600;font-size:15px;color:var(--tx);margin-top:5px}
+  .fact-v small{font-size:11px;color:var(--tx-3);font-weight:400}
+  .dtable{background:var(--card);border:1px solid var(--line);border-radius:11px;overflow:hidden}
+  .dtable-row{display:flex;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line-2);font-size:12.5px}
+  .dtable-row:last-child{border-bottom:0}
+  .dtable-row .k{color:var(--tx-2)} .dtable-row .v{font-family:'IBM Plex Mono';font-weight:500;color:var(--tx)}
+  .predict-card{background:linear-gradient(180deg,#E9F0F7,#F5F8FB);border:1px solid #C6D6E4;border-radius:11px;padding:15px 16px}
+  .predict-k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--trust)}
+  .predict-v{font-family:'Archivo';font-weight:700;font-size:20px;color:var(--tx);margin-top:8px}
+  .predict-m{font-size:12px;color:var(--tx-2);margin-top:5px}
+
+  .drill-hint{font-size:11px;color:var(--tx-3);display:flex;align-items:center;gap:6px}
+
+  /* ---------- interactive visuals ---------- */
+  .viz-tip{position:fixed;z-index:200;background:var(--dg-navy);color:#fff;padding:8px 12px;border-radius:8px;
+    font-size:11.5px;line-height:1.5;pointer-events:none;opacity:0;
+    transform:translate(-50%,calc(-100% - 12px)) scale(.96);transform-origin:bottom center;
+    transition:opacity .13s ease-out,transform .13s ease-out;box-shadow:0 6px 24px rgba(2,44,87,.35);white-space:nowrap}
+  .viz-tip.on{opacity:1;transform:translate(-50%,calc(-100% - 12px)) scale(1)}
+  .viz-tip b{color:#7EDCF2;font-family:'IBM Plex Mono';font-weight:600}
+  .viz-tip small{color:var(--tx-inv-2);font-size:10.5px}
+  .viz-tip::after{content:'';position:absolute;left:50%;bottom:-5px;transform:translateX(-50%);
+    border:5px solid transparent;border-top-color:var(--dg-navy);border-bottom:0}
+
+  svg .vbar{cursor:pointer;transition:filter .15s,opacity .15s;transform-box:fill-box;transform-origin:bottom;
+    animation:growY .55s cubic-bezier(.2,.7,.3,1) backwards}
+  svg .vbar:hover{filter:brightness(1.18) saturate(1.15)}
+  svg .vdot{cursor:pointer;transition:r .15s ease-out}
+  svg .vdot:hover{r:6.5px}
+  svg .vline{stroke-dasharray:1;stroke-dashoffset:0;animation:draw .9s ease-out}
+  @keyframes growY{from{transform:scaleY(0)}}
+  @keyframes growX{from{transform:scaleX(0)}}
+  @keyframes draw{from{stroke-dashoffset:1}}
+  .pos-fill{transform-origin:bottom;animation:growY .5s cubic-bezier(.2,.7,.3,1) backwards}
+  /* dossier visuals get a slower entrance than the dashboard charts they're
+     based on: small enough to actually watch happen, not just flicker in */
+  #dStrip .pos-fill{animation-duration:1.1s}
+  #dFc .vline{animation-duration:1.6s}
+  .pos-cell{cursor:pointer;transition:transform .13s ease-out,box-shadow .13s ease-out}
+  .pos-cell:hover{transform:translateY(-2px);box-shadow:0 3px 10px rgba(2,59,116,.18);z-index:1}
+  .mape-fill{transform-origin:left;animation:growX .7s cubic-bezier(.2,.7,.3,1) backwards}
+  .mape-row:nth-child(2) .mape-fill{animation-delay:.07s}
+  .mape-row:nth-child(3) .mape-fill{animation-delay:.14s}
+  .mape-row:nth-child(4) .mape-fill{animation-delay:.21s}
+
+  /* sortable table headers */
+  th.sortable{cursor:pointer;user-select:none;white-space:nowrap;transition:color .12s}
+  th.sortable:hover{color:var(--dg-blue)}
+  th.sortable::after{content:'↕';margin-left:5px;opacity:.35;font-size:9px}
+  th.sortable.asc::after{content:'↑';opacity:1;color:var(--dg-blue)}
+  th.sortable.desc::after{content:'↓';opacity:1;color:var(--dg-blue)}
+
+  /* clickable summary cards (queue filters) */
+  .sc:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(2,59,116,.13);border-color:#C4D5E4}
+  .sc:active{transform:translateY(0) scale(.99)}
+  .sc.on{border-color:var(--dg-cyan);box-shadow:0 0 0 3px rgba(0,175,215,.18),var(--shadow)}
+  .sc-hint{position:absolute;top:13px;right:14px;font-size:9px;color:var(--tx-3);opacity:0;
+    transition:opacity .15s;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+  .sc:hover .sc-hint,.sc.on .sc-hint{opacity:1}
+  .sc.on .sc-hint{color:var(--dg-blue)}
+
+  /* legend items double as series toggles */
+  .bf.toggle{cursor:pointer;border-radius:7px;padding:4px 8px;margin:-4px -8px;transition:background .12s,opacity .15s}
+  .bf.toggle:hover{background:var(--card-2)}
+  .bf.toggle.off{opacity:.35}
+  .bf.toggle.off .bf-v{text-decoration:line-through}
+
+  /* press feedback, focus, hoverable matrix cells */
+  .q tbody tr:active,.lrow:active{background:#E7F1F8}
+  button,.chip,.sc{touch-action:manipulation}
+  button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--dg-cyan);outline-offset:2px}
+  #topSearch:focus,#promiseSearch:focus{border-color:var(--dg-cyan);box-shadow:0 0 0 3px rgba(0,175,215,.15);outline:none}
+  .hcell{transition:background .12s}
+  .hcell:hover{background:var(--card-2)}
+  .seg-cell{transition:transform .13s ease-out,border-color .13s,box-shadow .13s}
+  .seg-cell:hover{transform:translateY(-1px);border-color:var(--dg-cyan)!important;box-shadow:0 3px 10px rgba(0,175,215,.16)}
+  .cal-cell{transition:transform .13s ease-out,box-shadow .13s ease-out}
+  .cal-cell:hover{transform:scale(1.07);box-shadow:0 3px 10px rgba(2,59,116,.16);z-index:1}
+  .chip:is(button){transition:filter .12s,transform .12s}
+  .chip:is(button):hover{filter:brightness(.95)}
+  .chip:is(button):active{transform:scale(.96)}
+
+  /* supplier OTD micro-bars */
+  .pbar{height:3px;background:var(--line-2);border-radius:2px;margin:5px 0 0 auto;width:46px;overflow:hidden}
+  .pbar i{display:block;height:100%;border-radius:2px}
+
+  /* drawer mini strip */
+  #dStrip .pos-cell{height:26px}
+  #dStrip .strip-row{gap:2px}
+  #dStrip .wk-num{gap:2px;margin-top:5px}
+  #dStrip .marker{width:13px;height:13px;font-size:7px;top:-5px}
+
+  /* forecast chart legend */
+  .fc-legend{display:flex;gap:14px;font-size:10.5px;color:var(--tx-3);padding:4px 4px 8px}
+  .fc-legend span{display:inline-flex;align-items:center;gap:5px}
+  .fc-legend i{width:12px;height:2.5px;border-radius:2px}
+  .fc-legend i.dash{background:repeating-linear-gradient(90deg,var(--plan) 0 3px,transparent 3px 5px)}
+
+  /* inline drill list (spend bar → orders) */
+  .drill-h{padding:10px 16px 2px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--tx-3);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+  .drill-h button{background:none;border:0;cursor:pointer;color:var(--tx-3);font-size:14px;line-height:1;padding:2px 6px;border-radius:5px}
+  .drill-h button:hover{background:var(--card-2);color:var(--tx)}
+
+  /* drawer resize handle */
+  .drag{position:absolute;left:0;top:0;bottom:0;width:8px;cursor:ew-resize;z-index:5;touch-action:none}
+  .drag::after{content:'';position:absolute;left:2px;top:50%;transform:translateY(-50%);width:3px;height:44px;border-radius:2px;background:var(--tx-inv-2);opacity:.45;transition:opacity .15s,background .15s}
+  .drag:hover::after,.drag.on::after{background:var(--dg-cyan);opacity:1}
+
+  /* position bar (dossier): fill = inventory position, ticks = stock levels */
+  .pb-head{display:flex;justify-content:space-between;font-size:11.5px;color:var(--tx-2);margin-bottom:9px}
+  .pb-head b{font-family:'IBM Plex Mono';color:var(--tx)}
+  .pb-track{position:relative;height:30px;background:var(--card-2);border:1px solid var(--line-2);border-radius:6px;margin-bottom:10px}
+  .pb-fill{position:absolute;left:0;top:0;bottom:0;border-radius:5px 0 0 5px;background:var(--plan);opacity:.9;transform-origin:left;animation:growX 1.1s cubic-bezier(.2,.7,.3,1) backwards}
+  .pb-fill.low{background:var(--red)}
+  .pb-warn{position:absolute;left:6px;top:50%;transform:translateY(-50%);width:16px;height:16px;border-radius:50%;
+    background:#fff;color:var(--red);font-weight:800;font-size:11px;line-height:16px;text-align:center;box-shadow:0 0 0 1.5px var(--red) inset}
+  .pb-oh{position:absolute;left:0;bottom:-8px;height:4px;border-radius:2px;background:var(--dg-navy);opacity:.5}
+  .pb-mark{position:absolute;top:-6px;bottom:-6px;width:2.5px;border-radius:1px}
+  .pb-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--tx-2);margin-top:18px}
+  .pb-legend span{display:inline-flex;align-items:center;gap:5px}
+  .pb-legend i{width:2.5px;height:11px;border-radius:1px;flex:none}
+  .pb-legend i.sw{width:11px;height:8px;border-radius:2px}
+  .pb-legend b{font-family:'IBM Plex Mono'}
+
+  /* planner multi-strip (position walks) */
+  #stripMulti .ms-row{display:grid;grid-template-columns:90px 1fr;align-items:center;margin-bottom:7px}
+  .ms-lbl{font-family:'IBM Plex Mono';font-size:11px;font-weight:600;color:var(--plan);background:none;border:0;cursor:pointer;text-align:left;padding:0 8px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ms-lbl:hover{text-decoration:underline}
+  #stripMulti .pos-cell{height:26px}
+  #stripMulti .wk-num{grid-column:2;margin-top:2px}
+
+  /* monthly spend breakdown (money) */
+  .mo-row{display:grid;grid-template-columns:56px 1fr 76px;gap:12px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line-2)}
+  .mo-lbl{font-size:12px;font-weight:600;color:var(--tx-2)}
+  .mo-bar{display:flex;height:18px;border-radius:4px;overflow:hidden;background:var(--card-2)}
+  .mo-bar i{display:block;height:100%;transform-origin:left;animation:growX .5s cubic-bezier(.2,.7,.3,1) backwards;cursor:pointer;transition:filter .15s}
+  .mo-bar i:hover{filter:brightness(1.18)}
+  .mo-tot{font-family:'IBM Plex Mono';font-weight:600;font-size:12.5px;text-align:right}
+
+  /* excess total row */
+  .excess-total{display:flex;justify-content:space-between;padding:11px 16px;border-top:2px solid var(--line);font-size:12px;font-weight:600;color:var(--tx)}
+  .excess-total .num{color:var(--red)}
+  .burn-stat{display:flex;gap:18px;flex-wrap:wrap;padding:12px 18px;border-top:1px solid var(--line-2)}
+  .burn-stat div{display:flex;flex-direction:column;gap:1px}
+  .burn-stat b{font-size:15px;font-weight:650;color:var(--tx-1)}
+  .burn-stat span{font-size:11px;color:var(--tx-3)}
+
+  /* kit calculator (promise page) */
+  .kit-qty{width:88px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px;background:var(--card-2);font-family:'IBM Plex Mono'}
+  .kit-qty:focus{border-color:var(--dg-cyan);box-shadow:0 0 0 3px rgba(0,175,215,.15);outline:none}
+  .kit-sum{background:linear-gradient(180deg,#E9F0F7,#F5F8FB);border:1px solid #C6D6E4;border-radius:11px;padding:14px 16px;margin-top:14px;font-size:12.5px;line-height:1.6}
+  .kit-sum b{font-family:'IBM Plex Mono'}
+
+  /* vendor link + contact info grid */
+  .vlink{background:none;border:0;cursor:pointer;font:inherit;font-family:'IBM Plex Mono';font-weight:500;font-size:12.5px;color:var(--plan);padding:0}
+  .vlink:hover{text-decoration:underline}
+  .sup-info{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;padding:14px 18px 4px}
+  .sup-info .fact{padding:9px 12px}
+  .sup-info .fact-v{font-size:12.5px;word-break:break-word}
+  .sup-info .fact-v a{color:var(--plan);text-decoration:none}
+  .sup-info .fact-v a:hover{text-decoration:underline}
+
+  /* consolidated vendor "Email" dropdown */
+  .email-menu-wrap{position:relative}
+  .email-menu{position:absolute;top:calc(100% + 6px);right:0;min-width:172px;background:var(--card);
+    border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow-lg);z-index:40;padding:6px;overflow:hidden}
+  .email-menu button{display:block;width:100%;text-align:left;background:none;border:0;cursor:pointer;
+    padding:9px 12px;border-radius:6px;font:inherit;font-size:12.5px;color:var(--tx);transition:background .12s}
+  .email-menu button:hover{background:var(--card-2)}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  }
+
+  @media(max-width:1080px){
+    .app{grid-template-columns:1fr}
+    .rail{position:fixed;left:0;top:0;width:236px;z-index:60;transform:translateX(-100%);transition:transform .24s}
+    .rail.on{transform:none}
+    .act-cards,.kpis{grid-template-columns:repeat(2,1fr)}
+    .grid2,.grid2-wide{grid-template-columns:1fr}
+    .menu-btn{display:grid!important}
+  }
+  .menu-btn{display:none;width:38px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--card);cursor:pointer;place-items:center}
+  @media(max-width:560px){
+    .act-cards,.kpis,.health-grid{grid-template-columns:1fr}
+    .page{padding:18px 16px 50px}.ethos{display:none}
+    .hcell:nth-child(odd){border-right:0}
+  }
+
+  /* header: the right-side cluster (planner filter, search, freshness) was a
+     fixed-width row that never wrapped, forcing the whole page wider than the
+     viewport on phones. The "content" beyond ~400px was just canvas showing
+     through. Let it wrap onto its own row instead of overflowing.
+     Breakpoint matches the rail's own 1080px collapse: phone landscape widths
+     (667-926px) sit inside that range too, and the old 700px cutoff left
+     landscape using the un-wrapped desktop header, which is what overflowed. */
+  @media(max-width:1080px){
+    .top{height:auto;min-height:60px;flex-wrap:wrap;row-gap:10px;padding:10px 16px}
+    .top-l{flex:1 1 auto}
+    .top-r{flex:1 1 100%;flex-wrap:wrap;row-gap:8px;gap:12px;justify-content:flex-start}
+    #plannerSel{font-size:12px;padding:6px 8px}
+    #topSearch{width:100%!important;max-width:220px}
+    #topSug{max-width:min(320px,90vw)}
+    .fresh span:last-child{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .ethos{max-width:none;text-align:left}
+  }
+  @media(max-width:400px){
+    #topSearch{max-width:160px}
+  }
+  @media(max-width:520px){
+    #stripSearch{width:100%!important;max-width:180px}
+    #stripSug{max-width:min(290px,90vw)}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- ================= RAIL ================= -->
+  <aside class="rail" id="rail">
+    <div class="brand">
+      <img class="brand-logo" src="axim-white.svg" alt="Axim" width="2109" height="261"
+        onerror="this.classList.add('broken')">
+      <span class="brand-fallback">AXIM</span>
+      <div class="brand-sub">Planning Analytics</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-ey">One workflow per page</div>
+      <button class="nav-item on" data-page="overview" onclick="go('overview')">
+        <span class="nav-bar" style="background:var(--dg-cyan)"></span>
+        <span class="nav-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20"/><path d="M17 6.5c0-2-2.2-3-5-3s-5 1-5 3.2c0 4.6 10 2.4 10 7.1 0 2.3-2.2 3.4-5 3.4s-5-1.2-5-3.3"/></svg>
+        </span>
+        <span class="nav-tx"><span class="nav-title">Overview</span><span class="nav-cadence">Leadership · whole chain</span></span>
+      </button>
+      <button class="nav-item" data-page="suppliers" onclick="go('suppliers')">
+        <span class="nav-bar" style="background:var(--dg-cyan)"></span>
+        <span class="nav-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21V8l7-5 7 5v13"/><path d="M13 21v-6h4v6M3 21h18M7 11h2M7 15h2"/></svg>
+        </span>
+        <span class="nav-tx"><span class="nav-title">Suppliers</span><span class="nav-cadence">Vendors · sourcing</span></span>
+      </button>
+      <button class="nav-item" data-page="orders" onclick="go('orders')">
+        <span class="nav-bar" style="background:var(--dg-cyan)"></span>
+        <span class="nav-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2 3 14h8l-1 8 10-12h-8z"/></svg>
+        </span>
+        <span class="nav-tx"><span class="nav-title">Orders</span><span class="nav-cadence">Purchasing · today</span></span>
+      </button>
+      <button class="nav-item" data-page="plan" onclick="go('plan')">
+        <span class="nav-bar" style="background:var(--dg-cyan)"></span>
+        <span class="nav-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
+        </span>
+        <span class="nav-tx"><span class="nav-title">Plan</span><span class="nav-cadence">Planning · next 13 weeks</span></span>
+      </button>
+      <button class="nav-item" data-page="build" onclick="go('build')">
+        <span class="nav-bar" style="background:var(--dg-cyan)"></span>
+        <span class="nav-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21V10l6 3V10l6 3V6l6-2v17"/><path d="M3 21h18M7 17h2M12 17h2M17 17h2"/></svg>
+        </span>
+        <span class="nav-tx"><span class="nav-title">Build</span><span class="nav-cadence">Production · BOM</span></span>
+      </button>
+      <button class="nav-item" data-page="promise" onclick="go('promise')">
+        <span class="nav-bar" style="background:var(--dg-cyan)"></span>
+        <span class="nav-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 9h18M9 15l2 2 4-4"/></svg>
+        </span>
+        <span class="nav-tx"><span class="nav-title">Promise</span><span class="nav-cadence">Sales · delivery dates</span></span>
+      </button>
+      <button class="nav-item" data-page="trust" onclick="go('trust')">
+        <span class="nav-bar" style="background:var(--dg-cyan)"></span>
+        <span class="nav-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+        </span>
+        <span class="nav-tx"><span class="nav-title">Trust</span><span class="nav-cadence">Data health · rules</span></span>
+      </button>
+    </nav>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <div class="main">
+    <header class="top">
+      <div class="top-l">
+        <button class="menu-btn" onclick="document.getElementById('rail').classList.toggle('on')" aria-label="Menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+        <span class="top-title" id="topTitle">Overview</span>
+        <span class="top-cadence" id="topCadence">Whole chain</span>
+      </div>
+      <div class="top-r">
+        <select id="plannerSel" class="live-only" hidden aria-label="Filter by planner"
+          style="padding:7px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:12.5px;background:var(--card-2);cursor:pointer;color:var(--tx)">
+          <option value="">All planners</option>
+        </select>
+        <div style="position:relative">
+          <input id="topSearch" placeholder="Find item…" autocomplete="off"
+            style="width:180px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:12.5px;background:var(--card-2)">
+          <div id="topSug" style="position:absolute;top:110%;right:0;width:300px;background:var(--card);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow-lg);z-index:60;display:none;max-height:280px;overflow:auto"></div>
+        </div>
+        <div class="fresh"><span class="pulse"></span><span>Pipeline refreshed <b>06:00</b> · next <b>12:00</b></span></div>
+        <div class="ethos">Deterministic arithmetic on committed rules, not prediction.</div>
+      </div>
+    </header>
+
+    <!-- ============ ORDERS (was ACT) ============ -->
+    <section class="page hidden" id="page-orders">
+      <div class="lead">
+        <div>
+          <h1>Today's action queue</h1>
+          <p>One list, ranked by dollars at stake. Work it top to bottom: you handle the highest-impact decisions first, no picking and choosing.</p>
+        </div>
+        <div class="drill-hint">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          Any row opens the item dossier
+        </div>
+      </div>
+
+      <div class="act-cards">
+        <button class="sc" data-kind="ORDER" onclick="filterKind('ORDER')" aria-pressed="false" aria-label="Filter queue to order actions">
+          <span class="sc-hint">filter</span>
+          <div class="sc-k"><span class="kdot" style="background:var(--act)"></span>Order</div>
+          <div class="sc-v">14</div><div class="sc-m"><b>$182,400</b> suggested spend</div></button>
+        <button class="sc" data-kind="EXPEDITE" onclick="filterKind('EXPEDITE')" aria-pressed="false" aria-label="Filter queue to expedite actions">
+          <span class="sc-hint">filter</span>
+          <div class="sc-k"><span class="kdot" style="background:var(--red)"></span>Expedite</div>
+          <div class="sc-v">6</div><div class="sc-m"><b>$54,900</b> at service risk</div></button>
+        <button class="sc" data-kind="DEFER" onclick="filterKind('DEFER')" aria-pressed="false" aria-label="Filter queue to defer actions">
+          <span class="sc-hint">filter</span>
+          <div class="sc-k"><span class="kdot" style="background:var(--plan)"></span>Defer</div>
+          <div class="sc-v">9</div><div class="sc-m"><b>$71,200</b> to push out</div></button>
+        <button class="sc" data-kind="BLOCKED" onclick="filterKind('BLOCKED')" aria-pressed="false" aria-label="Filter queue to blocked builds">
+          <span class="sc-hint">filter</span>
+          <div class="sc-k"><span class="kdot" style="background:var(--trust)"></span>Blocked build</div>
+          <div class="sc-v">3</div><div class="sc-m"><b>2</b> waiting on one part</div></button>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div><h3>Queue</h3><div class="sub">Sorted by urgency, then dollar impact · your items (RLS)</div></div>
+          <span class="tag" style="background:#FAF1DC;color:#96700F">24 open</span></div>
+        <div style="overflow-x:auto">
+        <table class="q">
+          <thead><tr><th>Action</th><th>Item</th><th>Instruction</th><th class="r">Impact</th><th class="r">Need by</th></tr></thead>
+          <tbody id="queueBody"></tbody>
+        </table>
+        </div>
+      </div>
+
+      <div class="grid2 mt16">
+        <div class="card">
+          <div class="ch"><div><h3>Purchasing registers</h3><div class="sub">Blankets to release · blanket candidates · shelf-life / air-only · pallet capacity</div></div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap" id="regTabs">
+              <button class="chip teal" style="border:0;cursor:pointer" onclick="loadRegister('blankets')">Blankets</button>
+              <button class="chip gray" style="border:0;cursor:pointer" onclick="loadRegister('candidates')">Candidates</button>
+              <button class="chip gray" style="border:0;cursor:pointer" onclick="loadRegister('shelf')">Shelf-life</button>
+              <button class="chip gray" style="border:0;cursor:pointer" onclick="loadRegister('pallets')">Pallets</button>
+            </div></div>
+          <div id="regBody" style="padding:4px 0 8px">
+            <div style="padding:12px 16px;color:var(--tx-3);font-size:12.5px">Connect the API to load the registers.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div><h3>Planner workload</h3><div class="sub">Open lines &amp; value · overdue · suggestions · blocked builds</div></div></div>
+          <div id="workloadBody" style="padding:4px 0 8px">
+            <div style="padding:12px 16px;color:var(--tx-3);font-size:12.5px">Connect the API to load workload.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BUILD ============ -->
+    <section class="page hidden" id="page-build">
+      <div class="lead">
+        <div>
+          <h1>Production &amp; BOM</h1>
+          <p>What to start on the floor and what's blocking it. Expand any line (▸) for its full bill with FIFO coverage. Below, explore any bill of material: what an item is made of, and where a component is used.</p>
+        </div>
+        <div class="drill-hint">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          Any row opens the item dossier
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div><h3>Build release list</h3><div class="sub">FIFO material allocation · what to start on the floor, and when blocked work frees up</div></div>
+          <div style="display:flex;gap:6px" id="buildTabs">
+            <button class="chip teal" style="border:0;cursor:pointer" onclick="loadBuild('')">All</button>
+            <button class="chip gray" style="border:0;cursor:pointer" onclick="loadBuild('ready')">Ready</button>
+            <button class="chip gray" style="border:0;cursor:pointer" onclick="loadBuild('blocked')">Blocked</button>
+          </div></div>
+        <div style="overflow-x:auto">
+        <table class="q"><thead><tr><th>Order</th><th>Item</th><th class="r">Open</th><th class="r">Stock</th><th class="r">Build</th><th>Status</th><th>Note</th><th class="r">Due</th></tr></thead>
+        <tbody id="buildBody"><tr><td colspan="8" style="color:var(--tx-3);font-size:12.5px">Connect the API to load the build list.</td></tr></tbody></table>
+        </div>
+      </div>
+
+      <div class="card mt16">
+        <div class="ch"><div><h3>BOM explorer</h3><div class="sub">Explode down to what it's made of · where-used, what consumes it</div></div></div>
+        <div style="padding:14px 16px 18px">
+          <div style="position:relative;max-width:440px">
+            <input id="bomSearch" placeholder="Search item number or description…" autocomplete="off"
+              style="width:100%;padding:10px 13px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:13px;background:var(--card-2)">
+            <div id="bomSug" style="position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow-lg);z-index:30;display:none;max-height:260px;overflow:auto"></div>
+          </div>
+          <div id="bomBody" style="margin-top:14px">
+            <div style="font-size:13px;color:var(--tx-3);padding:14px 4px;text-align:center">Search for an item to explore its bill of material.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PROMISE ============ -->
+    <section class="page hidden" id="page-promise">
+      <div class="lead">
+        <div>
+          <h1>Promise date lookup</h1>
+          <p>Type an item; read a sentence. Each ladder row is a quantity we can commit and the date it can ship, with the reasoning written out. ESTIMATE rows need a planning check before quoting.</p>
+        </div>
+      </div>
+      <div class="card" style="padding:18px">
+        <div style="position:relative;max-width:440px">
+          <input id="promiseSearch" placeholder="Search item number or description…" autocomplete="off"
+            style="width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:13.5px;background:var(--card-2)">
+          <div id="promiseSug" style="position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow-lg);z-index:30;display:none;max-height:260px;overflow:auto"></div>
+        </div>
+        <div id="promiseBody" style="margin-top:18px">
+          <div style="font-size:13px;color:var(--tx-3);padding:26px 4px;text-align:center">Search for an item to see its promise ladder.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PLAN ============ -->
+    <section class="page hidden" id="page-plan">
+      <div class="lead">
+        <div>
+          <h1>13-week horizon</h1>
+          <p>The replenishment simulation, made visible. Demand enters at its due week, and orders are timed so receipts land when needed, not months early.</p>
+        </div>
+      </div>
+
+      <!-- SIGNATURE: horizon strip -->
+      <div class="card horizon">
+        <div class="hz-head">
+          <div><h3 id="hzTitle" style="font-size:13px;font-weight:600">Position walk · <span class="mono" style="color:var(--plan)">1150-BLK</span> · Black pigment ink, 825 ml</h3>
+            <div class="sub" style="font-size:11.5px;color:var(--tx-3);margin-top:2px">Inventory position stepped forward one week at a time · pick any item to trace</div></div>
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+            <div style="position:relative" class="live-only" hidden>
+              <input id="stripSearch" placeholder="Trace an item…" autocomplete="off" aria-label="Trace an item on the position walk"
+                style="width:170px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:12px;background:var(--card-2)">
+              <div id="stripSug" style="position:absolute;top:110%;right:0;width:290px;background:var(--card);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow-lg);z-index:30;display:none;max-height:260px;overflow:auto"></div>
+            </div>
+            <div class="hz-legend">
+              <span><i style="background:var(--plan);opacity:.5"></i>position</span>
+              <span><i style="background:var(--act)"></i>order fires</span>
+              <span><i style="background:var(--trust)"></i>dated order</span>
+              <span><i style="background:var(--red);opacity:.6"></i>stockout risk</span>
+            </div>
+          </div>
+        </div>
+        <div class="strip" id="stripSingle">
+          <div class="strip-lbl">position</div>
+          <div class="strip-row" id="stripRow"></div>
+          <div class="strip-lbl" style="height:auto;align-items:flex-start;padding-top:2px">week</div>
+          <div class="wk-num" id="stripNums"></div>
+        </div>
+        <div id="stripMulti" hidden></div>
+        <div class="hz-note" id="hzNote"><b>Read it left to right:</b> position drops as demand consumes stock. At week 4 it crosses the reorder point and the two-bin logic fires an order (amber). At week 9 a large booked customer order lands and exceeds order-up-to, so the replenishment logic placed a <span style="color:var(--trust);font-weight:600">dated order</span> back at week 6 to arrive in time, instead of buying it all today.</div>
+      </div>
+
+      <div class="grid2 mt16">
+        <div class="card">
+          <div class="ch"><div><h3>Stockout runway</h3><div class="sub">On-hand hits zero even after every receipt lands</div></div>
+            <span class="tag" id="stockoutTag" style="background:var(--red-bg);color:var(--red)">5 items</span></div>
+          <div id="stockoutList"></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div><h3>Order calendar</h3><div class="sub">Predicted workload by week &amp; vendor</div></div>
+            <span class="tag gray" style="background:var(--card-2);color:var(--tx-2)">next 6 wks</span></div>
+          <div id="calBody" style="padding:14px 16px 18px"></div>
+        </div>
+      </div>
+
+      <div class="card mt16">
+        <div class="ch"><div><h3>Sole-source exposure</h3><div class="sub">Single-vendor items ranked by annual value · the supply-risk register</div></div></div>
+        <div id="sourcingBody"><div style="padding:14px 16px;color:var(--tx-3);font-size:12.5px">Connect the API to load sourcing risk.</div></div>
+      </div>
+    </section>
+
+    <!-- ============ SUPPLIERS ============ -->
+    <section class="page hidden" id="page-suppliers">
+      <div class="lead">
+        <div>
+          <h1>Supplier scorecard</h1>
+          <p>On-time delivery at PO-line grain, fill rate, OTIF, and rejects roll into a letter grade. Click a vendor for the receipt evidence behind it: the QBR one-pager.</p>
+        </div>
+      </div>
+      <div class="card" style="padding:14px 16px">
+        <div style="position:relative;max-width:360px">
+          <input id="supSearch" placeholder="Search vendor number or name…" autocomplete="off" aria-label="Search suppliers"
+            style="width:100%;padding:9px 13px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:13px;background:var(--card-2)">
+        </div>
+      </div>
+      <div class="card mt16" id="supTodoCard" hidden>
+        <div class="ch"><div><h3>Supplier action list</h3><div class="sub">RED = have the conversation this quarter · each row carries its reason</div></div></div>
+        <div id="supTodoBody" style="padding:4px 0 8px"></div>
+      </div>
+      <div class="card mt16">
+        <div style="overflow-x:auto">
+        <table class="q"><thead><tr><th>Vendor</th><th>Grade</th><th class="r">OTD</th><th class="r">Fill</th><th class="r">OTIF</th><th class="r">Reject</th><th class="r">Annual spend</th><th class="r">Open PO</th><th class="r">Overdue</th><th class="r">Sole-src items</th></tr></thead>
+        <tbody id="supBody"><tr><td colspan="10" style="color:var(--tx-3);font-size:12.5px">Connect the API to load the scorecard.</td></tr></tbody></table>
+        </div>
+      </div>
+      <div class="card mt16 hidden" id="supDrillCard">
+        <div class="ch">
+          <div><h3 id="supDrillName">Vendor</h3><div class="sub">Most recent receipt lines · commit vs actual</div></div>
+          <div class="email-menu-wrap">
+            <button class="chip teal" style="border:0;cursor:pointer" id="emailMenuBtn" onclick="toggleEmailMenu(event)" aria-haspopup="true" aria-expanded="false">Email ▾</button>
+            <div class="email-menu" id="emailMenu" hidden role="menu">
+              <button role="menuitem" onclick="emailNewMessage()">New message</button>
+              <button role="menuitem" onclick="emailOrderStatus()">Order status</button>
+              <button role="menuitem" onclick="emailScorecard()">Scorecard</button>
+            </div>
+          </div>
+        </div>
+        <div class="sup-info" id="supInfo"></div>
+        <div style="overflow-x:auto">
+        <table class="q"><thead><tr><th>PO</th><th>Item</th><th class="r">Qty</th><th class="r">Received</th><th class="r">Days late</th><th class="r">Unit price</th><th class="r">Value</th></tr></thead>
+        <tbody id="supDrillBody"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ OVERVIEW (was MONEY) ============ -->
+    <section class="page" id="page-overview">
+      <div class="lead">
+        <div>
+          <h1>Supply chain overview</h1>
+          <p>The ninety-second read of the whole chain: what's healthy, what needs action, and what inventory costs us. Every number here is owned by one of the pages on the left, so click through when challenged.</p>
+        </div>
+      </div>
+
+      <div class="kpis" id="ovKpis" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin:0 0 16px">
+        <div class="kpi"><div class="kpi-k">Inventory value</div><div class="kpi-v" id="ovInv">$6.42M</div><div class="kpi-d flat">on hand today</div></div>
+        <div class="kpi"><div class="kpi-k">Suggested orders</div><div class="kpi-v" id="ovSuggest">$182K</div><div class="kpi-d flat" id="ovSuggestD">14 items to buy · Orders</div></div>
+        <div class="kpi"><div class="kpi-k">Expedites needed</div><div class="kpi-v" id="ovExp">6</div><div class="kpi-d flat" id="ovExpD">$54.9K at service risk</div></div>
+        <div class="kpi"><div class="kpi-k">Blocked builds</div><div class="kpi-v" id="ovBlk">3</div><div class="kpi-d flat">waiting on purchasing · Build</div></div>
+        <div class="kpi"><div class="kpi-k">Suppliers at risk</div><div class="kpi-v" id="ovRed">1</div><div class="kpi-d flat">RED on the action list · Suppliers</div></div>
+        <div class="kpi"><div class="kpi-k">Data checks</div><div class="kpi-v" id="ovVal">—</div><div class="kpi-d flat" id="ovValD">pipeline validation · Trust</div></div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div><h3>Cash release bridge</h3><div class="sub">Current inventory value → healthy working inventory</div></div>
+          <span class="tag" style="background:#E6F1EB;color:var(--money)">$1.16M excess</span></div>
+        <div class="chart-wrap"><div id="bridgeChart"></div></div>
+        <div class="bridge-foot">
+          <div class="bf"><span class="bf-k"><i style="background:var(--tx-2)"></i>On hand today</span><span class="bf-v">$6.42M</span></div>
+          <div class="bf"><span class="bf-k"><i style="background:var(--amber)"></i>Excess over order-up-to</span><span class="bf-v">−$1.16M</span></div>
+          <div class="bf"><span class="bf-k"><i style="background:var(--money)"></i>Healthy working inv.</span><span class="bf-v">$5.26M</span></div>
+        </div>
+      </div>
+
+      <div class="grid2-wide mt16">
+        <div class="card">
+          <div class="ch"><div><h3>Excess burn-down</h3><div class="sub">Excess above order-up-to, and how fast demand consumes it · click a point for what's driving it</div></div>
+            <div style="display:flex;gap:6px" id="excessToggle">
+              <button class="chip teal" style="border:0;cursor:pointer" onclick="excessDrill('proj')">Projected</button>
+              <button class="chip gray" style="border:0;cursor:pointer" onclick="excessDrill('warn')">Early warning</button>
+            </div></div>
+          <div class="chart-wrap"><div id="excessChart"></div></div>
+          <div class="burn-stat" id="burnStat">
+            <div><b>8.5 months</b><span>to clear at current demand</span></div>
+            <div><b>3.4 turns</b><span>at 4.8× a year</span></div>
+            <div><b>$0.47M</b><span>never clears · no demand</span></div>
+          </div>
+          <div id="excessDrillBody" style="border-top:1px solid var(--line-2)"></div>
+          <div class="hz-note" style="margin:14px 18px 16px">Month 1 is testable against next cycle's actual position: the built-in credibility check.</div>
+        </div>
+        <div class="card">
+          <div class="ch"><div><h3>Excess inventory</h3><div class="sub">Largest positions above order-up-to · weeks to clear at current demand</div></div>
+            <div style="display:flex;gap:6px" id="excessBandChips" class="live-only" hidden>
+              <button class="chip teal" style="border:0;cursor:pointer" onclick="excessBand(null)">All</button>
+              <button class="chip gray" style="border:0;cursor:pointer" onclick="excessBand('CLEARING')">Clearing</button>
+              <button class="chip gray" style="border:0;cursor:pointer" onclick="excessBand('STUCK')">Stuck</button>
+            </div></div>
+          <div id="movementBody" style="padding:6px 0"></div>
+        </div>
+      </div>
+
+      <div class="card mt16">
+        <div class="ch"><div><h3>Calculated spend by month</h3><div class="sub">Committed POs + simulated reorder &amp; dated purchases · click a bar for the orders behind it</div></div>
+          <span class="tag" style="background:#E9F0F7;color:var(--trust)" id="moSpendTag">—</span></div>
+        <div class="chart-wrap"><div id="spendChart"></div></div>
+        <div class="bridge-foot" style="padding-top:0">
+          <div class="bf"><span class="bf-k"><i style="background:var(--dg-navy)"></i>Known (open PO)</span><span class="bf-v">$408K</span></div>
+          <div class="bf"><span class="bf-k"><i style="background:var(--dg-cyan)"></i>Predicted reorder</span><span class="bf-v">$286K</span></div>
+          <div class="bf"><span class="bf-k"><i style="background:var(--dg-gold)"></i>Predicted dated</span><span class="bf-v">$164K</span></div>
+        </div>
+        <div id="spendDrill" style="border-top:1px solid var(--line-2)" hidden></div>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="kpi-k">Inventory turns</div><div class="kpi-v">4.8×</div><div class="kpi-d up"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H9M17 7v8"/></svg>+0.4 vs Q1</div></div>
+        <div class="kpi"><div class="kpi-k">Days of supply</div><div class="kpi-v">76</div><div class="kpi-d down"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 7l10 10M17 17H9M17 17V9"/></svg>−9 days</div></div>
+        <div class="kpi"><div class="kpi-k">Value on hand</div><div class="kpi-v">$6.42M</div><div class="kpi-d down"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 7l10 10M17 17H9M17 17V9"/></svg>−$310K</div></div>
+        <div class="kpi"><div class="kpi-k">Projected spend · 3 mo</div><div class="kpi-v" id="kpiSpend3">$892K</div><div class="kpi-d flat">known + simulated orders</div></div>
+      </div>
+    </section>
+
+    <!-- ============ TRUST ============ -->
+    <section class="page hidden" id="page-trust">
+      <div class="lead">
+        <div>
+          <h1>Accuracy &amp; data health</h1>
+          <p>The page that makes the other three believable. We publish our own error rate, plus the master-data gaps a new site inherits, before anyone argues with a reorder point.</p>
+        </div>
+      </div>
+
+      <div class="card" id="valCard" hidden style="margin-bottom:16px">
+        <div class="ch"><div><h3>Pipeline validation</h3><div class="sub">plan.usp_validate · standing invariants checked automatically after every refresh</div></div>
+          <span class="tag" id="valTag" style="background:var(--card-2);color:var(--tx-2)">—</span></div>
+        <div id="valBody" style="padding:0 0 6px"></div>
+      </div>
+
+      <div class="grid2 ">
+        <div class="card">
+          <div class="ch"><div><h3>Forecast report card</h3><div class="sub">Mean absolute % error by demand class · horizon 1 wk</div></div></div>
+          <div style="padding:8px 0 6px">
+            <div class="mape-row"><div class="mape-cls">Smooth<small>steady movers</small></div><div class="mape-track"><div class="mape-fill" style="width:18%;background:var(--money)"></div></div><div class="mape-val" style="color:var(--money)">18%</div></div>
+            <div class="mape-row"><div class="mape-cls">Erratic<small>variable qty</small></div><div class="mape-track"><div class="mape-fill" style="width:41%;background:var(--plan)"></div></div><div class="mape-val" style="color:var(--plan)">41%</div></div>
+            <div class="mape-row"><div class="mape-cls">Lumpy<small>sparse orders</small></div><div class="mape-track"><div class="mape-fill" style="width:73%;background:var(--amber)"></div></div><div class="mape-val" style="color:var(--amber)">73%</div></div>
+            <div class="mape-row"><div class="mape-cls">Intermittent<small>rare demand</small></div><div class="mape-track"><div class="mape-fill" style="width:88%;background:var(--red)"></div></div><div class="mape-val" style="color:var(--red)">88%</div></div>
+          </div>
+          <div class="hz-note" style="margin:2px 16px 16px">Lumpy and intermittent items aren't forecastable. That's the argument for safety stock over forecast, shown here rather than asserted. Band hit rate: <b style="color:var(--tx)">81%</b> vs 80% target.</div>
+        </div>
+
+        <div class="card">
+          <div class="ch"><div><h3>Data health</h3><div class="sub">Master-data gaps · trended down since rollout</div></div>
+            <span class="tag" style="background:#E6F1EB;color:var(--money)">Score 92</span></div>
+          <div class="health-grid">
+            <div class="hcell"><div class="hcell-v warn">37</div><div class="hcell-k">Items with no vendor</div><div class="hcell-t dn">↓ 14 this month</div></div>
+            <div class="hcell"><div class="hcell-v ok">12</div><div class="hcell-k">No lead time <small>(defaulted 5d)</small></div><div class="hcell-t dn">↓ 28 this month</div></div>
+            <div class="hcell"><div class="hcell-v ok">8</div><div class="hcell-k">Garbage promise dates fixed</div><div class="hcell-t dn">auto-corrected</div></div>
+            <div class="hcell"><div class="hcell-v warn">54</div><div class="hcell-k">Param exceptions</div><div class="hcell-t up">↑ 6 new items</div></div>
+          </div>
+          <div id="healthDrill"></div>
+        </div>
+      </div>
+
+      <div class="grid2 mt16">
+        <div class="card">
+          <div class="ch"><div><h3>Demand segmentation</h3><div class="sub">ABC (value) × XYZ (variability) · why service levels differ by class</div></div></div>
+          <div id="segBody" style="padding:14px 16px 18px"><span style="color:var(--tx-3);font-size:12.5px">Connect the API to load segmentation.</span></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div><h3>Model assumptions</h3><div class="sub">plan.config_params · every lever the pipeline runs on, documented</div></div></div>
+          <div id="cfgBody" style="max-height:280px;overflow-y:auto"><div style="padding:14px 16px;color:var(--tx-3);font-size:12.5px">Connect the API to load config.</div></div>
+        </div>
+      </div>
+
+      <div class="grid2 mt16">
+        <div class="card">
+          <div class="ch"><div><h3>Classification glossary</h3><div class="sub">plan.classification_glossary · what every code means, in plain language</div></div></div>
+          <div id="glossaryBody" style="max-height:280px;overflow-y:auto">
+            <div style="padding:12px 16px;color:var(--tx-3);font-size:12.5px">Connect the API to load the glossary.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div><h3>Refresh runs</h3><div class="sub">plan.refresh_log · umbrella + per-domain rows, newest first</div></div></div>
+          <div id="runsBody" style="max-height:280px;overflow-y:auto">
+            <div style="padding:12px 16px;color:var(--tx-3);font-size:12.5px">Connect the API to load run history.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt16">
+        <div class="ch"><div><h3>Excess projection vs actual</h3><div class="sub">Each month's projected excess scored against the position that actually landed</div></div>
+          <span class="tag" style="background:#E6F1EB;color:var(--money)">±3.1% mean</span></div>
+        <div class="chart-wrap"><div id="accuracyChart"></div></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ============ DRAWER ============ -->
+<div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <div class="drag" id="dragHandle" role="separator" aria-orientation="vertical" tabindex="0"
+       aria-label="Resize the dossier: drag, or use arrow keys" data-tip="Drag to resize <small>(or ← → keys)</small>"></div>
+  <div class="dhead">
+    <div>
+      <div class="part-no" id="dPart">1150-BLK</div>
+      <div class="part-desc" id="dDesc">Black pigment ink · 825 ml cartridge</div>
+      <div class="dseg" id="dSeg"></div>
+    </div>
+    <button class="dclose" onclick="closeDrawer()" aria-label="Close">✕</button>
+  </div>
+  <div class="dbody">
+    <div class="dsec">
+      <div class="dsec-h">Inventory position vs stock levels</div>
+      <div class="gauge" id="posbar"></div>
+    </div>
+    <div class="dsec" id="dStripSec" hidden>
+      <div class="dsec-h">13-week position walk · replenishment simulation</div>
+      <div class="gauge" style="padding:14px 14px 10px">
+        <div id="dStrip"></div>
+      </div>
+    </div>
+    <div class="dsec" id="dFcSec" hidden>
+      <div class="dsec-h">Demand history &amp; forecast · 26 wk actual + 13 wk projected</div>
+      <div class="gauge" style="padding:12px 12px 4px">
+        <div id="dFc"></div>
+      </div>
+    </div>
+    <div class="dsec">
+      <div class="dsec-h">Next predicted order</div>
+      <div class="predict-card">
+        <div class="predict-k" id="pType">Dated order</div>
+        <div class="predict-v" id="pQty">640 units · $8,960</div>
+        <div class="predict-m" id="pWhen">Release week of Aug 25 · arrives Sep 22 for a booked order</div>
+      </div>
+    </div>
+    <div class="dsec">
+      <div class="dsec-h">Standing</div>
+      <div class="dfacts" id="dFacts"></div>
+    </div>
+    <div class="dsec">
+      <div class="dsec-h">Open supply &amp; demand</div>
+      <div class="dtable" id="dSupply"></div>
+    </div>
+    <div class="dsec">
+      <div class="dsec-h">Vendor &amp; sourcing</div>
+      <div class="dtable" id="dVendor"></div>
+    </div>
+  </div>
+</aside>
+
+<script>
+/* ---------------- data ---------------- */
+const PAGES={
+  overview:['Overview','Whole chain','var(--money)','rgba(46,122,78,.10)'],
+  suppliers:['Suppliers','Vendors · sourcing','var(--plan)','rgba(0,98,152,.10)'],
+  orders:['Orders','Purchasing · today','var(--act)','rgba(222,171,64,.16)'],
+  plan:['Plan','Next 13 weeks','var(--plan)','rgba(0,98,152,.10)'],
+  build:['Build','Production · BOM','var(--trust)','rgba(2,59,116,.10)'],
+  promise:['Promise','Delivery dates','var(--plan)','rgba(0,175,215,.10)'],
+  trust:['Trust','Data health · rules','var(--trust)','rgba(2,59,116,.10)']};
+
+const items={
+  '1150-BLK':{desc:'Black pigment ink · 825 ml cartridge',seg:['Class A','Smooth','Active'],
+    oh:340,pos:210,rop:180,s:820,ss:95,moq:200,mult:40,eoq:262,net:340,val:'$4,760',lead:'12 wd',vendor:'Halton Inks',
+    ptype:'Dated order',pqty:'640 units · $8,960',pwhen:'Release wk of Aug 25 · arrives Sep 22 for a booked order',
+    supply:[['On hand','340 ea'],['Open PO 41822','480 ea · Jul 19'],['Predicted reorder','wk 4']],
+    vend:[['Primary','Halton Inks'],['Lead time','12 working days'],['Last price','$14.00 / ea'],['MOQ · mult','200 · 40']]},
+  '2600223':{desc:'Printhead assembly · 32-valve',seg:['Class A','Erratic','Active'],
+    oh:15,pos:1,rop:8,s:24,ss:4,moq:1,mult:1,eoq:3,net:15,val:'$18,300',lead:'35 wd',vendor:'Verity Dispensing',
+    ptype:'Build · 1 unit',pqty:'Build 1 · ship 15 from stock',pwhen:'Corrected: allocation double-net removed',
+    supply:[['On hand','15 ea'],['Booked SO 88210','16 ea · Jul 22'],['Build readiness','build 1']],
+    vend:[['Primary','Verity Dispensing'],['Lead time','35 working days'],['Last price','$1,220 / ea'],['MOQ · mult','1 · 1']]},
+  '400001PPM':{desc:'Make-up fluid · MEK base · 1 L',seg:['Class B','Smooth','Active'],
+    oh:4,pos:4,rop:60,s:220,ss:32,moq:48,mult:12,eoq:214,net:4,val:'$96',lead:'8 wd',vendor:'Brightwater Fluids',
+    ptype:'Reorder',pqty:'216 units · $5,184',pwhen:'Triggers week 1 · below reorder point',
+    supply:[['On hand','4 ea'],['Open demand','none (cancelled line cleared)'],['Predicted reorder','wk 1']],
+    vend:[['Primary','Brightwater Fluids'],['Lead time','8 working days'],['Last price','$24.00 / ea'],['MOQ · mult','48 · 12']]},
+  'TTO-33110':{desc:'Thermal transfer ribbon · 33 mm × 1100 m',seg:['Class A','Smooth','Active'],
+    oh:88,pos:52,rop:70,s:260,ss:36,moq:60,mult:20,eoq:168,net:88,val:'$3,940',lead:'15 wd',vendor:'Cascade Ribbon',
+    ptype:'Reorder',pqty:'180 rolls · $8,100',pwhen:'Triggers week 2 · steady draw',
+    supply:[['On hand','88 rolls'],['Open PO 41790','120 · Jul 24'],['Predicted reorder','wk 2']],
+    vend:[['Primary','Cascade Ribbon'],['Lead time','15 working days'],['Last price','$45.00 / roll'],['MOQ · mult','60 · 20']]},
+  'FLT-2200':{desc:'Inline filter kit · 5 µm',seg:['Class C','Lumpy','Excess'],
+    oh:210,pos:210,rop:40,s:120,ss:18,moq:25,mult:25,eoq:58,net:210,val:'$6,090',lead:'10 wd',vendor:'Verity Dispensing',
+    ptype:'None in horizon',pqty:'—',pwhen:'Position well above order-up-to · flagged thin headroom',
+    supply:[['On hand','210 kits'],['12-mo usage','88 kits'],['Excess','90 kits · 5.6 wks to clear']],
+    vend:[['Primary','Verity Dispensing'],['Lead time','10 working days'],['Last price','$29.00 / kit'],['MOQ · mult','25 · 25']]},
+  'INK-1265Y':{desc:'Yellow dye ink · 500 ml',seg:['Class B','Erratic','Active'],
+    oh:64,pos:20,rop:45,s:180,ss:28,moq:60,mult:30,eoq:92,net:64,val:'$2,110',lead:'14 wd',vendor:'Halton Inks',
+    ptype:'Expedite',pqty:'PO 41755 · pull in 6 days',pwhen:'Open SO at risk without expedite',
+    supply:[['On hand','64 ea'],['Open PO 41755','90 · Aug 02'],['Booked SO','110 · Jul 25']],
+    vend:[['Primary','Halton Inks'],['Lead time','14 working days'],['Last price','$33.00 / ea'],['MOQ · mult','60 · 30']]},
+};
+
+const queue=[
+  {k:'EXPEDITE',c:'var(--red)',part:'INK-1265Y',desc:'Yellow dye ink · 500 ml',ins:'Pull PO 41755 in 6 days · SO 110 ea at risk',imp:'$18,200',impc:'',due:'Jul 25',over:false,chip:['red','service risk']},
+  {k:'ORDER',c:'var(--act)',part:'400001PPM',desc:'Make-up fluid · MEK base',ins:'Place 216 ea · below reorder point',imp:'$5,184',due:'now',over:true,chip:['amber','below ROP']},
+  {k:'BLOCKED',c:'var(--trust)',part:'2600223',desc:'Printhead assembly · 32-valve',ins:'Build 1 · 15 shippable from stock',imp:'$18,300',due:'Jul 22',over:false,chip:['teal','build 1']},
+  {k:'ORDER',c:'var(--act)',part:'TTO-33110',desc:'Thermal transfer ribbon',ins:'Place 180 rolls · steady draw',imp:'$8,100',due:'Jul 28',over:false,chip:['gray','reorder']},
+  {k:'EXPEDITE',c:'var(--red)',part:'1150-BLK',desc:'Black pigment ink · 825 ml',ins:'Confirm PO 41822 promise · line at week 4',imp:'$6,720',due:'Jul 19',over:true,chip:['red','overdue PO']},
+  {k:'DEFER',c:'var(--plan)',part:'FLT-2200',desc:'Inline filter kit · 5 µm',ins:'Push PO 41710 out 3 weeks · overstocked',imp:'$4,930',due:'—',over:false,chip:['teal','overstock']},
+  {k:'ORDER',c:'var(--act)',part:'INK-1265Y',desc:'Yellow dye ink · 500 ml',ins:'Place 90 ea to cover Sep demand',imp:'$2,970',due:'Aug 06',over:false,chip:['gray','reorder']},
+  {k:'DEFER',c:'var(--plan)',part:'1150-BLK',desc:'Black pigment ink · 825 ml',ins:'Push PO 41833 · position covers 6 wks',imp:'$3,360',due:'—',over:false,chip:['teal','covered']},
+];
+
+const stockouts=[
+  {part:'INK-1265Y',desc:'Yellow dye ink · lead 14 wd',wk:'wk 3',dem:'110 ea open',c:'var(--red)'},
+  {part:'2600223',desc:'Printhead · lead 35 wd',wk:'wk 5',dem:'16 ea booked',c:'var(--red)'},
+  {part:'SOL-9040',desc:'Cleaning solvent · lead 9 wd',wk:'wk 7',dem:'40 L open',c:'var(--amber)'},
+  {part:'CAP-118',desc:'Sealing cap · lead 20 wd',wk:'wk 9',dem:'250 ea booked',c:'var(--amber)'},
+  {part:'1150-BLK',desc:'Black pigment ink · lead 12 wd',wk:'wk 11',dem:'640 ea booked',c:'var(--amber)'},
+];
+
+const movement=[
+  {dir:'in',part:'FLT-2200',desc:'Filter kit · usage fell below stock',v:'+$6,090'},
+  {dir:'in',part:'BRK-770',desc:'Bracket · 12-mo usage lapsed',v:'+$3,410'},
+  {dir:'out',part:'INK-1265Y',desc:'Yellow ink · new SO cleared reserve',v:'−$4,220'},
+  {dir:'out',part:'GSK-42',desc:'Gasket · consumed into build',v:'−$1,880'},
+];
+
+/* ---------------- render: ACT queue ---------------- */
+let queueFilter=null;
+function matchKind(k,f){return f==='DEFER'?['DEFER','REVIEW','CANCEL'].includes(k):k===f;}
+function renderQueue(){
+  const rows=queueFilter?queue.filter(r=>matchKind(r.k,queueFilter)):queue;
+  document.getElementById('queueBody').innerHTML=rows.map(r=>`
+    <tr onclick="openDrawer('${r.part}')" tabindex="0">
+      <td><span class="kind" style="color:${r.c}"><span class="kdot" style="background:${r.c}"></span>${r.k}</span></td>
+      <td><div class="part mono">${r.part}</div><div class="desc">${r.desc}</div></td>
+      <td><div class="instruct">${r.ins}</div><span class="chip ${r.chip[0]}">${r.chip[1]}</span></td>
+      <td class="r"><span class="dollar num">${r.imp}</span></td>
+      <td class="r"><span class="due num ${r.over?'over':''}">${r.due}</span></td>
+    </tr>`).join('')
+    ||`<tr><td colspan="5" style="color:var(--tx-3);font-size:12.5px;padding:18px 14px">No ${queueFilter?queueFilter.toLowerCase()+' ':''}actions in the queue${PLANNER?' for '+esc(PLANNER):''} right now.</td></tr>`;
+  const tag=document.querySelector('#page-orders .card .tag');
+  if(tag)tag.textContent=rows.length+' open'+(queueFilter?' · '+queueFilter.toLowerCase():'');
+}
+function filterKind(kind){
+  queueFilter=(queueFilter===kind)?null:kind;
+  document.querySelectorAll('.act-cards .sc').forEach(c=>{
+    const on=c.dataset.kind===queueFilter;
+    c.classList.toggle('on',on);c.setAttribute('aria-pressed',on);
+  });
+  renderQueue();
+}
+
+/* ---------------- render: horizon strip ---------------- */
+function renderStrip(){
+  // position path across 13 weeks, with events
+  const pos=[210,168,126,84,268,226,184,142,742,700,430,388,346]; // dated order lands wk9
+  const max=760;
+  const events={4:'trigger',6:'dated',3:'',10:''};
+  let cells='',nums='';
+  for(let i=0;i<13;i++){
+    const h=Math.max(6,Math.round(pos[i]/max*100));
+    let cls='pos-cell',note='';
+    if(i===3){cls+=' trigger';note='<br><small>reorder trigger fires · two-bin logic places an order</small>';}
+    if(i===5){cls+=' dated';note='<br><small>dated order released to arrive for the wk 9 demand</small>';}
+    if(i===8)note='<br><small>booked customer order lands + dated receipt arrives</small>';
+    if(pos[i]<90 && i<4)cls+=' stockout';
+    let mk='';
+    if(i===3)mk='<span class="marker o">R</span>';
+    if(i===5)mk='<span class="marker d">D</span>';
+    cells+=`<div class="${cls}" data-tip="Week ${i+1}: <b>${pos[i]} units</b>${note}" tabindex="0">${mk}<div class="pos-fill" style="height:${h}%;animation-delay:${i*35}ms"></div></div>`;
+    nums+=`<div>${i+1}</div>`;
+  }
+  document.getElementById('stripRow').innerHTML=cells;
+  document.getElementById('stripNums').innerHTML=nums;
+}
+
+/* ---------------- svg helpers ---------------- */
+function bars(el,data,opts){
+  // data: [{label, segs:[{v,color}]}], stacked vertical
+  const W=opts.w||460,H=opts.h||220,pl=44,pb=28,pt=10,pr=10;
+  const iw=W-pl-pr,ih=H-pb-pt;
+  const max=opts.max;
+  const bw=Math.min(64,iw/data.length*0.54);
+  const gap=iw/data.length;
+  let g='';
+  // gridlines
+  for(let i=0;i<=4;i++){const y=pt+ih-ih*(i/4);const val=Math.round(max*i/4);
+    g+=`<line x1="${pl}" y1="${y}" x2="${W-pr}" y2="${y}" stroke="var(--line-2)" stroke-width="1"/>`;
+    g+=`<text x="${pl-8}" y="${y+3}" text-anchor="end" class="axis">${opts.fmt?opts.fmt(val):val}</text>`;}
+  data.forEach((d,i)=>{
+    const cx=pl+gap*i+gap/2;let yb=pt+ih;
+    d.segs.forEach((s,si)=>{const sh=s.v/max*ih;yb-=sh;
+      const name=opts.names&&opts.names[si]?` <small>${opts.names[si]}</small>`:'';
+      const tip=`${d.label}: <b>${opts.fmt?opts.fmt(Math.round(s.v)):s.v}</b>${name}`;
+      g+=`<rect class="vbar" data-si="${si}" data-tip="${tip}" style="animation-delay:${i*70+si*45}ms"${opts.onBar?` onclick="${opts.onBar}(${i})"`:''}
+        x="${cx-bw/2}" y="${yb}" width="${bw}" height="${Math.max(0,sh)}" fill="${s.color}" rx="2"/>`;});
+    g+=`<text x="${cx}" y="${H-9}" text-anchor="middle" class="axis">${d.label}</text>`;
+    if(d.total)g+=`<text x="${cx}" y="${yb-6}" text-anchor="middle" class="gval">${d.total}</text>`;
+  });
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Bar chart: ${data.map(d=>d.label+(d.total?' '+d.total:'')).join(', ')}">${g}</svg>`;
+}
+
+function lineChart(el,pts,opts){
+  const W=opts.w||460,H=opts.h||220,pl=48,pb=28,pt=16,pr=14;
+  const iw=W-pl-pr,ih=H-pb-pt;const max=opts.max,min=opts.min||0;
+  const X=i=>pl+iw*(i/(pts.length-1));
+  const Y=v=>pt+ih-ih*((v-min)/(max-min));
+  let g='';
+  for(let i=0;i<=4;i++){const y=pt+ih-ih*(i/4);const val=min+(max-min)*i/4;
+    g+=`<line x1="${pl}" y1="${y}" x2="${W-pr}" y2="${y}" stroke="var(--line-2)"/>`;
+    g+=`<text x="${pl-8}" y="${y+3}" text-anchor="end" class="axis">${opts.fmt?opts.fmt(val):Math.round(val)}</text>`;}
+  // band (optional) - projected uncertainty
+  if(opts.band){let up='',dn='';pts.forEach((p,i)=>{const b=opts.band[i]||0;
+    up+=`${i?'L':'M'}${X(i)},${Y(p+b)} `;dn=`L${X(i)},${Y(p-b)} `+dn;});
+    g+=`<path d="${up}${dn}Z" fill="${opts.color}" opacity=".1"/>`;}
+  let dpath='';pts.forEach((p,i)=>{dpath+=`${i?'L':'M'}${X(i)},${Y(p)} `;});
+  // split solid/dashed at opts.solidTo
+  if(opts.solidTo!=null){
+    let s='',d='';pts.forEach((p,i)=>{const cmd=`${i?'L':'M'}${X(i)},${Y(p)} `;
+      if(i<=opts.solidTo)s+=cmd; if(i>=opts.solidTo)d+=(i===opts.solidTo?`M${X(i)},${Y(p)} `:`L${X(i)},${Y(p)} `);});
+    g+=`<path class="vline" pathLength="1" d="${s}" fill="none" stroke="${opts.color}" stroke-width="2.5"/>`;
+    g+=`<path d="${d}" fill="none" stroke="${opts.color}" stroke-width="2.5" stroke-dasharray="5 4" opacity=".8"/>`;
+  }else{
+    g+=`<path class="vline" pathLength="1" d="${dpath}" fill="none" stroke="${opts.color}" stroke-width="2.5"/>`;
+  }
+  pts.forEach((p,i)=>{
+    const tip=(opts.tips&&opts.tips[i])||`${opts.labels[i]}: <b>${opts.ptFmt?opts.ptFmt(p):p}</b>${opts.band&&opts.band[i]?` <small>±${opts.ptFmt?opts.ptFmt(opts.band[i]):opts.band[i]}</small>`:''}`;
+    g+=`<circle class="vdot" data-tip="${tip}"${opts.onPoint?` onclick="${opts.onPoint}(${i})"`:''} cx="${X(i)}" cy="${Y(p)}" r="${i===0?4.5:3.5}" fill="${i===0?'var(--tx)':opts.color}" stroke="#fff" stroke-width="1.5"/>`;
+    g+=`<text x="${X(i)}" y="${Y(p)-11}" text-anchor="middle" class="gval">${opts.ptFmt?opts.ptFmt(p):p}</text>`;});
+  opts.labels.forEach((l,i)=>{g+=`<text x="${X(i)}" y="${H-9}" text-anchor="middle" class="axis">${l}</text>`;});
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Line chart: ${pts.map((p,i)=>opts.labels[i]+' '+(opts.ptFmt?opts.ptFmt(p):p)).join(', ')}">${g}</svg>`;
+}
+
+function waterfall(el){
+  const W=560,H=240,pl=48,pb=30,pt=16,pr=14;const iw=W-pl-pr,ih=H-pb-pt;
+  const max=7;const steps=[
+    {l:'On hand',v:6.42,t:'total',c:'var(--tx-2)'},
+    {l:'Excess',v:-1.16,t:'neg',c:'var(--amber)'},
+    {l:'Healthy',v:5.26,t:'total',c:'var(--money)'},
+  ];
+  const gap=iw/steps.length,bw=Math.min(78,gap*0.52);let g='';
+  for(let i=0;i<=4;i++){const y=pt+ih-ih*(i/4);
+    g+=`<line x1="${pl}" y1="${y}" x2="${W-pr}" y2="${y}" stroke="var(--line-2)"/>`;
+    g+=`<text x="${pl-8}" y="${y+3}" text-anchor="end" class="axis">$${(max*i/4).toFixed(1)}M</text>`;}
+  let run=0;
+  steps.forEach((s,i)=>{const cx=pl+gap*i+gap/2;let y0,y1;
+    if(s.t==='total'){y0=pt+ih;y1=pt+ih-s.v/max*ih;run=s.v;}
+    else{const top=run;run=run+s.v;y0=pt+ih-top/max*ih;y1=pt+ih-run/max*ih;}
+    const yy=Math.min(y0,y1),hh=Math.abs(y1-y0);
+    const lab=(s.v>0?'$':'−$')+Math.abs(s.v).toFixed(2)+'M';
+    g+=`<rect class="vbar" data-tip="${s.l}: <b>${lab}</b>" style="animation-delay:${i*90}ms" x="${cx-bw/2}" y="${yy}" width="${bw}" height="${Math.max(2,hh)}" fill="${s.c}" rx="2"/>`;
+    g+=`<text x="${cx}" y="${H-10}" text-anchor="middle" class="axis">${s.l}</text>`;
+    g+=`<text x="${cx}" y="${yy-6}" text-anchor="middle" class="gval">${lab}</text>`;
+    // connector line
+    if(i<steps.length-1){const nx=pl+gap*(i+1)+gap/2;const yconn=pt+ih-run/max*ih;
+      g+=`<line x1="${cx+bw/2}" y1="${yconn}" x2="${nx-bw/2}" y2="${yconn}" stroke="var(--tx-3)" stroke-width="1" stroke-dasharray="3 3"/>`;}
+  });
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}</svg>`;
+}
+
+/* ---------------- render charts ---------------- */
+function renderCharts(){
+  bars(document.getElementById('spendChart'),[
+    {label:'Jul',total:'$286K',segs:[{v:180,color:'var(--dg-navy)'},{v:78,color:'var(--dg-cyan)'},{v:28,color:'var(--dg-gold)'}]},
+    {label:'Aug',total:'$312K',segs:[{v:142,color:'var(--dg-navy)'},{v:104,color:'var(--dg-cyan)'},{v:66,color:'var(--dg-gold)'}]},
+    {label:'Sep',total:'$260K',segs:[{v:86,color:'var(--dg-navy)'},{v:104,color:'var(--dg-cyan)'},{v:70,color:'var(--dg-gold)'}]},
+  ],{max:320,fmt:v=>'$'+v+'K',names:['Known PO','Predicted reorder','Predicted dated'],onBar:'spendBar'});
+
+  lineChart(document.getElementById('excessChart'),[1163,1081,999,917],{
+    color:'var(--amber)',max:1260,min:820,solidTo:0,band:[0,26,44,68],
+    labels:['now','+1 mo','+2 mo','+3 mo'],fmt:v=>'$'+Math.round(v)+'K',ptFmt:v=>'$'+v+'K'});
+
+  lineChart(document.getElementById('accuracyChart'),[452,468,491,487,502],{
+    color:'var(--trust)',max:560,min:420,
+    labels:['Mar','Apr','May','Jun','Jul'],fmt:v=>'$'+Math.round(v)+'K',ptFmt:v=>'$'+v+'K',w:560,h:200});
+
+  waterfall(document.getElementById('bridgeChart'));
+
+  // stockout list
+  document.getElementById('stockoutList').innerHTML=stockouts.map(s=>`
+    <div class="lrow" onclick="openDrawer('${s.part}')">
+      <div class="lrow-l">
+        <div class="flag" style="background:${s.c==='var(--red)'?'var(--red-bg)':'#FAF1DC'};color:${s.c}">${s.wk.replace('wk ','W')}</div>
+        <div class="lrow-tx"><div class="lrow-t mono">${s.part}</div><div class="lrow-s">${s.desc}</div></div>
+      </div>
+      <div class="lrow-r"><div class="num" style="font-size:12.5px;font-weight:600;color:${s.c}">${s.wk}</div>
+        <div class="lrow-s">${s.dem}</div></div>
+    </div>`).join('');
+
+  // movement
+  document.getElementById('movementBody').innerHTML=movement.map(m=>`
+    <div class="lrow" onclick="openDrawer('${items[m.part]?m.part:'1150-BLK'}')">
+      <div class="lrow-l">
+        <div class="flag" style="background:${m.dir==='in'?'var(--red-bg)':'#E6F1EB'};color:${m.dir==='in'?'var(--red)':'var(--money)'}">
+          ${m.dir==='in'?'▲':'▼'}</div>
+        <div class="lrow-tx"><div class="lrow-t mono">${m.part}</div><div class="lrow-s">${m.desc}</div></div>
+      </div>
+      <div class="lrow-r"><span class="num" style="font-weight:600;color:${m.dir==='in'?'var(--red)':'var(--money)'}">${m.v}</span></div>
+    </div>`).join('');
+
+  // order calendar matrix
+  const vendors=['Halton Inks','Cascade Ribbon','Verity Dispensing','Meridian'];
+  const cal=[[0,2,0,1,0,1],[1,0,1,0,2,0],[0,1,0,0,1,1],[2,0,1,0,0,0]];
+  const vals=[['','$12K','','$8K','','$5K'],['$9K','','$6K','','$14K',''],['','$18K','','','$4K','$7K'],['$5K','','$3K','','','']];
+  let ch='<div style="display:grid;grid-template-columns:78px repeat(6,1fr);gap:4px;align-items:center">';
+  ch+='<div></div>';
+  ['wk1','wk2','wk3','wk4','wk5','wk6'].forEach(w=>ch+=`<div style="text-align:center;font-size:10px;color:var(--tx-3);font-family:'IBM Plex Mono'">${w}</div>`);
+  vendors.forEach((v,r)=>{ch+=`<div style="font-size:11px;color:var(--tx-2);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v}</div>`;
+    cal[r].forEach((c,ci)=>{const on=c>0;const dated=(r===2&&ci===1)||(r===1&&ci===4);
+      const bg=on?(dated?'#E9F0F7':'#E3F0F6'):'var(--card-2)';
+      const col=dated?'var(--trust)':'var(--plan)';
+      const tip=on?` data-tip="${v} · wk ${ci+1}: <b>${vals[r][ci]}</b> <small>${dated?'dated order':'reorder'} · ${c} PO${c>1?'s':''}</small>"`:'';
+      ch+=`<div class="cal-cell"${tip} style="height:30px;border-radius:5px;background:${bg};display:grid;place-items:center;
+        font-family:'IBM Plex Mono';font-size:10px;font-weight:600;color:${col};border:1px solid ${on?'transparent':'var(--line-2)'}">${vals[r][ci]}</div>`;});});
+  ch+='</div>';
+  ch+='<div style="display:flex;gap:16px;margin-top:12px;font-size:10.5px;color:var(--tx-3)"><span style="display:inline-flex;align-items:center;gap:6px"><i style="width:9px;height:9px;border-radius:2px;background:#E3F0F6;display:inline-block"></i>reorder</span><span style="display:inline-flex;align-items:center;gap:6px"><i style="width:9px;height:9px;border-radius:2px;background:#E9F0F7;display:inline-block"></i>dated</span></div>';
+  document.getElementById('calBody').innerHTML=ch;
+}
+
+/* ---------------- drawer ---------------- */
+function openDrawer(id){
+  const it=items[id]||items['1150-BLK'];
+  document.getElementById('dStripSec').hidden=true;   // sim data needs the API
+  document.getElementById('dFcSec').hidden=true;
+  document.getElementById('dPart').textContent=id;
+  document.getElementById('dDesc').textContent=it.desc;
+  document.getElementById('dSeg').innerHTML=it.seg.map((s,i)=>`<span class="seg ${i===2&&s!=='Active'?'hot':''}">${s}</span>`).join('');
+  document.getElementById('pType').textContent=it.ptype;
+  document.getElementById('pQty').textContent=it.pqty;
+  document.getElementById('pWhen').textContent=it.pwhen;
+  renderPosBar(document.getElementById('posbar'),{pos:it.pos,oh:it.oh,ss:it.ss,rop:it.rop,S:it.s});
+  const dash=v=>v!=null?v:'—';
+  document.getElementById('dFacts').innerHTML=`
+    <div class="fact"><div class="fact-k">On hand</div><div class="fact-v">${it.oh} <small>ea</small></div></div>
+    <div class="fact"><div class="fact-k">Position</div><div class="fact-v">${it.pos} <small>ea</small></div></div>
+    <div class="fact"><div class="fact-k">Value on hand</div><div class="fact-v">${it.val}</div></div>
+    <div class="fact"><div class="fact-k">Lead time</div><div class="fact-v">${it.lead}</div></div>
+    <div class="fact"><div class="fact-k">EOQ</div><div class="fact-v">${dash(it.eoq)} <small>ea</small></div></div>
+    <div class="fact"><div class="fact-k">MOQ</div><div class="fact-v">${dash(it.moq)} <small>ea</small></div></div>
+    <div class="fact"><div class="fact-k">Order multiple</div><div class="fact-v">${dash(it.mult)}</div></div>
+    <div class="fact"><div class="fact-k">Safety stock</div><div class="fact-v">${dash(it.ss)} <small>ea</small></div></div>`;
+  document.getElementById('dSupply').innerHTML=it.supply.map(r=>`<div class="dtable-row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
+  document.getElementById('dVendor').innerHTML=it.vend.map(r=>`<div class="dtable-row"><span class="k">${r[0]}</span><span class="v">${
+    r[0]==='Primary'?`<button class="vlink" onclick="goVendor('${r[1]}')" data-tip="Open supplier scorecard &amp; contact">${r[1]} →</button>`:r[1]
+  }</span></div>`).join('');
+  document.getElementById('scrim').classList.add('on');
+  document.getElementById('drawer').classList.add('on');
+}
+function closeDrawer(){document.getElementById('scrim').classList.remove('on');document.getElementById('drawer').classList.remove('on');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});
+
+/* ---- resizable dossier: drag the left edge (or focus it and use ← →) ---- */
+(function(){
+  const dr=document.getElementById('drawer'), h=document.getElementById('dragHandle');
+  const MIN=420, cap=()=>window.innerWidth*.94;
+  const saved=+localStorage.getItem('dgDrawerW');
+  if(saved>=MIN) dr.style.width=Math.min(saved,cap())+'px';
+  const save=()=>localStorage.setItem('dgDrawerW',Math.round(dr.getBoundingClientRect().width));
+  h.addEventListener('pointerdown',e=>{
+    e.preventDefault();
+    const startX=e.clientX, startW=dr.getBoundingClientRect().width;
+    h.setPointerCapture(e.pointerId); h.classList.add('on');
+    dr.style.transition='none';
+    const mv=ev=>{dr.style.width=Math.max(MIN,Math.min(cap(),startW+(startX-ev.clientX)))+'px';};
+    const up=()=>{h.classList.remove('on');dr.style.transition='';save();
+      h.removeEventListener('pointermove',mv);h.removeEventListener('pointerup',up);h.removeEventListener('pointercancel',up);};
+    h.addEventListener('pointermove',mv);h.addEventListener('pointerup',up);h.addEventListener('pointercancel',up);
+  });
+  h.addEventListener('keydown',e=>{
+    if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;
+    e.preventDefault();
+    const w=dr.getBoundingClientRect().width, step=e.key==='ArrowLeft'?48:-48;
+    dr.style.width=Math.max(MIN,Math.min(cap(),w+step))+'px'; save();
+  });
+})();
+
+/* ---- vendor drill-through: any vendor name → supplier scorecard + contact ---- */
+async function goVendor(name){
+  if(!name||name==='—'||name==='(discontinued)')return;
+  closeDrawer();
+  go('suppliers');
+  if(!SUP_ROWS.length){try{await loadSuppliers();}catch(e){return;}}
+  const v=SUP_ROWS.find(x=>(x.vend_name||'').trim().toLowerCase()===name.trim().toLowerCase());
+  if(v)loadSupplierDrill(v.vend_no,v.vend_name);
+}
+
+/* ---------------- nav ---------------- */
+function go(p){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('on',n.dataset.page===p));
+  document.querySelectorAll('.page').forEach(s=>s.classList.add('hidden'));
+  document.getElementById('page-'+p).classList.remove('hidden');
+  const[t,c,col,bg]=PAGES[p];
+  document.getElementById('topTitle').textContent=t;
+  const tc=document.getElementById('topCadence');tc.textContent=c;
+  tc.style.background=bg;
+  tc.style.color=col;
+  document.getElementById('rail').classList.remove('on');
+  window.scrollTo(0,0);
+}
+
+
+/* ---------------- live data layer ----------------
+   Tries the backend API; on any failure the embedded demo data stays so the
+   page always renders. Every fetch repaints the SAME DOM targets the demo
+   painter used. */
+const API_BASE = '';
+async function api(path){
+  const r = await fetch(API_BASE + path, {headers:{'Accept':'application/json'}});
+  if(!r.ok) throw new Error(path + ' -> ' + r.status);
+  return r.json();
+}
+const KIND_COLOR = {ORDER:'var(--act)',EXPEDITE:'var(--red)',DEFER:'var(--plan)',
+  REVIEW:'var(--plan)',CANCEL:'var(--plan)',BLOCKED:'var(--trust)'};
+function money(n){return '$'+Math.round(n||0).toLocaleString();}
+function moneyK(n){return '$'+Math.round((n||0)/1000)+'K';}
+function esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+function fmtDate(d){return d? new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—';}
+
+/* ---- ACT ---- */
+async function loadAct(){
+  const s = await api('/api/act/summary'+plArg('?'));
+  const v=document.querySelectorAll('.act-cards .sc-v'), m=document.querySelectorAll('.act-cards .sc-m');
+  setAnimated(v[0],s.order.count);    m[0].innerHTML='<b>'+money(s.order.value)+'</b> suggested spend';
+  setAnimated(v[1],s.expedite.count); m[1].innerHTML='<b>'+money(s.expedite.value)+'</b> at service risk';
+  setAnimated(v[2],s.defer.count);    m[2].innerHTML='<b>'+money(s.defer.value)+'</b> to push out';
+  setAnimated(v[3],s.blocked.count);  m[3].innerHTML='builds gated on material';
+  const rows = await api('/api/act/queue?limit=50'+plArg('&'));
+  queue.length=0; renderQueue();     // planner switch may leave zero rows; clear stale ones first
+  if(rows.length){
+    queue.length=0;
+    rows.forEach(r=>{
+      const kind=(r.action_type||'').toUpperCase().split(' ')[0].replace('/','');
+      queue.push({k:kind, c:KIND_COLOR[kind]||'var(--tx-2)', part:(r.item_no||'').trim(),
+        desc:(r.descr||'').trim(), ins:(r.instruction||'').trim(), imp:money(r.impact),
+        due:fmtDate(r.due_dt), over:r.due_dt?new Date(r.due_dt)<new Date():false,
+        chip:['gray',(r.badge||kind).toString().toLowerCase().slice(0,24)]});
+    });
+    renderQueue();
+  }
+}
+
+/* ---- PLAN ---- */
+async function loadPlan(){
+  await loadStockoutRunway();
+  await loadOrderCalendar();
+}
+
+/* stockout runway: items running out inside the horizon, scoped to the
+   selected planner (re-run from applyPlanner() too, so it updates with the filter) */
+async function loadStockoutRunway(){
+  const so = await api('/api/plan/stockout?limit=8'+plArg('&'));
+  const list=document.getElementById('stockoutList');
+  const tag=document.getElementById('stockoutTag');
+  if(!so.length){
+    list.innerHTML=`<div style="padding:14px 16px;color:var(--tx-3);font-size:12.5px">No items${PLANNER?' for '+esc(PLANNER):''} run out inside the 13-week horizon.</div>`;
+    if(tag) tag.textContent='0 items';
+    return;
+  }
+  list.innerHTML = so.map(s=>{
+    const hot=s.first_zero_wk<=4;
+    return `<div class="lrow" onclick="openDrawer('${esc(s.item_no)}')">
+      <div class="lrow-l">
+        <div class="flag" style="background:${hot?'var(--red-bg)':'#FAF1DC'};color:${hot?'var(--red)':'var(--act)'}">W${s.first_zero_wk}</div>
+        <div class="lrow-tx"><div class="lrow-t mono">${esc(s.item_no)}</div>
+          <div class="lrow-s">${esc(s.item_desc_1||'')} · lead ${s.lead_working_days||'?'} wd</div></div>
+      </div>
+      <div class="lrow-r"><div class="num" style="font-size:12.5px;font-weight:600;color:${hot?'var(--red)':'var(--act)'}">wk ${s.first_zero_wk}</div></div>
+    </div>`;}).join('');
+  if(tag) tag.textContent=so.length+' items';
+  _stripDefault=so[0].item_no;
+  if(!PLANNER) loadStripFor(_stripDefault);   // trace the most urgent runway item
+}
+
+/* order calendar: week x vendor matrix from predicted_orders, scoped to the
+   selected planner (re-run from applyPlanner() too, so it updates with the filter) */
+async function loadOrderCalendar(){
+  const po = await api('/api/plan/orders'+plArg('?'));
+  const body=document.getElementById('calBody');
+  if(!po.length){
+    body.innerHTML=`<div style="color:var(--tx-3);font-size:12.5px">No predicted orders${PLANNER?' for '+esc(PLANNER):''} in the next 13 weeks.</div>`;
+    return;
+  }
+  const wk=r=>r.order_wk==null?'13+':String(r.order_wk);
+  const weeks=[...new Set(po.map(wk))].sort((a,b)=>(a==='13+')-(b==='13+')||a-b).slice(0,7);
+  const byV={};
+  po.forEach(r=>{const v=r.vendor||'(no vendor)';byV[v]=byV[v]||{tot:0,cells:{}};
+    byV[v].tot+= +r.order_value;
+    const w=wk(r); byV[v].cells[w]=byV[v].cells[w]||{v:0,dated:false};
+    byV[v].cells[w].v+= +r.order_value;
+    if(r.order_type==='DATED') byV[v].cells[w].dated=true;});
+  const vendors=Object.entries(byV).sort((a,b)=>b[1].tot-a[1].tot).slice(0,6);
+  let g='<div style="display:grid;grid-template-columns:110px repeat('+weeks.length+',1fr);gap:4px;align-items:center">';
+  g+='<div></div>'+weeks.map(w=>`<div style="text-align:center;font-size:10px;color:var(--tx-3);font-family:'IBM Plex Mono'">wk${w}</div>`).join('');
+  vendors.forEach(([name,d])=>{
+    g+=`<div style="font-size:11px;color:var(--tx-2);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(name)}">${esc(name)}</div>`;
+    weeks.forEach(w=>{const c=d.cells[w];
+      const bg=c?(c.dated?'#E9F0F7':'#E3F0F6'):'var(--card-2)';
+      const col=c&&c.dated?'var(--trust)':'var(--plan)';
+      const tip=c?` data-tip="${esc(name)} · wk ${w}: <b>${moneyK(c.v)}</b> <small>${c.dated?'includes dated orders':'reorder'}</small>"`:'';
+      g+=`<div class="cal-cell"${tip} style="height:30px;border-radius:5px;background:${bg};display:grid;place-items:center;font-family:'IBM Plex Mono';font-size:10px;font-weight:600;color:${col};border:1px solid ${c?'transparent':'var(--line-2)'}">${c?moneyK(c.v):''}</div>`;});
+  });
+  g+='</div><div style="display:flex;gap:16px;margin-top:12px;font-size:10.5px;color:var(--tx-3)"><span style="display:inline-flex;align-items:center;gap:6px"><i style="width:9px;height:9px;border-radius:2px;background:#E3F0F6;display:inline-block"></i>reorder</span><span style="display:inline-flex;align-items:center;gap:6px"><i style="width:9px;height:9px;border-radius:2px;background:#E9F0F7;display:inline-block"></i>dated · wk13+ = beyond horizon</span></div>';
+  body.innerHTML=g;
+}
+
+/* ---- MONEY ---- */
+async function loadMoney(){
+  const b = await api('/api/money/bridge');
+  const r0 = Array.isArray(b)?b[0]:b;
+  if(r0 && r0.on_hand!=null){
+    const onh=+r0.on_hand/1e6, ex=+r0.excess/1e6, healthy=onh-ex;
+    waterfallData(document.getElementById('bridgeChart'),[
+      {l:'On hand',v:onh,t:'total',c:'var(--tx-2)'},
+      {l:'Excess',v:-ex,t:'neg',c:'var(--amber)'},
+      {l:'Healthy',v:healthy,t:'total',c:'var(--money)'}]);
+    const bf=document.querySelectorAll('#page-overview .bridge-foot .bf-v');
+    if(bf.length>=3){bf[0].textContent='$'+onh.toFixed(2)+'M';bf[1].textContent='−$'+ex.toFixed(2)+'M';
+      bf[2].textContent='$'+healthy.toFixed(2)+'M';}
+    const tag=document.querySelector('#page-overview .card .tag');
+    if(tag) tag.textContent='$'+ex.toFixed(2)+'M excess';
+  }
+  // Excess burn-down: today plus the projected curve, click a point to drill
+  const sl = await api('/api/plan/excess');
+  const bd = await api('/api/money/burndown');
+  if(sl.length){
+    const pts=[bd.excess_value/1000, ...sl.map(r=>+r.excess_value/1000)];
+    const labels=['now', ...sl.map(r=>'+'+r.month_offset+' mo')];
+    const tips=['now: <b>$'+Math.round(pts[0])+'K</b> <small>above order-up-to</small>',
+      ...sl.map(r=>'+'+r.month_offset+' mo: <b>$'+Math.round(+r.excess_value/1000)+'K</b><br><small>'+
+        (r.clearing_ct||0)+' clearing · '+(r.stuck_ct||0)+' stuck · click to list</small>')];
+    const mx=Math.max(...pts)*1.12, mn=Math.min(...pts)*.88;
+    lineChart(document.getElementById('excessChart'),pts.map(Math.round),{
+      color:'var(--amber)',max:Math.ceil(mx),min:Math.floor(mn),solidTo:0,
+      labels,tips,onPoint:'excessPoint',fmt:v=>'$'+Math.round(v)+'K',ptFmt:v=>'$'+v+'K'});
+    const bs=document.querySelectorAll('#burnStat b');
+    if(bs.length>=3){
+      bs[0].textContent=bd.months_to_clear+' months';
+      bs[1].textContent=bd.turns_to_clear+' turns';
+      bs[2].textContent='$'+(bd.stuck_value/1e6).toFixed(2)+'M';
+      const sp=document.querySelectorAll('#burnStat span');
+      if(sp.length>=2) sp[1].textContent='at '+bd.site_turns+'× a year';
+    }
+  }
+  // calculated spend by month: 3 series stacked, click a bar for the orders behind it
+  const sp = await api('/api/plan/spend');
+  if(sp.length){
+    const months={};
+    sp.forEach(r=>{const k=r.month_start; months[k]=months[k]||{KNOWN:0,PREDICTED_REORDER:0,PREDICTED_DATED:0};
+      months[k][r.spend_type]=(months[k][r.spend_type]||0)+ +r.spend_amount;});
+    const keys=Object.keys(months).sort();
+    const data=keys.map(k=>{const m=months[k];const tot=m.KNOWN+m.PREDICTED_REORDER+m.PREDICTED_DATED;
+      return {label:new Date(k).toLocaleDateString('en-US',{month:'short'}), total:moneyK(tot),
+        segs:[{v:m.KNOWN/1000,color:'var(--dg-navy)'},{v:m.PREDICTED_REORDER/1000,color:'var(--dg-cyan)'},{v:m.PREDICTED_DATED/1000,color:'var(--dg-gold)'}]};});
+    const max=Math.max(...data.map(d=>d.segs.reduce((a,s)=>a+s.v,0)))*1.15||100;
+    _spendKeys=keys;
+    bars(document.getElementById('spendChart'),data,{max:Math.ceil(max/50)*50,fmt:v=>'$'+Math.round(v)+'K',
+      names:['Known PO','Predicted reorder','Predicted dated'],onBar:'spendBar'});
+    const bf=document.querySelectorAll('#page-overview .bf-v');
+    const tot=t=>moneyK(sp.filter(r=>r.spend_type===t).reduce((a,r)=>a+ +r.spend_amount,0));
+    if(bf.length>=7){bf[4].textContent=tot('KNOWN');bf[5].textContent=tot('PREDICTED_REORDER');bf[6].textContent=tot('PREDICTED_DATED');}
+    const grand=keys.reduce((a,k)=>a+(months[k].KNOWN+months[k].PREDICTED_REORDER+months[k].PREDICTED_DATED),0);
+    const moTag=document.getElementById('moSpendTag');
+    if(moTag)moTag.textContent=moneyK(grand)+' over '+keys.length+' mo';
+    setAnimated(document.getElementById('kpiSpend3'),moneyK(grand));
+  }
+  // Excess panel -> the largest current positions above order-up-to
+  const si = await api('/api/money/excess_items?limit=6');
+  if(si.length){
+    const head=document.querySelector('#page-overview .grid2-wide .card:nth-child(2) .ch h3');
+    const sub=document.querySelector('#page-overview .grid2-wide .card:nth-child(2) .ch .sub');
+    if(head) head.textContent='Top excess items';
+    if(sub) sub.textContent='Largest positions above order-up-to · burn down or stop buying';
+    document.getElementById('movementBody').innerHTML = renderExcessList(si);
+  }
+}
+
+/* ---- TRUST ---- */
+async function loadTrust(){
+  const f = await api('/api/trust/forecast');
+  if(f.length){
+    const rows=document.querySelectorAll('#page-trust .mape-row');
+    const order=['SMOOTH','ERRATIC','LUMPY','INTERMITTENT'];
+    const cols={SMOOTH:'var(--money)',ERRATIC:'var(--plan)',LUMPY:'var(--act)',INTERMITTENT:'var(--red)'};
+    order.forEach((cls,i)=>{
+      const r=f.find(x=>(x.demand_class||'').toUpperCase()===cls);
+      if(r&&rows[i]){const pct=Math.min(100,Math.round(r.mape));
+        rows[i].querySelector('.mape-fill').style.width=pct+'%';
+        rows[i].querySelector('.mape-fill').style.background=cols[cls];
+        rows[i].querySelector('.mape-val').textContent=pct+'%';
+        rows[i].querySelector('.mape-val').style.color=cols[cls];}});
+    const band=f.find(x=>x.band_hit_pct!=null);
+    const note=document.querySelector('#page-trust .hz-note b');
+    if(band&&note) note.textContent=Math.round(band.band_hit_pct)+'%';
+  }
+  const hlt = await api('/api/trust/health');
+  const cells=document.querySelectorAll('#page-trust .hcell');
+  const map=[['no_vendor',0],['no_lead_time',1],['no_calc_params',3],['no_demand_with_stock',2]];
+  map.forEach(([k,i])=>{if(cells[i]&&hlt[k]!=null){
+    const v=cells[i].querySelector('.hcell-v'); setAnimated(v,hlt[k]);
+    v.className='hcell-v '+(hlt[k]===0?'ok':hlt[k]<30?'warn':'bad');}});
+  if(cells[2]) cells[2].querySelector('.hcell-k').textContent='Items w/ stock, no demand';
+  if(cells[3]) cells[3].querySelector('.hcell-k').textContent='No calc params (has demand)';
+}
+
+/* waterfall with data (generalized from the demo painter) */
+function waterfallData(el,steps){
+  const W=560,H=240,pl=48,pb=30,pt=16,pr=14;const iw=W-pl-pr,ih=H-pb-pt;
+  const max=Math.ceil(Math.max(...steps.map(s=>Math.abs(s.v)))*1.1);
+  const gap=iw/steps.length,bw=Math.min(78,gap*0.52);let g='';
+  for(let i=0;i<=4;i++){const y=pt+ih-ih*(i/4);
+    g+=`<line x1="${pl}" y1="${y}" x2="${W-pr}" y2="${y}" stroke="var(--line-2)"/>`;
+    g+=`<text x="${pl-8}" y="${y+3}" text-anchor="end" class="axis">$${(max*i/4).toFixed(1)}M</text>`;}
+  let run=0;
+  steps.forEach((s,i)=>{const cx=pl+gap*i+gap/2;let y0,y1;
+    if(s.t==='total'){y0=pt+ih;y1=pt+ih-s.v/max*ih;run=s.v;}
+    else{const top=run;run=run+s.v;y0=pt+ih-top/max*ih;y1=pt+ih-run/max*ih;}
+    const yy=Math.min(y0,y1),hh=Math.abs(y1-y0);
+    const lab=(s.v>0?'$':'−$')+Math.abs(s.v).toFixed(2)+'M';
+    g+=`<rect class="vbar" data-tip="${s.l}: <b>${lab}</b>" style="animation-delay:${i*90}ms" x="${cx-bw/2}" y="${yy}" width="${bw}" height="${Math.max(2,hh)}" fill="${s.c}" rx="2"/>`;
+    g+=`<text x="${cx}" y="${H-10}" text-anchor="middle" class="axis">${s.l}</text>`;
+    g+=`<text x="${cx}" y="${yy-6}" text-anchor="middle" class="gval">${lab}</text>`;
+    if(i<steps.length-1){const nx=pl+gap*(i+1)+gap/2;const yconn=pt+ih-run/max*ih;
+      g+=`<line x1="${cx+bw/2}" y1="${yconn}" x2="${nx-bw/2}" y2="${yconn}" stroke="var(--tx-3)" stroke-width="1" stroke-dasharray="3 3"/>`;}});
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}</svg>`;
+}
+
+/* ---- mini position walk cells (plan.replenishment_sim per item) ---- */
+function miniCells(rows){
+  const data=(rows||[]).filter(r=>r.horizon_wk>=1&&r.horizon_wk<=13);
+  if(data.length<6) return null;
+  const max=Math.max(...data.map(r=>Math.max(+r.position,+r.qty_on_hand)),1);
+  let prev=+((rows.find(r=>r.horizon_wk===0)||data[0]).position);
+  let cells='';
+  data.forEach((r,idx)=>{
+    const h=Math.max(6,Math.round(+r.position/max*100));
+    const fired=+r.position>prev+0.5;
+    let cls='pos-cell',mk='';
+    if(fired){cls+=' trigger';mk='<span class="marker o">R</span>';}
+    if(+r.qty_on_hand<=0)cls+=' stockout';
+    cells+=`<div class="${cls}" data-tip="Week ${r.horizon_wk}: position <b>${Math.round(r.position)}</b><br><small>on hand ${Math.round(r.qty_on_hand)}${fired?' · order fires':''}${+r.qty_on_hand<=0?' · out of stock':''}</small>">${mk}<div class="pos-fill" style="height:${h}%;animation-delay:${idx*25}ms"></div></div>`;
+    prev=+r.position;
+  });
+  return cells;
+}
+function renderCompactStrip(el, rows){
+  const cells=miniCells(rows);
+  if(!cells) return false;
+  const nums=Array.from({length:13},(_,i)=>`<div>${i+1}</div>`).join('');
+  el.innerHTML=`<div class="strip-row">${cells}</div><div class="wk-num">${nums}</div>`;
+  return true;
+}
+
+/* ---- position bar (dossier): fill = position, ticks = SS / ROP / order-up-to ---- */
+function renderPosBar(el, o){
+  const S=o.S!=null?+o.S:Math.max(o.pos,o.oh,1);
+  const mx=Math.max(S,o.pos,o.oh,1)*1.08;
+  const px=v=>Math.max(0,Math.min(100,v/mx*100));
+  const belowRop=o.rop!=null&&o.pos<=o.rop;
+  const belowSs=o.ss!=null&&o.pos<=o.ss;
+  const mark=(v,c,lbl)=>v==null?'':`<div class="pb-mark" style="left:${px(v)}%;background:${c}" data-tip="${lbl}: <b>${Math.round(v)}</b>"></div>`;
+  const status=belowSs
+    ?' · <span style="color:var(--red);font-weight:700">below safety stock</span>'
+    :belowRop?' · <span style="color:var(--red);font-weight:600">below reorder point</span>':'';
+  el.innerHTML=`
+    <div class="pb-head"><span>position <b>${Math.round(o.pos)}</b>${status}</span><span>on hand <b>${Math.round(o.oh)}</b></span></div>
+    <div class="pb-track">
+      <div class="pb-fill${belowRop?' low':''}" style="width:${px(o.pos)}%" data-tip="Inventory position: <b>${Math.round(o.pos)}</b> <small>on hand + on order − demand</small>">${belowSs?'<span class="pb-warn" aria-hidden="true">!</span>':''}</div>
+      <div class="pb-oh" style="width:${px(o.oh)}%" data-tip="On hand: <b>${Math.round(o.oh)}</b>"></div>
+      ${mark(o.ss,'var(--tx-3)','Safety stock')}
+      ${mark(o.rop,'var(--red)','Reorder point')}
+      ${mark(o.S!=null?S:null,'var(--dg-green)','Order-up-to')}
+    </div>
+    <div class="pb-legend">
+      ${o.ss!=null?`<span><i style="background:var(--tx-3)"></i>safety <b>${Math.round(o.ss)}</b></span>`:''}
+      ${o.rop!=null?`<span><i style="background:var(--red)"></i>reorder <b>${Math.round(o.rop)}</b></span>`:''}
+      ${o.S!=null?`<span><i style="background:var(--dg-green)"></i>order-up-to <b>${Math.round(S)}</b></span>`:''}
+      <span><i class="sw" style="background:var(--dg-navy);opacity:.5;height:4px"></i>on hand</span>
+    </div>`;
+}
+
+/* ---- demand history + forecast chart (drawer, plan.v_forecast_chart) ---- */
+function fcChart(el, rows){
+  if(!rows||rows.length<6) return false;
+  const n=rows.length;
+  const val=r=>r.actual_qty!=null?+r.actual_qty:+r.fcst_qty;
+  const max=Math.max(...rows.map(r=>Math.max(val(r)||0,+r.fcst_hi||0)),1)*1.15;
+  const W=500,H=170,pl=32,pr=8,pt=10,pb=22,iw=W-pl-pr,ih=H-pb-pt;
+  const X=i=>pl+iw*(i/(n-1)), Y=v=>pt+ih-ih*(v/max);
+  const bIdx=rows.findIndex(r=>r.fcst_qty!=null);
+  let g='';
+  for(let i=0;i<=3;i++){const y=pt+ih-ih*(i/3);
+    g+=`<line x1="${pl}" y1="${y}" x2="${W-pr}" y2="${y}" stroke="var(--line-2)"/>`;
+    g+=`<text x="${pl-6}" y="${y+3}" text-anchor="end" class="axis">${Math.round(max*i/3)}</text>`;}
+  if(bIdx>0){const bx=(X(bIdx-1)+X(bIdx))/2;
+    g+=`<line x1="${bx}" y1="${pt}" x2="${bx}" y2="${pt+ih}" stroke="var(--line)" stroke-dasharray="3 3"/>`;
+    g+=`<text x="${bx}" y="${pt+ih+15}" text-anchor="middle" class="axis">today</text>`;}
+  let up='',dn='';
+  rows.forEach((r,i)=>{if(r.fcst_qty==null)return;
+    up+=`${up?'L':'M'}${X(i)},${Y(+r.fcst_hi)} `;
+    dn=`L${X(i)},${Y(+r.fcst_lo)} `+dn;});
+  if(up)g+=`<path d="${up}${dn}Z" fill="var(--plan)" opacity=".09"/>`;
+  let ap='';rows.forEach((r,i)=>{if(r.actual_qty==null)return;ap+=`${ap?'L':'M'}${X(i)},${Y(+r.actual_qty)} `;});
+  if(ap)g+=`<path class="vline" pathLength="1" d="${ap}" fill="none" stroke="var(--dg-navy)" stroke-width="2"/>`;
+  let fp='';rows.forEach((r,i)=>{if(r.fcst_qty==null)return;fp+=`${fp?'L':'M'}${X(i)},${Y(+r.fcst_qty)} `;});
+  if(fp)g+=`<path d="${fp}" fill="none" stroke="var(--plan)" stroke-width="2" stroke-dasharray="5 4"/>`;
+  rows.forEach((r,i)=>{
+    const isF=r.fcst_qty!=null, v=val(r);
+    const dt=new Date(r.week_start).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    const tip=isF?`wk of ${dt}: <b>${v}</b> forecast<br><small>band ${Math.round(+r.fcst_lo)}–${Math.round(+r.fcst_hi)}</small>`
+                 :`wk of ${dt}: <b>${v}</b> actual`;
+    g+=`<circle class="vdot" data-tip="${tip}" cx="${X(i)}" cy="${Y(v)}" r="2.4" fill="${isF?'var(--plan)':'var(--dg-navy)'}" stroke="#fff" stroke-width="1"/>`;});
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="26 weeks of actual demand and 13 weeks of forecast with confidence band">${g}</svg>
+    <div class="fc-legend"><span><i style="background:var(--dg-navy)"></i>actual demand</span>
+      <span><i class="dash"></i>forecast</span>
+      <span><i style="background:var(--plan);opacity:.22;height:8px"></i>confidence band</span></div>`;
+  return true;
+}
+
+/* ---- PLAN page: trace any item's simulation strip ---- */
+async function loadStripFor(itemNo){
+  if(!API_LIVE||!itemNo)return;
+  try{
+    const rows=await api('/api/plan/strip/'+encodeURIComponent(itemNo));
+    const data=rows.filter(r=>r.horizon_wk>=1&&r.horizon_wk<=13);
+    if(!data.length)return;
+    let d=null;try{d=(await api('/api/item/'+encodeURIComponent(itemNo))).detail;}catch(e){}
+    const max=Math.max(...data.map(r=>Math.max(+r.position,+r.qty_on_hand)),1);
+    let prev=+((rows.find(r=>r.horizon_wk===0)||data[0]).position);
+    let cells='',nums='',firstOrder=null,firstZero=null;
+    data.forEach((r,i)=>{
+      const h=Math.max(6,Math.round(+r.position/max*100));
+      const fired=+r.position>prev+0.5;
+      let cls='pos-cell',mk='',note='';
+      if(fired){cls+=' trigger';mk='<span class="marker o">R</span>';
+        if(firstOrder==null)firstOrder=r.horizon_wk;
+        note='<br><small>order fires · position replenished</small>';}
+      if(+r.qty_on_hand<=0){cls+=' stockout';if(firstZero==null)firstZero=r.horizon_wk;}
+      cells+=`<div class="${cls}" data-tip="Week ${r.horizon_wk}: <b>${Math.round(r.position)} units</b> position · ${Math.round(r.qty_on_hand)} on hand${note}" tabindex="0">${mk}<div class="pos-fill" style="height:${h}%;animation-delay:${i*35}ms"></div></div>`;
+      nums+=`<div>${r.horizon_wk}</div>`;
+      prev=+r.position;
+    });
+    toggleStripMode(false);
+    document.getElementById('stripRow').innerHTML=cells;
+    document.getElementById('stripNums').innerHTML=nums;
+    document.getElementById('hzTitle').innerHTML=`Position walk · <span class="mono" style="color:var(--plan)">${esc(itemNo)}</span>${d&&d.item_desc_1?' · '+esc(d.item_desc_1):''}`;
+    const bits=[];
+    if(firstOrder!=null)bits.push(`the replenishment logic fires its first order at <b>week ${firstOrder}</b>`);
+    if(firstZero!=null)bits.push(`<span style="color:var(--red);font-weight:600">on-hand hits zero at week ${firstZero}</span> even after receipts land`);
+    if(d&&d.calc_reorder_point!=null)bits.push(`reorder point ${Math.round(d.calc_reorder_point)} · order-up-to ${Math.round(d.calc_order_up_to||0)} · safety ${Math.round(d.calc_safety_stock||0)}`);
+    document.getElementById('hzNote').innerHTML='<b>Simulation trace:</b> '+
+      (bits.length?bits.join(' · ')+'.':'position stays above the reorder point through week 13. Nothing to buy inside the horizon.');
+  }catch(e){}
+}
+
+/* ---- PLAN: burn-down chart point → that month's projected excess list ---- */
+function excessPoint(i){ if(API_LIVE&&i>0) return excessDrill('proj',i); }
+
+/* ---- PLAN: spend bar → the predicted orders releasing that month ---- */
+let _spendKeys=null,_ordersCache=null;
+async function spendBar(i){
+  const box=document.getElementById('spendDrill');
+  if(!API_LIVE){
+    box.hidden=false;
+    box.innerHTML='<div style="padding:12px 16px;color:var(--tx-3);font-size:12px">Connect the API to drill into the orders behind each month.</div>';
+    return;
+  }
+  if(!_spendKeys||!_spendKeys[i])return;
+  if(!_ordersCache)_ordersCache=await api('/api/plan/orders');
+  const m0=new Date(_spendKeys[i]);
+  const mon=m0.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  const rows=_ordersCache.filter(r=>{const dd=new Date(r.order_dt);
+    return dd.getFullYear()===m0.getFullYear()&&dd.getMonth()===m0.getMonth();});
+  box.hidden=false;
+  box.innerHTML=`<div class="drill-h">Predicted orders releasing in ${mon}
+      <button onclick="document.getElementById('spendDrill').hidden=true" aria-label="Close order drill">✕</button></div>`+
+    (rows.map(r=>`<div class="lrow" onclick="openDrawer('${esc(r.item_no)}')" tabindex="0">
+      <div class="lrow-l"><div class="flag" style="background:${r.order_type==='DATED'?'#E9F0F7':'#E3F0F6'};color:${r.order_type==='DATED'?'var(--trust)':'var(--plan)'}">${r.order_type==='DATED'?'D':'R'}</div>
+        <div class="lrow-tx"><div class="lrow-t mono">${esc(r.item_no)}</div>
+        <div class="lrow-s">${esc(r.vendor||'')} · order ${fmtDate(r.order_dt)} → receipt ${fmtDate(r.receipt_dt)}</div></div></div>
+      <div class="lrow-r"><span class="num dollar">${money(r.order_value)}</span><div class="lrow-s">${Math.round(r.order_qty)} units</div></div>
+    </div>`).join('')
+    ||`<div style="padding:12px 16px;color:var(--tx-3);font-size:12px">No simulated orders release in ${mon}. This month's spend is committed POs already on the books.</div>`);
+}
+
+/* ---- MONEY: excess band filter ---- */
+function clearLabel(w){ return w==null ? 'never clears' : w+' wks to clear'; }
+function excessListRow(m){
+  const stuck=m.weeks_to_clear==null;
+  return `<div class="lrow" onclick="openDrawer('${esc(m.item_no)}')" tabindex="0">
+    <div class="lrow-l">
+      <div class="flag" style="background:${stuck?'var(--red-bg)':'#FAF1DC'};color:${stuck?'var(--red)':'var(--act)'}">${stuck?'∞':Math.round(m.weeks_to_clear)+'w'}</div>
+      <div class="lrow-tx"><div class="lrow-t mono">${esc(m.item_no)}</div><div class="lrow-s">${esc(m.item_desc_1||'')} · ${clearLabel(m.weeks_to_clear)}</div></div>
+    </div>
+    <div class="lrow-r"><span class="num" style="font-weight:600;color:${stuck?'var(--red)':'var(--act)'}">${money(m.excess_value)}</span></div>
+  </div>`;
+}
+function renderExcessList(rows){
+  if(!rows.length)return '<div style="padding:12px 16px;color:var(--tx-3);font-size:12px">Nothing in this band. Every position is inside its order-up-to level.</div>';
+  const total=rows.reduce((a,r)=>a+(+r.excess_value||0),0);
+  return rows.map(excessListRow).join('')+
+    `<div class="excess-total"><span>Total excess · ${rows.length} item${rows.length!==1?'s':''}</span><span class="num">${money(total)}</span></div>`;
+}
+async function excessBand(band){
+  if(!API_LIVE)return;
+  const idx=band==null?0:band==='CLEARING'?1:2;
+  document.querySelectorAll('#excessBandChips .chip').forEach((c,i)=>{
+    c.className='chip '+(i===idx?'teal':'gray');c.style.border='0';c.style.cursor='pointer';});
+  const rows=await api('/api/money/excess_items?limit=6'+(band?'&band='+band:''));
+  document.getElementById('movementBody').innerHTML=renderExcessList(rows);
+}
+
+/* ---- planner filter: scopes ACT + build list + the position walk ---- */
+let PLANNER=null,_buildStatus='',_stripDefault=null;
+function plArg(sep){return PLANNER?sep+'planner='+encodeURIComponent(PLANNER):'';}
+async function loadPlanners(){
+  const rows=await api('/api/planners');
+  if(!rows.length)return;
+  const sel=document.getElementById('plannerSel');
+  sel.innerHTML='<option value="">All planners</option>'+
+    rows.map(r=>`<option value="${esc(r.planner)}">${esc(r.planner)}</option>`).join('');
+  sel.onchange=()=>{PLANNER=sel.value||null;applyPlanner();};
+}
+function applyPlanner(){
+  loadAct().catch(()=>{});
+  loadBuild(_buildStatus).catch(()=>{});
+  loadOrderCalendar().catch(()=>{});
+  loadStockoutRunway().catch(()=>{});   // re-traces the default item itself once no planner is selected
+  loadSourcing().catch(()=>{});
+  if(PLANNER)loadStripsForPlanner(PLANNER);
+  else toggleStripMode(false);
+}
+function toggleStripMode(multi){
+  document.getElementById('stripSingle').style.display=multi?'none':'';
+  document.getElementById('stripMulti').hidden=!multi;
+}
+async function loadStripsForPlanner(p){
+  try{
+    const items=await api('/api/planner/'+encodeURIComponent(p)+'/items?limit=5');
+    if(!items.length)return;
+    const strips=await Promise.all(items.map(it=>
+      api('/api/plan/strip/'+encodeURIComponent(it.item_no)).catch(()=>[])));
+    let html='';
+    items.forEach((it,ix)=>{
+      const cells=miniCells(strips[ix]);
+      if(!cells)return;
+      html+=`<div class="ms-row"><button class="ms-lbl" onclick="openDrawer('${esc(it.item_no)}')"
+        data-tip="${esc(it.item_desc_1||'')}<br><small>open dossier</small>">${esc(it.item_no)}</button>
+        <div class="strip-row">${cells}</div></div>`;
+    });
+    if(!html)return;
+    html+=`<div class="ms-row"><div></div><div class="wk-num">${
+      Array.from({length:13},(_,i)=>`<div>${i+1}</div>`).join('')}</div></div>`;
+    document.getElementById('stripMulti').innerHTML=html;
+    toggleStripMode(true);
+    document.getElementById('hzTitle').innerHTML=
+      `Position walks · <span style="color:var(--plan)">${esc(p)}</span> · top items by value on hand`;
+    document.getElementById('hzNote').innerHTML=
+      '<b>Planner view:</b> one simulation row per item. Amber cells fire orders; red cells run out of stock. Click an item code for its dossier, or clear the planner filter to trace one item in detail.';
+  }catch(e){}
+}
+
+/* ---- PROMISE page + search ---- */
+function wireSearch(inputId, sugId, onPick){
+  const inp=document.getElementById(inputId), sug=document.getElementById(sugId);
+  let t=null;
+  inp.addEventListener('input',()=>{
+    clearTimeout(t);
+    const v=inp.value.trim();
+    if(v.length<2){sug.style.display='none';return;}
+    t=setTimeout(async()=>{
+      try{
+        const rows=await api('/api/items/search?query='+encodeURIComponent(v));
+        sug.innerHTML=rows.map(r=>`<div style="padding:9px 13px;cursor:pointer;border-bottom:1px solid var(--line-2)"
+          onmouseover="this.style.background='var(--card-2)'" onmouseout="this.style.background=''"
+          onclick="(${onPick})('${esc(r.item_no)}');document.getElementById('${sugId}').style.display='none';document.getElementById('${inputId}').value='${esc(r.item_no)}'">
+          <span class="mono" style="font-weight:600;font-size:12.5px">${esc(r.item_no)}</span>
+          <span style="font-size:11.5px;color:var(--tx-3);margin-left:8px">${esc(r.item_desc_1||'')}</span></div>`).join('')
+          || '<div style="padding:11px 13px;font-size:12px;color:var(--tx-3)">No matches</div>';
+        sug.style.display='block';
+      }catch(e){sug.style.display='none';}
+    },220);
+  });
+  document.addEventListener('click',e=>{if(!sug.contains(e.target)&&e.target!==inp)sug.style.display='none';});
+}
+
+async function loadPromise(itemNo){
+  const body=document.getElementById('promiseBody');
+  body.innerHTML='<div style="font-size:13px;color:var(--tx-3);padding:20px 4px">Building ladder…</div>';
+  try{
+    const rows=await api('/api/promise/'+encodeURIComponent(itemNo));
+    const head=rows[0];
+    let out=`<div style="margin-bottom:14px"><span class="mono" style="font-weight:600;font-size:16px">${esc(head.item_no)}</span>
+      <span style="color:var(--tx-3);font-size:12.5px;margin-left:10px">${esc(head.item_desc_1||'')}</span>
+      <span class="chip ${head.pur_or_mfg==='M'?'teal':'gray'}" style="margin-left:10px">${head.pur_or_mfg==='M'?'manufactured':'purchased'}</span></div>`;
+    if(+head.qty_overdue_excluded>0 || +head.qty_blanket_excluded>0){
+      out+=`<div style="background:#FAF1DC;border:1px solid #EAD9AB;border-radius:8px;padding:10px 14px;font-size:12px;color:#96700F;margin-bottom:14px">
+        Excluded from this ladder: ${(+head.qty_overdue_excluded||0)>0?Math.round(head.qty_overdue_excluded)+' units on overdue POs':''}
+        ${(+head.qty_overdue_excluded>0&&+head.qty_blanket_excluded>0)?' · ':''}
+        ${(+head.qty_blanket_excluded||0)>0?Math.round(head.qty_blanket_excluded)+' units on blanket balances':''}: arrival not committed.</div>`;}
+    out+=`<table class="q"><thead><tr><th>#</th><th class="r">Qty available</th><th class="r">Can ship</th><th>Mode</th><th>Why</th></tr></thead><tbody>`;
+    rows.forEach(r=>{
+      const est=(r.promise_mode||'').toUpperCase().includes('ESTIMATE');
+      out+=`<tr><td class="num">${r.ladder_seq}</td>
+        <td class="r num" style="font-weight:600">${Math.round(r.atp_qty).toLocaleString()}</td>
+        <td class="r num" style="font-weight:600;${est?'color:var(--act)':''}">${fmtDate(r.promised_dt)}</td>
+        <td><span class="chip ${est?'amber':'teal'}">${esc(r.promise_mode||'')}</span></td>
+        <td class="instruct" style="max-width:420px">${esc(r.explanation||'')}</td></tr>`;});
+    out+='</tbody></table>';
+    if(rows.some(r=>(r.promise_mode||'').toUpperCase().includes('ESTIMATE')))
+      out+='<div style="font-size:11.5px;color:var(--act);margin-top:12px">⚠ ESTIMATE rows are calculated from lead time, not a confirmed PO. Check with planning before quoting.</div>';
+    body.innerHTML=out;
+    if((head.pur_or_mfg||'').toUpperCase()==='M' && API_LIVE){
+      try{ await renderKit(itemNo, body); }catch(e){}
+    }
+  }catch(e){
+    body.innerHTML='<div style="font-size:13px;color:var(--tx-3);padding:20px 4px">No promise ladder for that item'+(API_LIVE?'':' (API offline: demo mode has no ladder data)')+'.</div>';
+  }
+}
+
+/* ---- PROMISE: kit & build calculator (plan.bom_explosion_flat) ---- */
+let _kit=null,_buildLead=null;
+async function renderKit(itemNo, mount){
+  const bom=await api('/api/promise/'+encodeURIComponent(itemNo)+'/bom');
+  if(!bom.length)return;
+  if(_buildLead==null){
+    try{
+      const cfg=await api('/api/trust/config');
+      const p=cfg.find(r=>r.param_name==='build_lead_cal_days');
+      _buildLead=p?Math.round(+p.param_value):7;
+    }catch(e){_buildLead=7;}
+  }
+  _kit=bom;
+  const wrap=document.createElement('div');
+  wrap.id='kitWrap';wrap.style.marginTop='26px';
+  wrap.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap">
+      <div><h3 style="font-size:13px;font-weight:600;color:var(--dg-navy)">Kit &amp; build calculator</h3>
+        <div style="font-size:11.5px;color:var(--tx-3);margin-top:2px">Level-1 bill of material · set a quantity, toggle optional components. Optional lines never gate the promise</div></div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--tx-2)">Quantity
+        <input id="kitQty" class="kit-qty" type="number" min="1" step="1" value="1" oninput="recalcKit()" aria-label="Quantity to promise"></label>
+    </div>
+    <div style="overflow-x:auto;margin-top:12px">
+    <table class="q"><thead><tr><th>Component</th><th class="r">Qty per</th><th class="r">Required</th><th class="r">On hand</th><th class="r">Inbound</th><th>Status</th><th style="text-align:center">Include</th></tr></thead>
+    <tbody>${bom.map((b,i)=>`
+      <tr>
+        <td><span class="part mono">${esc(b.component_item)}</span>
+            <div class="desc">${esc(b.item_desc_1||'')}${+b.is_optional?' · <span style="color:var(--act);font-weight:600">optional</span>':''}</div></td>
+        <td class="r num">${+b.qty_per}</td>
+        <td class="r num" id="kitReq${i}" style="font-weight:600">—</td>
+        <td class="r num">${Math.round(b.qty_on_hand||0)}</td>
+        <td class="r num">${(+b.on_order_qty||0)>0?Math.round(b.on_order_qty)+' · '+fmtDate(b.next_receipt_dt):'—'}</td>
+        <td id="kitSt${i}"></td>
+        <td style="text-align:center">${+b.is_optional
+          ?`<input type="checkbox" id="kitInc${i}" onchange="recalcKit()" aria-label="Include ${esc(b.component_item)} in the kit">`
+          :'<span style="color:var(--tx-3);font-size:10.5px">required</span>'}</td>
+      </tr>`).join('')}
+    </tbody></table></div>
+    <div class="kit-sum" id="kitSum" aria-live="polite"></div>`;
+  mount.appendChild(wrap);
+  recalcKit();
+}
+function recalcKit(){
+  if(!_kit)return;
+  const qty=Math.max(1,Math.round(+document.getElementById('kitQty').value||1));
+  let buildable=Infinity, ready=new Date(), anyShort=false, included=0;
+  _kit.forEach((b,i)=>{
+    const opt=+b.is_optional;
+    const inc=!opt||document.getElementById('kitInc'+i).checked;
+    const reqEl=document.getElementById('kitReq'+i), stEl=document.getElementById('kitSt'+i);
+    if(!inc){reqEl.textContent='—';stEl.innerHTML='<span class="chip gray">excluded</span>';return;}
+    included++;
+    const req=qty*+b.qty_per, oh=+b.qty_on_hand||0, inb=+b.on_order_qty||0;
+    reqEl.textContent=Math.round(req).toLocaleString();
+    let lineReady=new Date();
+    if(oh>=req){stEl.innerHTML='<span class="chip teal">from stock</span>';}
+    else if(oh+inb>=req&&b.next_receipt_dt){
+      stEl.innerHTML=`<span class="chip amber">PO · ${fmtDate(b.next_receipt_dt)}</span>`;
+      lineReady=new Date(b.next_receipt_dt);}
+    else{
+      const days=Math.round((+b.lead_working_days||10)*7/5)+3;
+      stEl.innerHTML=`<span class="chip red">order · ${b.lead_working_days||'?'} wd lead</span>`;
+      lineReady=new Date(Date.now()+days*864e5);anyShort=true;}
+    buildable=Math.min(buildable,Math.floor(oh/+b.qty_per));
+    if(lineReady>ready)ready=lineReady;
+  });
+  if(!isFinite(buildable))buildable=0;
+  const bl=_buildLead||7;
+  const done=new Date(+ready+bl*864e5);
+  const quote=new Date(+done+7*864e5);
+  while(quote.getDay()===0||quote.getDay()===6) quote.setDate(quote.getDate()+1);   // never quote a weekend
+  document.getElementById('kitSum').innerHTML=(included===0
+    ?'Nothing included. Tick at least one component.'
+    :`Can assemble <b>${Math.min(buildable,qty)}</b> of ${qty} from stock today · all material for <b>${qty}</b> ready <b>${fmtDate(ready)}</b> → build complete ~<b>${fmtDate(done)}</b> <span style="color:var(--tx-3)">(${bl}-day build lead)</span>`+
+     `<br><span style="color:var(--plan);font-weight:700">Quote the customer: ${quote.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</span> <span style="color:var(--tx-3)">(includes a 1-week buffer for delays)</span>`+
+     (anyShort?'<br><span style="color:var(--red);font-weight:600">⚠ At least one component must be purchased. The date assumes its PO is placed today.</span>':''));
+}
+
+/* ---- SUPPLIERS ---- */
+let SUP_ROWS=[];
+async function loadSuppliers(){
+  const rows = await api('/api/suppliers');
+  if(!rows.length) return;
+  SUP_ROWS=rows;
+  const gradeChip = g => {
+    g = g||'NO DATA';
+    const cls = g.startsWith('A')?'teal':g.startsWith('B')?'gray':g.startsWith('C')?'amber':'red';
+    return `<span class="chip ${cls}">${esc(g)}</span>`;
+  };
+  const pctCell = v => {
+    if(v==null) return '<td class="r num">—</td>';
+    const c=v>=95?'var(--dg-green)':v>=85?'var(--dg-gold)':'var(--red)';
+    return `<td class="r num">${Math.round(v)}%<div class="pbar"><i style="width:${Math.min(100,v)}%;background:${c}"></i></div></td>`;
+  };
+  const rejCell = v => {                       // low is good; thresholds match the grade logic (<1% A, <3% B)
+    if(v==null) return '<td class="r num">—</td>';
+    const c=v<1?'var(--dg-green)':v<3?'var(--dg-gold)':'var(--red)';
+    return `<td class="r num">${(+v).toFixed(1)}%<div class="pbar"><i style="width:${Math.min(100,v*12)}%;background:${c}"></i></div></td>`;
+  };
+  document.getElementById('supBody').innerHTML = rows.map(r=>`
+    <tr onclick="toggleSupplierDrill('${esc(r.vend_no)}','${esc(r.vend_name||r.vend_no)}')" tabindex="0" data-vend="${esc(r.vend_no)}" data-name="${esc((r.vend_name||r.vend_no||'').trim())}">
+      <td><div class="part">${esc((r.vend_name||r.vend_no||'').trim())}</div>
+          <div class="desc">${r.items_supplied||0} items · ${r.receipt_lines||0} receipts / 12mo</div></td>
+      <td>${gradeChip(r.scorecard_grade)}</td>
+      ${pctCell(r.otd_pct_12mo)}
+      ${pctCell(r.order_fill_pct_12mo)}
+      ${pctCell(r.otif_pct_12mo)}
+      ${rejCell(r.reject_pct_12mo!=null?+r.reject_pct_12mo:(r.life_reject_pct!=null?+r.life_reject_pct:null))}
+      <td class="r num dollar">${money(r.annual_spend)}</td>
+      <td class="r num">${money(r.open_po_value)}</td>
+      <td class="r num" style="${(r.overdue_lines||0)>0?'color:var(--red);font-weight:600':''}">${r.overdue_lines||0}${(r.overdue_value||0)>0?' · '+money(r.overdue_value):''}</td>
+      <td class="r num">${r.sole_source_items||0}</td>
+    </tr>`).join('');
+  filterSuppliers();
+}
+
+/* clicking the same vendor row again closes the drill instead of re-rendering it */
+let OPEN_VEND=null;
+function toggleSupplierDrill(vendNo, name){
+  const card=document.getElementById('supDrillCard');
+  if(OPEN_VEND===vendNo && !card.classList.contains('hidden')){
+    card.classList.add('hidden');
+    OPEN_VEND=null;
+    closeEmailMenu();
+    return;
+  }
+  loadSupplierDrill(vendNo, name);
+}
+
+/* search by vendor number or name: filters the table live, Enter opens the best match */
+function filterSuppliers(){
+  const q=(document.getElementById('supSearch')?.value||'').trim().toLowerCase();
+  document.querySelectorAll('#supBody tr[data-vend]').forEach(tr=>{
+    const hay=(tr.dataset.vend+' '+tr.dataset.name).toLowerCase();
+    tr.style.display = !q||hay.includes(q) ? '' : 'none';
+  });
+}
+function wireSupplierSearch(){
+  const inp=document.getElementById('supSearch');
+  if(!inp)return;
+  inp.addEventListener('input',filterSuppliers);
+  inp.addEventListener('keydown',e=>{
+    if(e.key!=='Enter')return;
+    const q=inp.value.trim().toLowerCase();
+    if(!q)return;
+    const match=SUP_ROWS.find(r=>(r.vend_no||'').toLowerCase()===q)
+      || SUP_ROWS.find(r=>(r.vend_name||'').toLowerCase().includes(q))
+      || SUP_ROWS.find(r=>(r.vend_no||'').toLowerCase().includes(q));
+    if(match) toggleSupplierDrill(match.vend_no, match.vend_name||match.vend_no);
+  });
+}
+
+async function loadSupplierDrill(vendNo, name){
+  const rows = await api('/api/suppliers/'+encodeURIComponent(vendNo)+'/receipts');
+  OPEN_VEND=vendNo;
+  closeEmailMenu();
+  document.getElementById('supDrillName').textContent = name;
+  const v=SUP_ROWS.find(x=>x.vend_no===vendNo);
+  const sub=document.querySelector('#supDrillCard .ch .sub');
+  if(sub&&v){
+    const ppv=v.ppv_dollars!=null?((v.ppv_dollars<0?'−':'+')+money(Math.abs(v.ppv_dollars))):'—';
+    sub.textContent=`Most recent receipt lines · commit vs actual · avg lead ${v.life_avg_lead_tm!=null?(+v.life_avg_lead_tm).toFixed(1):'?'} wd · PPV 12mo ${ppv}`;
+  }
+  const info=document.getElementById('supInfo');
+  if(info){
+    const f=(k,val)=>`<div class="fact"><div class="fact-k">${k}</div><div class="fact-v">${val||'—'}</div></div>`;
+    info.innerHTML=!v?'':
+      f('Contact',esc(v.contact_name||'—'))+
+      f('Email',v.vendor_email?`<a href="mailto:${esc(v.vendor_email)}">${esc(v.vendor_email)}</a>`:'—')+
+      f('Phone',v.vendor_phone?`<a href="tel:${esc(v.vendor_phone)}">${esc(v.vendor_phone)}</a>`:'—')+
+      f('Location',esc([v.vendor_city,v.vendor_state].filter(Boolean).join(', ')||'—'))+
+      f('Terms',esc(v.terms_desc||v.terms||'—'))+
+      f('Reject rate 12mo',v.reject_pct_12mo!=null?(+v.reject_pct_12mo).toFixed(1)+'%':'—');
+  }
+  document.getElementById('supDrillCard').classList.remove('hidden');
+  document.getElementById('supDrillCard').scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'nearest'});
+  document.getElementById('supDrillBody').innerHTML = rows.map(r=>`
+    <tr onclick="openDrawer('${esc(r.item_no)}')">
+      <td class="num">${esc(r.ord_no||'')}</td>
+      <td><span class="part mono">${esc(r.item_no||'')}</span></td>
+      <td class="r num">${Math.round(r.qty_received||0)}</td>
+      <td class="r num">${fmtDate(r.rec_hst_dt)}</td>
+      <td class="r num" style="${(r.days_late||0)>0?'color:var(--red);font-weight:600':'color:var(--money)'}">${r.days_late>0?'+'+r.days_late:'on time'}</td>
+      <td class="r num">${r.unit_cost_paid!=null?'$'+(+r.unit_cost_paid).toFixed(2):'—'}</td>
+      <td class="r num dollar">${money(r.receipt_value)}</td>
+    </tr>`).join('') || '<tr><td colspan="7" style="color:var(--tx-3)">No receipts on record.</td></tr>';
+}
+
+/* ---- vendor email composers ----
+   A mailto: link can't attach a file - browsers block that outright, no way
+   around it client-side. So this draws a small branded PNG "snapshot" of the
+   same numbers and copies it straight to the clipboard (paste into whatever
+   mail client opens), and opens a prefilled mailto with the identical data
+   as plain text so the email is never empty either way. */
+function gradeColor(g){
+  g=(g||'').trim();
+  if(g.startsWith('A'))return '#00577F';
+  if(g.startsWith('B'))return '#4F585F';
+  if(g.startsWith('C'))return '#96700F';
+  return '#C4442A';
+}
+function drawReportCanvas({title,subtitle,header,body,colWidths,footer}){
+  const W=760,padX=26,rowH=28,headH=96;
+  const H=headH+34+body.length*rowH+50;
+  const canvas=document.createElement('canvas');
+  canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#FFFFFF';ctx.fillRect(0,0,W,H);
+  const grad=ctx.createLinearGradient(0,0,W,0);
+  grad.addColorStop(0,'#023B74');grad.addColorStop(.55,'#006298');grad.addColorStop(1,'#00AFD7');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,W,5);
+  ctx.fillStyle='#023B74';ctx.font='800 12px Arial,sans-serif';
+  ctx.fillText('D I A G R A P H',padX,22);
+  ctx.fillStyle='#023B74';ctx.font='700 21px Arial,sans-serif';
+  ctx.fillText(title,padX,50);
+  ctx.fillStyle='#4F585F';ctx.font='13px Arial,sans-serif';
+  ctx.fillText(subtitle,padX,72);
+  ctx.strokeStyle='#DDE0E2';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,headH);ctx.lineTo(W,headH);ctx.stroke();
+  let y=headH+26;
+  ctx.font='700 11px Arial,sans-serif';ctx.fillStyle='#8B949B';
+  let x=padX;header.forEach((h,i)=>{ctx.fillText(h.toUpperCase(),x,y);x+=colWidths[i];});
+  y+=12;
+  ctx.strokeStyle='#EAECED';ctx.beginPath();ctx.moveTo(padX,y);ctx.lineTo(W-padX,y);ctx.stroke();
+  y+=24;
+  ctx.font='13px Arial,sans-serif';
+  body.forEach(row=>{
+    x=padX;
+    row.forEach((cell,i)=>{
+      const val=typeof cell==='object'?cell.text:cell;
+      ctx.fillStyle=(typeof cell==='object'&&cell.color)?cell.color:'#293137';
+      ctx.font=(typeof cell==='object'&&cell.bold)?'700 13px Arial,sans-serif':'13px Arial,sans-serif';
+      ctx.fillText(String(val),x,y);
+      x+=colWidths[i];
+    });
+    y+=rowH;
+  });
+  ctx.fillStyle='#8B949B';ctx.font='11px Arial,sans-serif';
+  ctx.fillText(footer,padX,H-18);
+  return canvas;
+}
+function canvasToPngBlob(canvas){return new Promise(res=>canvas.toBlob(res,'image/png'));}
+async function copyCanvasToClipboard(canvas){
+  const blob=await canvasToPngBlob(canvas);
+  try{
+    if(navigator.clipboard&&window.ClipboardItem){
+      await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+      return true;
+    }
+  }catch(e){/* clipboard write needs a user gesture + permission; non-fatal if it fails */}
+  return false;
+}
+function openMailto(to,subject,body){
+  const q=subject||body?`?subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body||'')}`:'';
+  location.href=`mailto:${encodeURIComponent(to||'')}${q}`;
+}
+function currentVendor(){
+  if(!OPEN_VEND)return null;
+  return SUP_ROWS.find(x=>x.vend_no===OPEN_VEND)||null;
+}
+function closeEmailMenu(){
+  const m=document.getElementById('emailMenu');
+  if(m){m.hidden=true;document.getElementById('emailMenuBtn')?.setAttribute('aria-expanded','false');}
+}
+function toggleEmailMenu(e){
+  e.stopPropagation();
+  const m=document.getElementById('emailMenu');
+  const willOpen=m.hidden;
+  m.hidden=!willOpen;
+  document.getElementById('emailMenuBtn').setAttribute('aria-expanded',String(willOpen));
+}
+document.addEventListener('click',e=>{
+  const m=document.getElementById('emailMenu');
+  if(m && !m.hidden && !m.contains(e.target) && e.target.id!=='emailMenuBtn') closeEmailMenu();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeEmailMenu();});
+
+function emailNewMessage(){
+  closeEmailMenu();
+  const v=currentVendor();
+  if(!v){alert('Open a vendor first.');return;}
+  openMailto(v.vendor_email,'','');
+}
+
+async function emailScorecard(){
+  closeEmailMenu();
+  const v=currentVendor();
+  if(!v){alert('Open a vendor first.');return;}
+  const pct=x=>x==null?'—':Math.round(x)+'%';
+  const rej=v.reject_pct_12mo!=null?(+v.reject_pct_12mo).toFixed(1)+'%':'—';
+  const stats=[
+    ['Grade',{text:v.scorecard_grade||'—',color:gradeColor(v.scorecard_grade),bold:true}],
+    ['On-time delivery (12mo)',pct(v.otd_pct_12mo)],
+    ['Order fill rate (12mo)',pct(v.order_fill_pct_12mo)],
+    ['OTIF (12mo)',pct(v.otif_pct_12mo)],
+    ['Reject rate (12mo)',rej],
+    ['Annual spend',money(v.annual_spend)],
+    ['Open PO value',money(v.open_po_value)],
+  ];
+  const canvas=drawReportCanvas({
+    title:'Supplier Scorecard',
+    subtitle:(v.vend_name||v.vend_no)+' · generated '+new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
+    header:['Metric','Value'],body:stats,colWidths:[320,200],
+    footer:'Axim Planning Analytics: deterministic arithmetic on committed rules, not prediction.'});
+  const copied=await copyCanvasToClipboard(canvas);
+  const statText=r=>typeof r[1]==='object'?r[1].text:r[1];
+  const lines=[`Hi ${v.contact_name||'there'},`,'','Sharing your current supplier scorecard:','',
+    ...stats.map(r=>`- ${r[0]}: ${statText(r)}`),'',
+    'Thanks,'];
+  if(!copied) console.info('Clipboard image copy was blocked by the browser; email drafted without it.');
+  openMailto(v.vendor_email,`Supplier Scorecard for ${v.vend_name||v.vend_no}`,lines.join('\n'));
+}
+
+async function emailOrderStatus(){
+  closeEmailMenu();
+  const v=currentVendor();
+  if(!v){alert('Open a vendor first.');return;}
+  let openRows=[];
+  try{openRows=await api('/api/suppliers/'+encodeURIComponent(v.vend_no)+'/open');}catch(e){}
+  const late=openRows.filter(r=>(r.days_overdue||0)>0);
+  const body=openRows.slice(0,12).map(r=>[
+    r.ord_no,r.item_no,Math.round(r.qty_remaining||0),fmtDate(r.promise_dt),
+    {text:(r.days_overdue>0?r.days_overdue+'d late':'on schedule'),color:r.days_overdue>0?'#C4442A':'#24794F'}]);
+  const canvas=drawReportCanvas({
+    title:'Open Order Status',
+    subtitle:(v.vend_name||v.vend_no)+' · '+openRows.length+' open line'+(openRows.length===1?'':'s')+' · '+late.length+' overdue',
+    header:['PO','Item','Qty','Promised','Status'],body,colWidths:[90,150,70,140,140],
+    footer:'Axim Planning Analytics: please confirm dates or advise of delay.'});
+  const copied=await copyCanvasToClipboard(canvas);
+  const lines=[`Hi ${v.contact_name||'there'},`,'',
+    `Following up on our open orders with you${late.length?', '+late.length+' line'+(late.length===1?'':'s')+' past the promise date':''}:`,''];
+  body.forEach(r=>lines.push(`- PO ${r[0]} · ${r[1]} · qty ${r[2]} · promised ${r[3]} · ${r[4].text}`));
+  if(!body.length)lines.push('(No open lines on file for this vendor right now.)');
+  lines.push('','Could you confirm these dates, or let us know if anything is delayed?','','Thanks,');
+  if(!copied) console.info('Clipboard image copy was blocked by the browser; email drafted without it.');
+  openMailto(v.vendor_email,`Open Order Status for ${v.vend_name||v.vend_no}`,lines.join('\n'));
+}
+
+/* ---- BUILD ---- */
+async function loadBuild(status){
+  _buildStatus=status||'';
+  document.querySelectorAll('#buildTabs .chip').forEach((c,i)=>{
+    const on=(i===0&&!status)||(i===1&&status==='ready')||(i===2&&status==='blocked');
+    c.className='chip '+(on?'teal':'gray');c.style.border='0';c.style.cursor='pointer';});
+  let rows = await api('/api/build'+(status?('?status='+status):''));
+  if(PLANNER) rows=rows.filter(r=>(r.planner||'').trim()===PLANNER);
+  document.getElementById('buildBody').innerHTML = rows.map(r=>{
+    const blocked=(r.build_status||'').startsWith('BLOCKED');
+    const sched=[r.material_complete_dt&&('material ready '+fmtDate(r.material_complete_dt)),
+                 r.schedule_start_dt&&('start '+fmtDate(r.schedule_start_dt)),
+                 r.est_build_done_dt&&('est done '+fmtDate(r.est_build_done_dt))].filter(Boolean).join(' · ');
+    return `<tr onclick="openDrawer('${esc(r.item_no)}')" tabindex="0">
+      <td class="num"><button class="chip gray" style="border:0;cursor:pointer;padding:1px 7px;margin-right:6px"
+          onclick="event.stopPropagation();toggleBuildComponents(this,'${esc(r.line_key||'')}')"
+          data-tip="Show this line's bill of material &amp; coverage" aria-label="Expand components">▸</button>${esc(r.ord_no)}-${r.line_no}<div class="desc">${esc(r.cus_no||'')}</div></td>
+      <td><span class="part mono">${esc(r.item_no)}</span><div class="desc">${esc(r.item_desc_1||'')}</div></td>
+      <td class="r num">${Math.round(r.qty_open||0)}</td>
+      <td class="r num">${Math.round(r.qty_from_stock||0)}</td>
+      <td class="r num" style="font-weight:600">${Math.round(r.build_qty||0)}</td>
+      <td><span class="chip ${blocked?'red':(r.build_status||'').startsWith('READY')?'teal':'gray'}"${sched?` data-tip="<small>${sched}</small>"`:''}>${esc(r.build_status||'')}</span>
+          ${r.gating_component?'<div class="desc">gated by <span class="mono">'+esc(r.gating_component)+'</span></div>':''}</td>
+      <td class="instruct" style="max-width:280px">${esc(r.planner_note||'')}</td>
+      <td class="r num">${fmtDate(r.due_dt)}</td></tr>`;}).join('')
+    || '<tr><td colspan="8" style="color:var(--tx-3)">Nothing in this bucket.</td></tr>';
+}
+
+/* Build line -> component exploder (v2 engine, plan.v_build_readiness_detail).
+   One open exploder at a time; rows drill to the component's dossier. */
+async function toggleBuildComponents(btn,lineKey){
+  const tr=btn.closest('tr');
+  if(tr.nextElementSibling&&tr.nextElementSibling.classList.contains('comp-row')){
+    tr.nextElementSibling.remove();btn.textContent='▸';return;}
+  document.querySelectorAll('#buildBody .comp-row').forEach(x=>x.remove());
+  document.querySelectorAll('#buildBody button').forEach(b=>{if(b.textContent==='▾')b.textContent='▸';});
+  btn.textContent='▾';
+  let rows=[];
+  try{rows=await api(`/api/build/components?line_key=${encodeURIComponent(lineKey)}`);}catch(e){}
+  const chipCls=r=>r.comp_status_sort===1?'red':r.comp_status_sort===3?'teal':'gray';
+  const sub=document.createElement('tr');sub.className='comp-row';
+  sub.innerHTML=`<td colspan="8" style="background:var(--card-2);padding:10px 14px 12px">`+
+   (rows.length?`<div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--tx-3);font-weight:600;margin-bottom:6px">Bill of material · coverage is FIFO across the whole backlog</div>
+    <div style="overflow-x:auto"><table class="q" style="margin:0"><thead><tr><th>Component</th><th>Role</th><th class="r">Qty/parent</th><th class="r">Need</th><th class="r">Cum need</th><th class="r">Avail</th><th class="r">On order</th><th>Status</th><th>Covered by</th></tr></thead><tbody>`+
+    rows.map(r=>`<tr onclick="openDrawer('${esc(r.component_item)}')" style="cursor:pointer">
+      <td><span class="part mono">${esc(r.component_item)}</span><div class="desc">${esc(r.component_desc||'')}</div></td>
+      <td style="font-size:11px;color:var(--tx-3)">${esc(r.comp_role||'')}</td>
+      <td class="r num">${r.qty_per_parent!=null?+r.qty_per_parent:''}</td>
+      <td class="r num">${r.comp_need!=null?Math.round(r.comp_need):''}</td>
+      <td class="r num">${r.cum_comp_need!=null?Math.round(r.cum_comp_need):'—'}</td>
+      <td class="r num">${r.qty_available!=null?Math.round(r.qty_available):'—'}</td>
+      <td class="r num">${r.qty_on_order!=null?Math.round(r.qty_on_order):'—'}</td>
+      <td><span class="chip ${chipCls(r)}">${esc(r.comp_status||'')}</span></td>
+      <td style="font-size:11.5px">${esc(r.covered_source||'')}${r.covered_dt?' · '+fmtDate(r.covered_dt):''}</td></tr>`).join('')+
+    `</tbody></table></div>
+    <div style="font-size:11px;color:var(--tx-3);margin-top:6px">Available stock serves earlier due dates first, so a component can show stock while a later line still waits on a PO. NSI-KANBAN and SUBASSEMBLY rows are informational and never gate the line.</div>`
+   :'<div style="font-size:12px;color:var(--tx-3)">No component detail for this line (ship-from-stock, or the frequent refresh has not run since deploy).</div>')+`</td>`;
+  tr.after(sub);
+}
+
+/* Trust: validation-harness banner (plan.validation_log, latest run) */
+async function loadValidation(){
+  let rows=[];try{rows=await api('/api/trust/validation');}catch(e){return;}
+  if(!rows.length)return;
+  const card=document.getElementById('valCard');if(card)card.hidden=false;
+  const fails=rows.filter(r=>!+r.passed);
+  const tag=document.getElementById('valTag');
+  if(tag){tag.textContent=fails.length?fails.length+' check'+(fails.length>1?'s':'')+' flagged':'all checks passing';
+    tag.style.background=fails.length?'#FAF1DC':'#E6F1EB';
+    tag.style.color=fails.length?'#96700F':'var(--money)';}
+  document.getElementById('valBody').innerHTML=rows.map(r=>`
+    <div class="dtable-row"><span class="k"><span class="mono" style="color:var(--tx)">${esc(r.check_name)}</span>
+      <small style="color:var(--tx-3)"> · ${esc(r.scope)} · ${esc(r.severity)}</small></span>
+    <span class="v" style="font-weight:600;color:${+r.passed?'var(--money)':'var(--amber)'}">${+r.passed?'PASS':'FAIL · '+r.failed_rows+' rows'}</span></div>`).join('');
+}
+
+/* Suppliers: RED/YELLOW/GREEN action list (dbo.v_supplier_todo) */
+async function loadSupplierTodo(){
+  let rows=[];try{rows=await api('/api/suppliers/todo');}catch(e){return;}
+  if(!rows.length)return;
+  const card=document.getElementById('supTodoCard');if(card)card.hidden=false;
+  const dot=s=>s==='RED'?'var(--red)':s==='YELLOW'?'var(--act)':'var(--money)';
+  document.getElementById('supTodoBody').innerHTML=rows.map(r=>`
+    <div class="lrow" onclick="goVendor('${esc(r.vend_name)}')">
+      <div class="lrow-l"><div class="flag" style="background:var(--card-2);color:${dot(r.action_status)}">●</div>
+        <div class="lrow-tx"><div class="lrow-t">${esc(r.vend_name)}</div>
+        <div class="lrow-s">${esc((r.action_reason||'').trim()||'No action needed, performing to target.')}</div></div></div>
+      <div class="lrow-r"><span class="num dollar">${money(r.annual_spend)}</span><div class="lrow-s">annual spend</div></div>
+    </div>`).join('');
+}
+
+/* ---- OVERVIEW: cross-function KPI band (v2 page structure) ---- */
+async function loadOverviewKpis(){
+  const M=v=>v>=1e6?'$'+(v/1e6).toFixed(2)+'M':moneyK(v);
+  const set=(id,v)=>{const el=document.getElementById(id);if(el&&v!=null)el.textContent=v;};
+  const [br,sm,todo,val]=await Promise.all([
+    api('/api/money/bridge').catch(()=>null),
+    api('/api/act/summary').catch(()=>null),
+    api('/api/suppliers/todo').catch(()=>[]),
+    api('/api/trust/validation').catch(()=>[])]);
+  if(br&&br.length)set('ovInv',M(+br[0].on_hand||0));
+  if(sm){
+    set('ovSuggest',M(sm.order.value||0));
+    set('ovSuggestD',(sm.order.count||0)+' items to buy · Orders');
+    set('ovExp',String(sm.expedite.count||0));
+    set('ovExpD',M(sm.expedite.value||0)+' at service risk');
+    set('ovBlk',String(sm.blocked.count||0));
+  }
+  set('ovRed',String(todo.filter(t=>t.action_status==='RED').length));
+  if(val.length){
+    const fails=val.filter(r=>!+r.passed).length;
+    set('ovVal',fails?String(fails):'✓');
+    set('ovValD',fails?'check'+(fails>1?'s':'')+' flagged · Trust':'all invariants passing · Trust');
+    const el=document.getElementById('ovVal');
+    if(el)el.style.color=fails?'var(--amber)':'var(--money)';
+  }
+}
+
+/* ---- ORDERS: purchasing registers + planner workload ---- */
+async function loadRegister(kind){
+  const tabs=document.querySelectorAll('#regTabs .chip');
+  const order=['blankets','candidates','shelf','pallets'];
+  tabs.forEach((c,i)=>{c.className='chip '+(order[i]===kind?'teal':'gray');c.style.border='0';c.style.cursor='pointer';});
+  const el=document.getElementById('regBody');
+  const empty=m=>`<div style="padding:12px 16px;color:var(--tx-3);font-size:12.5px">${m}</div>`;
+  try{
+    if(kind==='blankets'){
+      const rows=await api('/api/orders/blankets');
+      el.innerHTML=rows.map(r=>`<div class="lrow" onclick="openDrawer('${esc(r.item_no)}')">
+        <div class="lrow-l"><div class="flag" style="background:#FAF1DC;color:var(--act)">B</div>
+          <div class="lrow-tx"><div class="lrow-t mono">${esc(r.item_no)}</div>
+          <div class="lrow-s">PO ${esc(r.blanket_po)} · ${esc(r.vend_name||'')} · ${r.release_count} releases so far</div></div></div>
+        <div class="lrow-r"><span class="num" style="font-weight:600">${Math.round(r.blanket_balance_remaining||0).toLocaleString()}</span><div class="lrow-s">unreleased balance</div></div></div>`).join('')
+        ||empty('No blanket agreements with an unreleased balance.');
+    }else if(kind==='candidates'){
+      const rows=await api('/api/orders/blanket_candidates');
+      el.innerHTML=rows.map(r=>`<div class="lrow" onclick="openDrawer('${esc(r.item_no)}')">
+        <div class="lrow-l"><div class="flag" style="background:#E9F0F7;color:var(--trust)">+</div>
+          <div class="lrow-tx"><div class="lrow-t mono">${esc(r.item_no)}</div>
+          <div class="lrow-s">${esc(r.primary_vendor_name||'')} · release ~every ${Math.round(r.release_every_n_weeks||0)} wks</div></div></div>
+        <div class="lrow-r"><span class="num dollar">${money(r.six_month_value)}</span><div class="lrow-s">6-mo value</div></div></div>`).join('')
+        ||empty('No blanket candidates right now.');
+    }else if(kind==='shelf'){
+      const rows=await api('/api/orders/shelf_life');
+      el.innerHTML=rows.map(r=>`<div class="lrow" onclick="openDrawer('${esc(r.item_no)}')">
+        <div class="lrow-l"><div class="flag" style="background:${r.shelf_moq_conflict?'var(--red-bg)':'#FAF1DC'};color:${r.shelf_moq_conflict?'var(--red)':'var(--act)'}">${r.shelf_moq_conflict?'!':'✈'}</div>
+          <div class="lrow-tx"><div class="lrow-t mono">${esc(r.item_no)}</div>
+          <div class="lrow-s">${r.shelf_moq_conflict?'MOQ exceeds shelf-life consumption':'AIR ONLY'}${r.ocean_po_lines_open?' · <b>'+r.ocean_po_lines_open+' open PO shipping OCEAN</b>':''}</div></div></div>
+        <div class="lrow-r"><span class="num">${r.shelf_life_days}d</span><div class="lrow-s">shelf life</div></div></div>`).join('')
+        ||empty('No shelf-life exceptions.');
+    }else{
+      const rows=await api('/api/orders/pallets');
+      el.innerHTML=(rows.length?`<div style="padding:8px 16px 2px;font-size:12px;color:var(--tx-2)">Warehouse: <b>${rows[0].total_projected}</b> of <b>${rows[0].pallet_cap}</b> pallets projected (${rows[0].capacity_used_pct}%)</div>`:'')+
+        rows.map(r=>`<div class="lrow" onclick="openDrawer('${esc(r.item_no)}')">
+        <div class="lrow-l"><div class="flag" style="background:${r.over_capacity?'var(--red-bg)':'var(--card-2)'};color:${r.over_capacity?'var(--red)':'var(--tx-2)'}">▤</div>
+          <div class="lrow-tx"><div class="lrow-t mono">${esc(r.item_no)}</div>
+          <div class="lrow-s">${r.pallets_on_hand} on hand + ${r.pallets_on_order} inbound</div></div></div>
+        <div class="lrow-r"><span class="num" style="font-weight:600">${r.pallets_projected}</span><div class="lrow-s">pallets projected</div></div></div>`).join('')
+        ||empty('No pallet-tracked items (load plan.item_pallet_qty).');
+    }
+  }catch(e){el.innerHTML=empty('Register unavailable.');}
+}
+async function loadWorkload(){
+  let rows=[];try{rows=await api('/api/plan/workload');}catch(e){return;}
+  if(!rows.length)return;
+  document.getElementById('workloadBody').innerHTML=rows.map(r=>`
+    <div class="lrow" style="cursor:default">
+      <div class="lrow-l"><div class="lrow-tx"><div class="lrow-t">${esc(r.planner)}</div>
+        <div class="lrow-s">${r.open_po_lines} open PO lines · ${r.overdue_po_lines} overdue · ${r.open_order_suggestions} to order${r.blocked_builds?' · <b style="color:var(--red)">'+r.blocked_builds+' blocked builds</b>':''}</div></div></div>
+      <div class="lrow-r"><span class="num dollar">${moneyK(r.open_po_value)}</span><div class="lrow-s">open PO value</div></div>
+    </div>`).join('');
+}
+
+/* ---- BUILD: BOM explorer (explode-down + where-used) ---- */
+async function loadBomFor(item){
+  const el=document.getElementById('bomBody');
+  el.innerHTML='<div style="padding:14px 4px;color:var(--tx-3);font-size:12.5px;text-align:center">Loading…</div>';
+  const [down,up]=await Promise.all([
+    api('/api/bom/'+encodeURIComponent(item)+'/explode').catch(()=>[]),
+    api('/api/bom/'+encodeURIComponent(item)+'/where_used').catch(()=>[])]);
+  const h=t=>`<div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--tx-3);font-weight:600;margin:12px 0 6px">${t}</div>`;
+  const indent=l=>'padding-left:'+(8+(l-1)*18)+'px';
+  el.innerHTML=
+    `<div style="font-size:13px;margin-bottom:2px"><span class="part mono" style="cursor:pointer" onclick="openDrawer('${esc(item)}')">${esc(item)}</span></div>`+
+    h('Made of · full explosion')+
+    (down.length?`<div style="overflow-x:auto"><table class="q" style="margin:0"><thead><tr><th>Component</th><th>Parent</th><th class="r">Level</th><th class="r">Qty per</th></tr></thead><tbody>`+
+      down.map(r=>`<tr onclick="openDrawer('${esc(r.component_item)}')" style="cursor:pointer">
+        <td style="${indent(+r.bom_level||1)}"><span class="part mono">${esc(r.component_item)}</span><div class="desc">${esc(r.component_desc||'')}</div></td>
+        <td class="mono" style="font-size:11.5px">${esc(r.parent_item)}</td>
+        <td class="r num">${r.bom_level}</td><td class="r num">${+r.cum_qty_per}</td></tr>`).join('')+
+      '</tbody></table></div>'
+     :'<div style="font-size:12.5px;color:var(--tx-3)">No components: purchased item, or no BOM on file.</div>')+
+    h('Where used · what consumes it')+
+    (up.length?`<div style="overflow-x:auto"><table class="q" style="margin:0"><thead><tr><th>Used in</th><th class="r">Level</th><th class="r">Qty per</th></tr></thead><tbody>`+
+      up.map(r=>`<tr onclick="openDrawer('${esc(r.source_fg)}')" style="cursor:pointer">
+        <td><span class="part mono">${esc(r.source_fg)}</span><div class="desc">${esc(r.parent_desc||'')}${r.parent_item!==r.source_fg?' · via <span class="mono">'+esc(r.parent_item)+'</span>':''}</div></td>
+        <td class="r num">${r.bom_level}</td><td class="r num">${+r.cum_qty_per}</td></tr>`).join('')+
+      '</tbody></table></div>'
+     :'<div style="font-size:12.5px;color:var(--tx-3)">Not used in any bill of material.</div>');
+}
+
+/* ---- TRUST: glossary + refresh runs ---- */
+async function loadGlossaryRuns(){
+  try{
+    const g=await api('/api/trust/glossary');
+    if(g.length)document.getElementById('glossaryBody').innerHTML=g.map(r=>`
+      <div class="dtable-row" style="align-items:flex-start"><span class="k">
+        <span class="mono" style="font-weight:600;color:var(--tx)">${esc(r.code_type)} · ${esc(r.code)}</span>
+        <div style="font-size:11px;color:var(--tx-3);margin-top:2px;max-width:340px">${esc(r.description)}</div></span>
+      <span class="v" style="font-size:12px">${esc(r.name)}</span></div>`).join('');
+  }catch(e){}
+  try{
+    const runs=await api('/api/trust/runs');
+    if(runs.length)document.getElementById('runsBody').innerHTML=runs.map(r=>`
+      <div class="dtable-row"><span class="k"><span class="mono">${esc(r.job_name)}</span>
+        <small style="color:var(--tx-3)"> · ${esc(String(r.started_dt||'').slice(5,16))}${r.secs!=null?' · '+r.secs+'s':''}</small></span>
+      <span class="v" style="font-weight:600;color:${r.status==='FAILED'?'var(--red)':String(r.status||'').indexOf('WARN')>-1?'var(--amber)':'var(--money)'}">${esc(r.status||'')}</span></div>`).join('');
+  }catch(e){}
+}
+
+/* ---- excess drill + sourcing ---- */
+let excessMode='proj';
+async function excessDrill(mode,mo){
+  excessMode=mode;
+  const chips=document.querySelectorAll('#excessToggle .chip');
+  chips.forEach((c,i)=>{c.className='chip '+((i===0)===(mode==='proj')?'teal':'gray');c.style.border='0';c.style.cursor='pointer';});
+  const el=document.getElementById('excessDrillBody');
+  if(mode==='proj'){
+    mo=mo||3;
+    const rows=await api('/api/money/excess_items?month_offset='+mo+'&limit=8');
+    el.innerHTML=`<div class="drill-h">Projected excess at +${mo} mo · click a chart point to change month</div>`+
+      (rows.map(excessListRow).join('')
+      || '<div style="padding:12px 16px;color:var(--tx-3);font-size:12px">No projected excess inside the horizon.</div>');
+  } else {
+    const rows=await api('/api/plan/excess_risk');
+    el.innerHTML=rows.map(r=>`<div class="lrow" onclick="openDrawer('${esc(r.item_no)}')">
+      <div class="lrow-l"><div class="flag" style="background:#FAF1DC;color:var(--act)">⚠</div>
+        <div class="lrow-tx"><div class="lrow-t mono">${esc(r.item_no)}</div>
+        <div class="lrow-s">${esc(r.risk_flag||'')} · trend ${Math.round((r.trend_ratio_13wk||0)*100)}% · headroom ${Math.round(r.headroom_pct||0)}%</div></div></div>
+      <div class="lrow-r"><span class="num" style="font-weight:600">${money(r.value_on_hand)}</span></div></div>`).join('')
+      || '<div style="padding:12px 16px;color:var(--tx-3);font-size:12px">No early-warning items.</div>';
+  }
+}
+/* sole-source exposure: scoped to the selected planner (re-run from
+   applyPlanner() too, so it updates with the filter, like the rest of Plan) */
+async function loadSourcing(){
+  const rows=await api('/api/plan/sourcing_risk'+plArg('?'));
+  const body=document.getElementById('sourcingBody');
+  if(!rows.length){
+    body.innerHTML=`<div style="padding:14px 16px;color:var(--tx-3);font-size:12.5px">No sole-source items${PLANNER?' for '+esc(PLANNER):''} on file.</div>`;
+    return;
+  }
+  body.innerHTML = rows.slice(0,8).map(r=>`
+    <div class="lrow" onclick="openDrawer('${esc(r.item_no)}')">
+      <div class="lrow-l"><div class="flag" style="background:#E9F0F7;color:var(--trust)">${esc(r.abc_class||'?')}</div>
+        <div class="lrow-tx"><div class="lrow-t mono">${esc(r.item_no)}</div>
+        <div class="lrow-s">${esc(r.item_desc_1||'')} · only source: <b>${esc(r.vend_name||'?')}</b> · lead ${r.vendor_lead_days||'?'} wd</div></div></div>
+      <div class="lrow-r"><span class="num dollar">${money(r.annual_value)}</span><div class="lrow-s">annual value</div></div>
+    </div>`).join('');
+}
+
+/* ---- TRUST: health drill, segmentation, config ---- */
+const HEALTH_FLAGS=['no_vendor','no_lead_time','no_demand_with_stock','no_calc_params'];
+async function healthDrill(flag){
+  const rows=await api('/api/trust/health/'+flag);
+  document.getElementById('healthDrill').innerHTML =
+    `<div style="padding:8px 16px 4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--tx-3);font-weight:600">${flag.replace(/_/g,' ')} · top by value</div>`+
+    rows.slice(0,6).map(r=>`<div class="lrow" onclick="openDrawer('${esc(r.item_no)}')">
+      <div class="lrow-l"><div class="lrow-tx"><div class="lrow-t mono">${esc(r.item_no)}</div>
+        <div class="lrow-s">${esc(r.item_desc_1||'')} · ${esc(r.planner||'')}</div></div></div>
+      <div class="lrow-r"><span class="num">${money(r.value_on_hand)}</span></div></div>`).join('');
+}
+async function loadTrustExtras(){
+  document.querySelectorAll('#page-trust .hcell').forEach((c,i)=>{
+    c.style.cursor='pointer';
+    c.onclick=()=>healthDrill(HEALTH_FLAGS[i]);
+  });
+  const seg = await api('/api/trust/segmentation');
+  if(seg.length){
+    const cell={}; seg.forEach(r=>cell[r.abc_class+r.xyz_class]=r);
+    let g='<div style="display:grid;grid-template-columns:34px repeat(3,1fr);gap:5px;align-items:center">';
+    g+='<div></div>'+['X · steady','Y · variable','Z · sporadic'].map(x=>`<div style="text-align:center;font-size:10px;color:var(--tx-3)">${x}</div>`).join('');
+    'ABC'.split('').forEach(a=>{
+      g+=`<div style="font-size:11px;font-weight:600;color:var(--tx-2)">${a}</div>`;
+      'XYZ'.split('').forEach(x=>{const c=cell[a+x];
+        g+=`<div class="seg-cell" data-tip="Class ${a}${x}: <b>${c?c.item_ct:0} items</b> · ${c?moneyK(c.annual_value):'$0'}/yr <small>${a==='A'?'high value':a==='B'?'mid value':'low value'} · ${x==='X'?'steady demand':x==='Y'?'variable demand':'sporadic demand'}</small>" style="background:var(--card-2);border:1px solid var(--line-2);border-radius:7px;padding:9px 10px;text-align:center">
+          <div class="num" style="font-weight:600;font-size:14px">${c?c.item_ct:0}</div>
+          <div style="font-size:10px;color:var(--tx-3)">${c?moneyK(c.annual_value):'$0'}/yr</div></div>`;});});
+    g+='</div>';
+    document.getElementById('segBody').innerHTML=g;
+  }
+  const cfg = await api('/api/trust/config');
+  if(cfg.length){
+    document.getElementById('cfgBody').innerHTML = cfg.map(r=>`
+      <div class="dtable-row" style="align-items:flex-start">
+        <span class="k" style="flex:1"><span class="mono" style="font-weight:600;color:var(--tx)">${esc(r.param_name)}</span>
+          <div style="font-size:11px;color:var(--tx-3);margin-top:2px;max-width:340px">${esc((r.notes||'').slice(0,160))}</div></span>
+        <span class="v" style="font-weight:600">${+r.param_value}</span></div>`).join('');
+  }
+}
+
+/* ---- LIVE drawer ---- */
+async function openDrawerLive(id){
+  const [d, strip, fc] = await Promise.all([
+    api('/api/item/'+encodeURIComponent(id)),
+    api('/api/plan/strip/'+encodeURIComponent(id)).catch(()=>[]),
+    api('/api/item/'+encodeURIComponent(id)+'/forecast').catch(()=>[])]);
+  const it = d.detail;
+  document.getElementById('dPart').textContent = id;
+  document.getElementById('dDesc').textContent = it.item_desc_1 || '';
+  const tier=(it.excess_value>0?'EXCESS':'IN POLICY');
+  document.getElementById('dSeg').innerHTML =
+    [`Class ${it.abc_class||'?'}${it.xyz_class||''}`, it.demand_class||'?', tier]
+    .map((s,i)=>`<span class="seg ${i===2&&tier!=='ACTIVE'?'hot':''}">${esc(s)}</span>`).join('');
+  document.getElementById('pType').textContent = it.next_predicted_order_type
+    ? (it.next_predicted_order_type==='DATED'?'Dated order':'Reorder') : 'None in horizon';
+  document.getElementById('pQty').textContent = it.next_predicted_order_qty
+    ? Math.round(it.next_predicted_order_qty).toLocaleString()+' units · '+money(it.next_predicted_order_value) : '—';
+  document.getElementById('pWhen').textContent = it.next_predicted_order_dt
+    ? 'Release '+fmtDate(it.next_predicted_order_dt) : 'Position stays above trigger through week 13';
+  renderPosBar(document.getElementById('posbar'),{
+    pos:it.inventory_position||0, oh:it.qty_on_hand_net||0,
+    ss:it.calc_safety_stock, rop:it.calc_reorder_point, S:it.calc_order_up_to});
+  const fmtN=v=>v!=null&&isFinite(+v)?Math.round(+v).toLocaleString():'—';
+  document.getElementById('dFacts').innerHTML=`
+    <div class="fact"><div class="fact-k">On hand</div><div class="fact-v">${fmtN(it.qty_on_hand_net)} <small>ea</small></div></div>
+    <div class="fact"><div class="fact-k">Position</div><div class="fact-v">${fmtN(it.inventory_position)} <small>ea</small></div></div>
+    <div class="fact"><div class="fact-k">Value on hand</div><div class="fact-v">${money(it.value_on_hand)}</div></div>
+    <div class="fact"><div class="fact-k">Lead time</div><div class="fact-v">${it.lead_working_days||'?'} <small>wd</small></div></div>
+    <div class="fact"><div class="fact-k">EOQ</div><div class="fact-v">${fmtN(it.calc_eoq!=null?it.calc_eoq:it.eoq)} <small>ea</small></div></div>
+    <div class="fact"><div class="fact-k">MOQ</div><div class="fact-v">${fmtN(it.moq)} <small>ea</small></div></div>
+    <div class="fact"><div class="fact-k">Order multiple</div><div class="fact-v">${fmtN(it.po_mult!=null?it.po_mult:it.order_multiple)}</div></div>
+    <div class="fact"><div class="fact-k">Safety stock</div><div class="fact-v">${fmtN(it.calc_safety_stock)} <small>ea</small></div></div>`;
+  document.getElementById('dSupply').innerHTML=(d.supply||[]).map(r=>
+    `<div class="dtable-row"><span class="k">${esc(r.supply_source||'')}</span>
+     <span class="v">${Math.round(r.supply_qty||0)} · ${fmtDate(r.supply_dt)}</span></div>`).join('')
+    || '<div class="dtable-row"><span class="k">No supply events</span><span class="v">—</span></div>';
+  const vname=it.primary_vendor_name||'—';
+  document.getElementById('dVendor').innerHTML=[
+    ['Primary', vname==='—'?'—':`<button class="vlink" onclick="goVendor('${esc(vname)}')" data-tip="Open supplier scorecard &amp; contact">${esc(vname)} →</button>`],
+    ['Lead time',esc((it.lead_working_days||'?')+' working days')],
+    ['Unit cost','$'+(+(it.unit_cost||0)).toFixed(2)],['Planner', esc(it.planner||'—')],
+    ['Unit of order','MOQ '+fmtN(it.moq)+' · multiple '+fmtN(it.po_mult!=null?it.po_mult:it.order_multiple)]]
+    .map(r=>`<div class="dtable-row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
+  document.getElementById('dStripSec').hidden=!renderCompactStrip(document.getElementById('dStrip'),strip);
+  document.getElementById('dFcSec').hidden=!fcChart(document.getElementById('dFc'),fc);
+  document.getElementById('scrim').classList.add('on');
+  document.getElementById('drawer').classList.add('on');
+}
+const openDrawerDemo = openDrawer;
+openDrawer = function(id){
+  if(API_LIVE){ openDrawerLive(id).catch(()=>openDrawerDemo(id)); }
+  else openDrawerDemo(id);
+};
+
+/* ---- master loader ---- */
+let API_LIVE=false;
+async function loadLive(){
+  let mode='offline';
+  try{ const hh=await api('/api/health'); API_LIVE=true; mode=hh.mode||'live'; }catch(e){ API_LIVE=false; }
+  const fresh=document.querySelector('.fresh span:last-child');
+  if(fresh) fresh.innerHTML = mode==='live' ? 'Live · <b>connected</b>'
+    : mode==='demo' ? 'Demo dataset · <b>no database</b>' : 'Demo data · API offline';
+  if(!API_LIVE) return;
+  // HONEST freshness (v2 engine): real refresh timestamps from plan.refresh_log,
+  // replacing the old hardcoded "Pipeline refreshed" text.
+  try{
+    const f=await api('/api/refresh');
+    const t=s=>s?esc(String(s).slice(5,16)):'—';
+    if(fresh&&(f.frequent||f.weekly))
+      fresh.innerHTML=(mode==='demo'?'Demo · ':'')+
+        `promise data <b>${t(f.frequent)}</b> · weekly stats <b>${t(f.weekly)}</b>`;
+  }catch(e){}
+  document.querySelectorAll('.live-only').forEach(el=>el.hidden=false);
+  const jobs=[loadAct(),loadPlan(),loadMoney(),loadTrust(),loadSuppliers(),loadBuild(''),excessDrill('proj'),loadSourcing(),loadPlanners(),loadTrustExtras(),loadValidation(),loadSupplierTodo(),loadOverviewKpis(),loadRegister('blankets'),loadWorkload(),loadGlossaryRuns()];
+  (await Promise.allSettled(jobs)).forEach(r=>{
+    if(r.status==='rejected') console.info('partial live load:', r.reason && r.reason.message);});
+}
+wireSearch('topSearch','topSug','openDrawer');
+wireSearch('promiseSearch','promiseSug','loadPromise');
+wireSearch('stripSearch','stripSug','loadStripFor');
+wireSearch('bomSearch','bomSug','loadBomFor');
+wireSupplierSearch();
+
+/* ---------------- interactive layer ---------------- */
+const REDUCED=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* floating tooltip for every [data-tip] element (charts, matrix cells, strip) */
+const tipEl=document.createElement('div');tipEl.className='viz-tip';tipEl.setAttribute('role','status');
+document.body.appendChild(tipEl);
+let tipTarget=null;
+function placeTip(x,y){
+  tipEl.style.left=Math.max(96,Math.min(window.innerWidth-96,x))+'px';
+  tipEl.style.top=Math.max(52,y-6)+'px';
+}
+document.addEventListener('mouseover',e=>{
+  const t=e.target.closest('[data-tip]');
+  if(t===tipTarget)return;
+  tipTarget=t;
+  if(t){tipEl.innerHTML=t.dataset.tip;tipEl.classList.add('on');placeTip(e.clientX,e.clientY);}
+  else tipEl.classList.remove('on');
+});
+document.addEventListener('mousemove',e=>{if(tipTarget)placeTip(e.clientX,e.clientY);});
+document.addEventListener('focusin',e=>{
+  const t=e.target.closest?e.target.closest('[data-tip]'):null;
+  if(t){const r=t.getBoundingClientRect();tipTarget=t;tipEl.innerHTML=t.dataset.tip;tipEl.classList.add('on');placeTip(r.left+r.width/2,r.top);}
+});
+document.addEventListener('focusout',()=>{if(tipTarget&&document.activeElement!==tipTarget){tipTarget=null;tipEl.classList.remove('on');}});
+document.addEventListener('scroll',()=>{tipTarget=null;tipEl.classList.remove('on');},true);
+
+/* count-up animation on headline numbers (respects reduced motion) */
+function animateValue(el){
+  if(REDUCED||!el||el.dataset.counted)return;
+  el.dataset.counted='1';
+  const txt=el.textContent;
+  const m=txt.match(/-?[\d,]+(\.\d+)?/);
+  if(!m)return;
+  const num=parseFloat(m[0].replace(/,/g,''));
+  if(!isFinite(num)||num===0)return;
+  const dec=(m[0].split('.')[1]||'').length;
+  const hasComma=m[0].includes(',');
+  const pre=txt.slice(0,m.index),post=txt.slice(m.index+m[0].length);
+  const t0=performance.now(),dur=650;
+  function frame(t){
+    const p=Math.min(1,(t-t0)/dur),ease=1-Math.pow(1-p,3);
+    let v=(num*ease).toFixed(dec);
+    if(hasComma)v=(+v).toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+    el.textContent=pre+v+post;
+    if(p<1)requestAnimationFrame(frame);else el.textContent=txt;
+  }
+  requestAnimationFrame(frame);
+}
+function animateAllValues(){
+  document.querySelectorAll('.sc-v,.kpi-v,.hcell-v').forEach(animateValue);
+}
+function setAnimated(el,text){if(!el)return;el.textContent=text;delete el.dataset.counted;animateValue(el);}
+
+/* sortable tables: click (or Enter) on any column header */
+function sortVal(s){
+  s=s.trim();
+  if(!s||s==='—')return -Infinity;
+  if(/^[A-Za-z]{3} \d{1,2}$/.test(s)){const d=Date.parse(s+', '+new Date().getFullYear());if(!isNaN(d))return d;}
+  const m=s.replace(/[,$%×]/g,'').match(/-?\d+(\.\d+)?/);
+  if(m)return parseFloat(m[0]);
+  return s.toLowerCase();
+}
+function wireSortable(){
+  document.querySelectorAll('table.q').forEach(tb=>{
+    tb.querySelectorAll('thead th').forEach((th,i)=>{
+      th.classList.add('sortable');th.tabIndex=0;th.setAttribute('role','button');
+      th.setAttribute('aria-label','Sort by '+th.textContent.trim());
+      const go=()=>{
+        const asc=!th.classList.contains('asc');
+        tb.querySelectorAll('thead th').forEach(h=>{h.classList.remove('asc','desc');h.removeAttribute('aria-sort');});
+        th.classList.add(asc?'asc':'desc');
+        th.setAttribute('aria-sort',asc?'ascending':'descending');
+        const body=tb.querySelector('tbody');
+        [...body.rows].map(r=>[sortVal(r.cells[i]?r.cells[i].textContent:''),r])
+          .sort((a,b)=>{const x=a[0],y=b[0];
+            const c=(typeof x==='number'&&typeof y==='number')?x-y:String(x).localeCompare(String(y));
+            return asc?c:-c;})
+          .forEach(([,r])=>body.appendChild(r));
+      };
+      th.addEventListener('click',go);
+      th.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
+    });
+  });
+}
+
+/* spend-runway legend doubles as a series toggle */
+function wireLegend(){
+  document.querySelectorAll('#page-plan .bridge-foot .bf').forEach((bf,i)=>{
+    bf.classList.add('toggle');bf.tabIndex=0;bf.setAttribute('role','button');
+    bf.setAttribute('aria-label','Toggle series '+bf.textContent.trim());
+    const flip=()=>{
+      bf.classList.toggle('off');
+      const off=bf.classList.contains('off');
+      bf.setAttribute('aria-pressed',!off);
+      document.querySelectorAll('#spendChart [data-si="'+i+'"]').forEach(r=>r.style.opacity=off?0.08:'');
+    };
+    bf.addEventListener('click',flip);
+    bf.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flip();}});
+  });
+}
+
+/* keyboard: Enter activates rows and list items */
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return;
+  const t=e.target;
+  if(t.matches&&t.matches('tr[onclick],.lrow[onclick],.pos-cell'))t.click();
+});
+
+/* ---------------- init ---------------- */
+renderQueue();renderStrip();renderCharts();
+go('overview');
+wireSortable();wireLegend();animateAllValues();
+loadLive();
+</script>
+</body>
+</html>

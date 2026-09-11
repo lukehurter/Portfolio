@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+
+# pyodbc is only needed for live mode (PA_DEMO unset or 0), where the app
+# connects to the real SQL Server database. It also requires the Microsoft
+# "ODBC Driver 18 for SQL Server" to be installed separately (not a pip
+# package). Demo mode (PA_DEMO=1) never imports pyodbc.
+# pyodbc

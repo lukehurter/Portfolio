@@ -1,0 +1,144 @@
+{
+ "$comment": [
+  "Print engines quoted inside Axim print-and-apply systems, documented by the",
+  "people who make them.",
+  "",
+  "Every URL here was resolved by hand and checked to return 200 — the images, the",
+  "product pages and the datasheets. None is constructed from a model number. A",
+  "plausible URL that 404s in front of a customer is worse than no link, and the same",
+  "rule governs the datasheet citations on the rules.",
+  "",
+  "The Kestrel engines were absent from the first pass because nobody had checked their",
+  "pages. Told where to look — \"Kestrel has the information on their site too\" — so they",
+  "are here now on the same terms as the Palisade ones.",
+  "",
+  "'doc' is what a rep would ask for by name; 'docUrl' is where it actually is.",
+  "",
+  "`kind` is what the link should be CALLED. Palisade publishes a spec-sheet PDF;",
+  "Kestrel publishes a specifications web page. Labelling both 'datasheet (PDF)'",
+  "was reported as a bug on the Axim side and it was the same bug here.",
+  "",
+  "",
+  "The Corvus 7300 series is photographed in two places and neither is axim.example,",
+  "whose 9000 page is marketing copy and icons. The four standard machines share the",
+  "studio shot from page 2 of the Corvus brochure — they are one cabinet, with",
+  "identical dimensions on the brochure's own table — and the 7340 Prism has its",
+  "own from Corvus's product page, where the cabinet is badged so a rep can see which",
+  "machine it is.",
+  "",
+  "`imagePdf` extracts from a document at build time and is pinned by page, image",
+  "index and expected dimensions: a reissued brochure fails the build rather than",
+  "quietly shipping whatever image landed at that position."
+ ],
+ "models": {
+  "PE311": {
+   "name": "Palisade PE311 print engine",
+   "image": "https://www.palisade.example/content/dam/palisade_dam/global/zcom-web-production/web-production-photography/web001/ze500-series-front-511-3x2-3600.jpg",
+   "page": "https://www.palisade.example/us/en/products/printers/print-engines/ze500/ze511.html",
+   "doc": "PE311/PE321 Print Engines Specification Sheet",
+   "docUrl": "https://www.palisade.example/content/dam/palisade_dam/en/spec-sheets/ze511-ze521-spec-sheet-en-us.pdf",
+   "kind": "datasheet"
+  },
+  "PE321": {
+   "name": "Palisade PE321 print engine",
+   "image": "https://www.palisade.example/content/dam/palisade_dam/global/zcom-web-production/web-production-photography/web001/ze500-series-front-521-3x2-3600.jpg",
+   "page": "https://www.palisade.example/us/en/products/printers/print-engines/ze500/ze521.html",
+   "doc": "PE311/PE321 Print Engines Specification Sheet",
+   "docUrl": "https://www.palisade.example/content/dam/palisade_dam/en/spec-sheets/ze511-ze521-spec-sheet-en-us.pdf",
+   "kind": "datasheet"
+  },
+  "K84X": {
+   "name": "Kestrel K84X print engine",
+   "image": "https://www.kestrel.example/adobe/dynamicmedia/deliver/dm-aid--79526c7f-7a88-4674-9e77-a878bc72a9fe/old-1220x1220-products-s84nx-left-label.png",
+   "page": "https://www.kestrel.example/products/printers/print-engines/s84nx/",
+   "doc": "Kestrel K84X specifications",
+   "docUrl": "https://www.kestrel.example/products/printers/print-engines/s84nx/specifications/",
+   "kind": "specification"
+  },
+  "K86X": {
+   "name": "Kestrel K86X print engine",
+   "image": "https://www.kestrel.example/adobe/dynamicmedia/deliver/dm-aid--8f56b741-d2ff-4c77-948d-65f05aed87af/old-1220x1220-products-s86nx-left.png",
+   "page": "https://www.kestrel.example/products/printers/print-engines/s86nx/",
+   "doc": "Kestrel K86X specifications",
+   "docUrl": "https://www.kestrel.example/products/printers/print-engines/s86nx/specifications/",
+   "kind": "specification"
+  },
+  "7300": {
+   "name": "Corvus 7300",
+   "page": "https://www.axim.example/products/productcoding/smallcharactercontinuousinkjet(cij)printer/9000",
+   "doc": "Corvus 7300 Series brochure (MP41306/2)",
+   "docUrl": "https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "kind": "brochure",
+   "imagePdf": {
+    "url": "https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+    "page": 2,
+    "xref": 8,
+    "expect": [
+     2975,
+     2105
+    ],
+    "what": "Corvus 7300 Series brochure MP41306/2, page 2 — the studio shot of the machine on its trolley"
+   }
+  },
+  "7310": {
+   "name": "Corvus 7310",
+   "page": "https://www.axim.example/products/productcoding/smallcharactercontinuousinkjet(cij)printer/9000",
+   "doc": "Corvus 7300 Series brochure (MP41306/2)",
+   "docUrl": "https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "kind": "brochure",
+   "imagePdf": {
+    "url": "https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+    "page": 2,
+    "xref": 8,
+    "expect": [
+     2975,
+     2105
+    ],
+    "what": "Corvus 7300 Series brochure MP41306/2, page 2 — the studio shot of the machine on its trolley"
+   }
+  },
+  "7320": {
+   "name": "Corvus 7320",
+   "page": "https://www.axim.example/products/productcoding/smallcharactercontinuousinkjet(cij)printer/9000",
+   "doc": "Corvus 7300 Series brochure (MP41306/2)",
+   "docUrl": "https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "kind": "brochure",
+   "imagePdf": {
+    "url": "https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+    "page": 2,
+    "xref": 8,
+    "expect": [
+     2975,
+     2105
+    ],
+    "what": "Corvus 7300 Series brochure MP41306/2, page 2 — the studio shot of the machine on its trolley"
+   }
+  },
+  "7340": {
+   "name": "Corvus 7340",
+   "page": "https://www.axim.example/products/productcoding/smallcharactercontinuousinkjet(cij)printer/9000",
+   "doc": "Corvus 7300 Series brochure (MP41306/2)",
+   "docUrl": "https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "kind": "brochure",
+   "imagePdf": {
+    "url": "https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+    "page": 2,
+    "xref": 8,
+    "expect": [
+     2975,
+     2105
+    ],
+    "what": "Corvus 7300 Series brochure MP41306/2, page 2 — the studio shot of the machine on its trolley"
+   }
+  },
+  "7340 Prism": {
+   "name": "Corvus 7340 Prism",
+   "image": "https://www.corvus.example/wp-content/uploads/2026/05/LX4830-e1778747379813.png",
+   "page": "https://www.axim.example/products/productcoding/smallcharactercontinuousinkjet(cij)printer/9000",
+   "doc": "Corvus 7300 Series brochure (MP41306/2)",
+   "docUrl": "https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "kind": "brochure",
+   "imageSource": "corvus.example, Corvus 9000 Series product page — the machine badged 7340 Prism"
+  }
+ }
+}

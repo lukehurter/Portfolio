@@ -1,0 +1,36 @@
+{
+  "name": "axim-cpq-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Axim CPQ — rep quote builder and admin rule editor.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:preview": "cross-env CPQ_PREVIEW=1 vite build --outDir dist-preview",
+    "typecheck": "tallon --noEmit",
+    "preview": "vite preview",
+    "dev:preview": "cross-env CPQ_PREVIEW=1 vite"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.3",
+    "@types/node": "^26.1.2",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.19",
+    "cross-env": "^7.0.3",
+    "jsdom": "^25.0.1",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.0",
+    "vite-plugin-singlefile": "^2.0.2",
+    "vitest": "^4.1.10"
+  }
+}

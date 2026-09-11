@@ -1,0 +1,1029 @@
+{
+ "$comment": [
+  "Rules from the spec sheets supplied 8 August 2026, in Datasheets/.",
+  "",
+  "WHY THERE ARE ONLY SIX",
+  "",
+  "Twenty-three sheets arrived and most of what they say was already in the rules —",
+  "the 200 and 650 fpm valve-jet limits, the 200 and 500 fpm thermal-jet limits, 104F",
+  "on nearly everything. That is the good outcome for a set of rules built from",
+  "technical data: an independent document agrees with them. Ten of those citations",
+  "now name the spec sheet rather than a product page.",
+  "",
+  "What is here is the figures nothing had read yet. Four of the six are temperature",
+  "floors and a throughput ceiling, which are only reachable at all because the parser",
+  "learned to read '105F', '41C' and '240 bags a minute' in the same pass.",
+  "",
+  "WHAT IS NOT HERE, AND WHY",
+  "",
+  "The four laser sheets, the Thorne T200 and the CIJ 5400 and CJ250 sheets are all real",
+  "and all quotable one day. None of those machines is in the preview catalogue, so a",
+  "rule keyed to them would be a rule that cannot fire — the exact fault the rule",
+  "editor was just fixed to prevent. They are in PLAN.md as work with the data in hand",
+  "rather than written here and left silent.",
+  "",
+  "LASER, 14 AUGUST 2026",
+  "",
+  "LSR had four rules and every one named the CSL60, so the CSL10, the CSL30 and",
+  "both fibre lasers were ungraded on every application a rep could describe. The",
+  "three laser sheets separate them, and the differences decide quotes: the CSL10",
+  "is IP54 with no washdown option where the CSL30 has one; the fibre lasers stop",
+  "at 50F where the scribing lasers reach 41F; the fibre conduit is 2.7 m against",
+  "10 m; and the materials lists do not overlap - paper and card are scribing-only,",
+  "metal and foil are what fibre is specified for.",
+  "",
+  "THE 5400, AND THE PORTFOLIO'S SPEC TABLES, 14 AUGUST 2026",
+  "",
+  "The 6400 family had nine rules and the 5400 had none - 944 parts across the",
+  "5400, the 5400 IP65 and the Prism, none of them gradeable. Its figures",
+  "differ from the 6400's in every case that matters: 1,230 fpm rather than four",
+  "different ceilings, characters from 1.0 mm where the 6400 range starts at 1.8,",
+  "and the Prism IP65 as standard where only the 6440 is in the other family.",
+  "",
+  "The citations here are product pages rather than spec sheets. The pages carry",
+  "the same figures in a two-column table, which is why build_specs.py can read",
+  "them generically - and several of these figures appear on no datasheet in",
+  "Datasheets/ at all.",
+  "",
+  "THE 6400 PLUS SERIES, 14 AUGUST 2026",
+  "",
+  "Not a gap: a wrong answer. Every 6400-family speed and character rule listed",
+  "the PLUS models alongside the standard ones and applied the standard sheet's",
+  "figures. The PLUS sheet differs in both directions - 557 fpm rather than 574,",
+  "and characters to 10.7 and 13.5 mm rather than 8.6 and 11.9. So a 565 fpm line",
+  "was graded fine on a machine past its maximum, and a 10 mm code was ruled out",
+  "on one that prints it. The standard rules are narrowed to the standard models."
+ ],
+ "rules": [
+  {
+   "ruleCode": "A-PALM-PPM-MAX",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Above 120 products a minute the PL6300 cannot keep up, whichever module is fitted.",
+   "detail": "Product Rate: 'E-Tamp Up to 120 PPM', and every other module on the sheet is slower — E-Tamp/Blow up to 55 PPM, E-FASA single apply up to 52 PPM and dual up to 28 PPM. 120 is therefore the ceiling for the machine, not for one option on it.",
+   "sourceRef": "Datasheets/Axim PL6300 All-Electric Print and Apply Labeler Datasheet 4P.md, Product Rate — https://www.axim.example/Portals/0/adam/Content/kz0RfVyTLUGlFiswfxHTlw/DownloadUrl/Axim%20PL6300%20Technical%20Datasheet.pdf",
+   "author": "Axim PL6300 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "PL6300/LS7100"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "throughputPpm",
+     "compareOp": "gt",
+     "compareValue": "120"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The fastest PL6300 module applies 120 labels a minute. This line runs more products than that."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-PPM-MODULE",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Above 55 products a minute the choice of apply module stops being free.",
+   "detail": "Product Rate: E-Tamp up to 120 PPM, E-Tamp/Blow up to 55 PPM, E-FASA single apply up to 52 PPM, dual apply up to 28 PPM, E-WASA dependent on label length. Past 55 the E-Tamp is the only module that keeps up, so the module is decided by the line rather than by preference.",
+   "sourceRef": "Datasheets/Axim PL6300 All-Electric Print and Apply Labeler Datasheet 4P.md, Product Rate — https://www.axim.example/Portals/0/adam/Content/kz0RfVyTLUGlFiswfxHTlw/DownloadUrl/Axim%20PL6300%20Technical%20Datasheet.pdf",
+   "author": "Axim PL6300 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "PL6300/LS7100"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "throughputPpm",
+     "compareOp": "gt",
+     "compareValue": "55"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Past 55 a minute only the E-Tamp keeps up — the blow, swing-arm and wipe modules are all slower."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-TEMP-HOT",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Print and apply is rated to 104F, and to 85 percent humidity without condensation.",
+   "$note": "A-PALM-TEMP was taken: that one reads the environment for 'refrigerated'. This one reads the figure.",
+   "detail": "Temperature: '41F - 104F (5C to 40C)'. Humidity: '10 to 85% Relative Humidity, Non-Condensing'. The LB5200 sheet gives the same range. Nothing in the PALM rules read the ambient temperature before this, so a labeller beside an oven was graded on speed alone.",
+   "sourceRef": "Datasheets/Axim PL6300 All-Electric Print and Apply Labeler Datasheet 4P.md, Temperature — https://www.axim.example/Portals/0/adam/Content/kz0RfVyTLUGlFiswfxHTlw/DownloadUrl/Axim%20PL6300%20Technical%20Datasheet.pdf",
+   "author": "Axim PL6300 datasheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMaxF",
+     "compareOp": "gt",
+     "compareValue": "104"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Rated to 104F. Confirm the ambient at the labeller, not in the room."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-TEMP-COLD",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Below 41F a print and apply labeller is outside its rated range.",
+   "detail": "Temperature: '41F - 104F (5C to 40C)'. A label adhesive has its own cold limit on top of this, which is a question for the label rather than the machine — but the machine's own floor is 41F.",
+   "sourceRef": "Datasheets/Axim LB5200 All-Electric Label Applicator Datasheet.md, Temperature — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMinF",
+     "compareOp": "lt",
+     "compareValue": "41"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Below 41F is outside the rated range, and the label adhesive will need checking separately."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-VIJ-TEMP-COLD",
+   "technologyCode": "VIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Below 40F the valve jet is outside its rated range.",
+   "detail": "Operating temperature: '40F to 104F (5C to 40C)'. The valve jet rules read the maximum already; nothing read the floor, so a coder going into a chilled room was graded as though the cold did not matter.",
+   "sourceRef": "Datasheets/Axim VJ2600 Integrated Valve Jet Datasheet.md, Operating Temperature — https://www.axim.example/products/casecodinglabeling/largecharacterinkjetprinter/iv18-dot",
+   "author": "Axim VJ2600 datasheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMinF",
+     "compareOp": "lt",
+     "compareValue": "40"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Rated from 40F. Confirm the ink is specified for the cold as well as the machine."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-COLD-OPTION",
+   "technologyCode": "PIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Below 50F the impulse jet needs its 32F option specified.",
+   "detail": "Operating temperature: '50F to 104F (10C to 40C), 32F Option (0C)'. This is the useful shape of a cold limit — not a refusal but an option to order, and one a rep will only know to ask for if the quote says so.",
+   "sourceRef": "Datasheets/Axim HR2600 High Resolution Inkjet Datasheet.md, Operating Temperature — https://www.axim.example/products/casecoding/highresolutioninkjet",
+   "author": "Axim HR2600 datasheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMinF",
+     "compareOp": "lt",
+     "compareValue": "50"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Standard range starts at 50F. There is a 32F option — specify it rather than quoting the standard build."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-IP-CSL10",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The CSL10 is IP54 only. There is no washdown option for it.",
+   "detail": "Laser Head Protection Class is given per model: 'IP54' for the CSL10 and 'IP54 or IP65 (Optional)' for the CSL30. The CSL10 is the one model in the scribing range with no IP65 configuration to quote, so a washdown area is not a matter of adding an option to it.",
+   "sourceRef": "Datasheets/Literature_Laser_Corvus LC20&30_SpecSheetWEB.md, Laser Head Protection Class — https://www.axim.example/products/productcoding/laser",
+   "author": "Corvus CSL10 & CSL30 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "CSL10"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "washdown"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The CSL10 has no IP65 version. For a washdown area quote the CSL30 or CSL60 with the IP65 option and its blower unit."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-IP-FSL",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The fibre lasers are IP54. Neither has a washdown option.",
+   "detail": "Laser Head Protection Class: 'IP54', with no optional rating given for either the FSL20 or the FSL50 — unlike the scribing sheets, which name the IP65 option where it exists.",
+   "sourceRef": "Datasheets/Literature_Laser_Corvus LF30&50_SpecSheetWEB.md, Laser Head Protection Class — https://www.axim.example/products/productcoding/lasercoders/corvusfsl20andfsl50fiberlasers",
+   "author": "Corvus FSL20 & FSL50 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "FSL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "washdown"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The fibre lasers are IP54 only. A washdown area needs a CSL30 or CSL60 in its IP65 configuration."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-TEMP-FSL-MIN",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The fibre lasers stop nine degrees short of the scribing ones: 50°F, not 41°F.",
+   "detail": "Operating Temperature Range: '50-104°F Ambient' on the fibre sheet, against '41-104°F Ambient' on both scribing sheets. A chilled room that a CSL will start in is below the fibre laser's floor.",
+   "sourceRef": "Datasheets/Literature_Laser_Corvus LF30&50_SpecSheetWEB.md, Operating Temperature Range — https://www.axim.example/products/productcoding/lasercoders/corvusfsl20andfsl50fiberlasers",
+   "author": "Corvus FSL20 & FSL50 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "FSL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMinF",
+     "compareOp": "lt",
+     "compareValue": "50"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Below 50°F the fibre lasers are outside their stated range. The scribing lasers are rated to 41°F."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-TEMP-CSL-MIN",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "41°F is the floor for the scribing lasers.",
+   "detail": "Operating Temperature Range: '41-104°F Ambient', the same figure on the CSL10/30 sheet and the CSL60 sheet. A cold store below that is outside what either is rated for.",
+   "sourceRef": "Datasheets/Literature_Laser_Corvus LC20&30_SpecSheetWEB.md, Operating Temperature Range — https://www.axim.example/products/productcoding/laser",
+   "author": "Corvus CSL10 & CSL30 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "CSL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMinF",
+     "compareOp": "lt",
+     "compareValue": "41"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The scribing lasers are rated from 41°F ambient. This area is colder than that."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-SPD-CSL",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "2,952 ft/min is the published ceiling for every scribing laser, not just the CSL60.",
+   "detail": "Line Speed: 'Up to 2,952 ft/min (Code and Substrate Dependent)' — the same figure on the CSL10/30 sheet as on the CSL60. Power decides what can be marked at that speed, not whether the speed can be reached.",
+   "sourceRef": "Datasheets/Literature_Laser_Corvus LC20&30_SpecSheetWEB.md, Line Speed — https://www.axim.example/products/productcoding/laser",
+   "author": "Corvus CSL10 & CSL30 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "CSL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "2952"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past 2,952 ft/min there is no published laser figure to quote against."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-PWR-HARD",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "Glass and PET at speed are what the 60W tube is for.",
+   "detail": "'The high power 60W laser tube is ideal for coding onto hard to mark materials, like glass PET bottles, and high-speed lines' — coding up to 70,000 bottles per hour, application dependent.",
+   "sourceRef": "Datasheets/Literature_Laser_Corvus LC70_SpecSheetWEB.md, Key Features — https://www.axim.example/products/productcoding/laser",
+   "author": "Corvus CSL60 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "CSL60"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "substrate",
+     "compareOp": "includesAny",
+     "compareValue": "glass,pet,bottle"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "good",
+     "message": "The 60W tube is the one specified for glass and PET."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-SUB-FSL",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "The fibre lasers are for metal, plastics and foils.",
+   "detail": "'precision marking for complete traceability onto a wide range of materials including metal, plastics and packaging foils'. The scribing sheets name paper, card, glass and rubber; the fibre sheet does not.",
+   "sourceRef": "Datasheets/Literature_Laser_Corvus LF30&50_SpecSheetWEB.md, product description — https://www.axim.example/products/productcoding/lasercoders/corvusfsl20andfsl50fiberlasers",
+   "author": "Corvus FSL20 & FSL50 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "FSL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "substrate",
+     "compareOp": "includesAny",
+     "compareValue": "metal,aluminium,aluminum,steel,foil"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "good",
+     "message": "Metal and foil are what the fibre lasers are specified for."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-SUB-FSL-PAPER",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Paper and board are not on the fibre laser's list of materials.",
+   "detail": "The fibre sheet names 'metal, plastics and packaging foils'. Coated paper and card appear on the scribing sheets instead — the CSL30 carries a 10.2μm 'Card' wavelength option for exactly this.",
+   "sourceRef": "Datasheets/Literature_Laser_Corvus LF30&50_SpecSheetWEB.md, product description — https://www.axim.example/products/productcoding/lasercoders/corvusfsl20andfsl50fiberlasers",
+   "author": "Corvus FSL20 & FSL50 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "FSL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "substrate",
+     "compareOp": "includesAny",
+     "compareValue": "corrugated,carton,card,board,paper,kraft"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "For paper or board quote a scribing laser — the CSL30 has a 10.2μm card option."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-SUB-CSL-PET",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "PET has its own wavelength on the scribing lasers: 9.3μm.",
+   "detail": "Laser Wave Length: CSL10 '10.6μm (Standard) or 9.3μm (PET)'; CSL30 '10.6μm (Standard) 10.2μm (Card) 9.3μm (PET)'. The wavelength is chosen with the machine, so it belongs on the quote rather than after it.",
+   "sourceRef": "Datasheets/Literature_Laser_Corvus LC20&30_SpecSheetWEB.md, Laser Wave Length — https://www.axim.example/products/productcoding/laser",
+   "author": "Corvus CSL10 & CSL30 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "CSL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "substrate",
+     "compareOp": "includesAny",
+     "compareValue": "pet,polyester"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Quote the 9.3μm tube for PET. 10.6μm is the standard wavelength and is not the one specified for it."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-CONDUIT-FSL",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The fibre laser's conduit is 2.7 m and does not come longer.",
+   "detail": "Conduit Length: '8.8 ft (2.7m)', a single figure. The scribing lasers offer '9.8 ft (3 m) — Standard, 16.4 ft (5 m) — Optional, 32.8 ft (10 m) — Optional', so a supply unit that has to sit away from the line is a scribing-laser question.",
+   "sourceRef": "Datasheets/Literature_Laser_Corvus LF30&50_SpecSheetWEB.md, Conduit Length — https://www.axim.example/products/productcoding/lasercoders/corvusfsl20andfsl50fiberlasers",
+   "author": "Corvus FSL20 & FSL50 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "FSL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "throwDistMm",
+     "compareOp": "gt",
+     "compareValue": "2700"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The fibre laser's conduit is 2.7 m. The scribing lasers go to 10 m."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-CHAR-MAX",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "A laser's character height is limited by the marking field, up to 601 mm.",
+   "detail": "Code Height: 'Up to Marking Field Size — Max Height of 601 mm' on the CSL60. The CSL10/30 sheet gives the field itself: 'up to 15.7in x 23.6in (400mm x 600mm), the largest marking area in the industry'. Character height is therefore a lens and field question, not a machine limit.",
+   "sourceRef": "Datasheets/Literature_Laser_Corvus LC70_SpecSheetWEB.md, Code Height — https://www.axim.example/products/productcoding/laser",
+   "author": "Corvus CSL60 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "CSL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "charHeightMm",
+     "compareOp": "gt",
+     "compareValue": "601"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "601 mm is the tallest code height the CSL60 sheet states."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-SPD-5400",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Above 1,230 fpm the 5400 is past its single-line maximum.",
+   "detail": "Max speed; single line print: '1,230 fpm'. The 6400 range publishes different figures again — 574 for the 6400, 1,433 for the 6410 and 6420, 1,791 for the 6440 — so a line above 1,230 is an 6400-family question rather than a 5400 one.",
+   "sourceRef": "https://www.axim.example/products/productcoding/smallcharacter/corvus5400, Max speed; single line print",
+   "author": "Corvus 5400 product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "5400"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "1230"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The 5400 prints a single line to 1,230 fpm. Above that the 6410 and up are the published answer."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-CHR-5400-MAX",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The 5400 tops out at 13.7 mm characters, taller than any 6400.",
+   "detail": "Character Height Range: '0.04\" to 0.54\"' — 1.0 mm to 13.7 mm. That is the tallest character in the CIJ range here; the 6420 and 6440 stop at 0.47\" (11.9 mm) and the 6400 and 6410 at 0.34\" (8.6 mm).",
+   "sourceRef": "https://www.axim.example/products/productcoding/smallcharacter/corvus5400, Character Height Range",
+   "author": "Corvus 5400 product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "5400"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "charHeightMm",
+     "compareOp": "gt",
+     "compareValue": "13.7"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "13.7 mm is the tallest character the 5400 prints, and the tallest in this CIJ range."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-CHR-5400-MIN",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "The 5400 prints smaller than the 6400 range: down to 1.0 mm.",
+   "detail": "Character Height Range: '0.04\" to 0.54\"'. The 6400 range starts at 0.07\" (1.8 mm), so a code specified below that is a 5400 question.",
+   "sourceRef": "https://www.axim.example/products/productcoding/smallcharacter/corvus5400, Character Height Range",
+   "author": "Corvus 5400 product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "5400"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "charHeightMm",
+     "compareOp": "lt",
+     "compareValue": "1.8"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "good",
+     "message": "The 5400 prints down to 1.0 mm, below the 6400 range's 1.8 mm floor."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-IP-5400",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "A 5400 is IP55 unless the IP65 version is quoted. The Prism is IP65 already.",
+   "detail": "Ingress Protection rating: 'IP55, optional IP65. Prism IP65 as standard'. IP55 is dust and low-pressure jets, which is not a washdown rating — the same distinction the 6400 range makes between the 6440 and the rest.",
+   "sourceRef": "https://www.axim.example/products/productcoding/smallcharacter/corvus5400, Ingress Protection rating",
+   "author": "Corvus 5400 product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "eq",
+     "compareValue": "5400"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "washdown"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Quote the 5400 IP65 version, or the Prism, which is IP65 as standard."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-IP-5400-OK",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "The Prism and the 5400 IP65 are the washdown machines in the 5400 range.",
+   "detail": "Ingress Protection rating: 'IP55, optional IP65. Prism IP65 as standard'.",
+   "sourceRef": "https://www.axim.example/products/productcoding/smallcharacter/corvus5400, Ingress Protection rating",
+   "author": "Corvus 5400 product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "5400 IP65,5400 Prism"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "washdown"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "good",
+     "message": "IP65, which is the washdown rating."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-HUMID-5400",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The 5400's humidity rating stops at condensation.",
+   "detail": "Humidity Range (r.h., non-condensing): '90% max'. Ninety percent is generous, and the words that matter are 'non-condensing': a pack coming out of a chiller into a warm room carries condensation whatever the room reads.",
+   "sourceRef": "https://www.axim.example/products/productcoding/smallcharacter/corvus5400, Humidity Range",
+   "author": "Corvus 5400 product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "5400"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "condensation or humidity"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Rated to 90% humidity but not to condensation. Check whether the pack is condensing at the print position."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LABEL-MIN",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "A print-and-apply label is at least half an inch wide, so the pack needs the room.",
+   "detail": "Label Width: '0.5\" min. to 6.5\" max.' on the PL6300 and '0.5\" (12.7 mm) Min. to 6\" (152.4 mm) Max.' on the LB5200. A clear area narrower than 12.7 mm cannot take the smallest label either machine runs, whatever else is true of the application.",
+   "sourceRef": "https://www.axim.example/products/palletlabeling/printapplylabeling/pa7100, Label Width",
+   "author": "Axim PL6300 product page",
+   "triggers": [
+    {
+     "triggerType": "role",
+     "itemRole": "printer"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markingWindowMm",
+     "compareOp": "lt",
+     "compareValue": "12.7"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The smallest label these machines apply is 12.7 mm wide. This pack has less clear area than that — it is a direct-coding job rather than a labelling one."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LABEL-MAX",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "The LB5200 takes a longer label than the PL6300: 22 inches against 14.",
+   "detail": "Label Length: '1\" (25.4 mm) Min. to 22\" (558.8 mm) Max.' on the LB5200, against '0.5\" min. to 14\" max.' on the PL6300. A wrap-around or full-face label past 14 inches is an LB5200 question.",
+   "sourceRef": "https://www.axim.example/products/productcoding/labelapplicator/la7000, Label Length",
+   "author": "Axim LB5200 product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "PL6300"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markingWindowMm",
+     "compareOp": "gt",
+     "compareValue": "355.6"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "The PL6300 runs labels to 14 inches. The LB5200 goes to 22."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TTO-XL-AREA",
+   "technologyCode": "TTO",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The XL Series prints 53 mm tall, the same as an T402+.",
+   "detail": "Print Area (HxW) Intermittent: '53 x 80 mm'; Continuous: '53 x 300 mm'. The height is 53 mm in both modes — what continuous buys is length along the web, not a taller code.",
+   "sourceRef": "https://www.axim.example/products/productcoding/thermaltransfer-overprinting-axim/thornexl5000, Print Area",
+   "author": "Thorne T800 product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "XL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "charHeightMm",
+     "compareOp": "gt",
+     "compareValue": "53"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "53 mm is the XL Series print height in both intermittent and continuous modes."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TTO-XL-RATE",
+   "technologyCode": "TTO",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "450 packs a minute is the XL Series ceiling, and only intermittently.",
+   "detail": "Performance IM at 5mm Print Height: '450 prints per minute'; Performance CM at 5mm Print Height: '250 prints per minute'. Both figures are quoted at a 5 mm code — a taller code takes longer to lay down, so these are ceilings rather than working rates.",
+   "sourceRef": "https://www.axim.example/products/productcoding/thermaltransfer-overprinting-axim/thornexl5000, Performance",
+   "author": "Thorne T800 product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "XL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "throughputPpm",
+     "compareOp": "gt",
+     "compareValue": "450"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The XL Series is published at 450 prints a minute intermittent, 250 continuous, both at a 5 mm code."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TTO-XL-AIR",
+   "technologyCode": "TTO",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "The XL Series needs 5 bar of clean air.",
+   "detail": "Air Pressure: '5 bar'. A line with no compressed air at the print position needs it running before a thermal transfer overprinter can be installed, which is a site question rather than a machine one.",
+   "sourceRef": "https://www.axim.example/products/productcoding/thermaltransfer-overprinting-axim/thornexl5000, Air Pressure",
+   "author": "Thorne T800 product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "XL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "conveyor",
+     "compareOp": "eq",
+     "compareValue": "new"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "5 bar of clean compressed air is needed at the print position. Confirm it is available on a new line."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-PLUS-SPD-6400",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The 6400 Plus stops at 557 fpm, slightly under the standard 6400.",
+   "detail": "Max Speed Single Line: '557 fpm' for the 6400 Plus, against 574 fpm for the standard 6400. A line between the two figures is inside the standard machine and past the Plus.",
+   "sourceRef": "Datasheets/Literature_CIJ_Corvus6400PlusSeries_SpecSheetWEB.md, Max Speed Single Line — https://www.axim.example/products/productcoding/smallcharacter/6400ps",
+   "author": "Corvus 6400 Plus Series spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "eq",
+     "compareValue": "6400PLUS"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "557"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "557 fpm is the 6400 Plus single-line maximum."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-PLUS-CHR-6400",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The 6400 Plus prints to 10.7 mm; the rest of the Plus range goes further.",
+   "detail": "CORRECTS a rule that applied this ceiling to the 6410 Plus as well. Corvus 6400 Plus Series specification sheet, Character height: the 6400 Plus is 0.083\" to 0.421\" (2.1 to 10.7 mm) and the 6410, 6420 and 6440 Plus are 0.083\" to 0.531\" (2.1 to 13.5 mm). Only the 6400 Plus stops at 10.7. Character Height Range: '0.083” – 0.421”' — 2.1 mm to 10.7 mm — against 0.07” to 0.34” (1.8 to 8.6 mm) on the standard 6400 and 6410. The Plus prints taller and does not print as small.",
+   "sourceRef": "Datasheets/Literature_CIJ_Corvus6400PlusSeries_SpecSheetWEB.md, Character Height Range — https://www.axim.example/products/productcoding/smallcharacter/6400ps",
+   "author": "Corvus 6400 Plus Series spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6400PLUS"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "charHeightMm",
+     "compareOp": "gt",
+     "compareValue": "10.7"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Taller than the 6400 Plus's 10.7 mm. The 6410, 6420 and 6440 Plus reach 13.5 mm."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-PLUS-CHR-MAX",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "13.5 mm is the tallest character in the Plus series.",
+   "detail": "Now covers the 6410 Plus, which states the same 0.083\" to 0.531\" as the 6420 and 6440 and was previously grouped with the 6400. Character Height Range: '0.083” – 0.531”' for the 6420 and 6440 Plus — 2.1 mm to 13.5 mm, against 0.47” (11.9 mm) on the standard pair.",
+   "sourceRef": "Datasheets/Literature_CIJ_Corvus6400PlusSeries_SpecSheetWEB.md, Character Height Range — https://www.axim.example/products/productcoding/smallcharacter/6400ps",
+   "author": "Corvus 6400 Plus Series spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6410PLUS,6420PLUS,6440PLUS"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "charHeightMm",
+     "compareOp": "gt",
+     "compareValue": "13.5"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "13.5 mm is the tallest character anywhere in the Plus series."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-PLUS-CHR-MIN",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The Plus series does not print as small as the standard one: 2.1 mm, not 1.8.",
+   "detail": "Character Height Range starts at '0.083”' (2.1 mm) on every Plus model, against 0.07” (1.8 mm) on the standard series and 0.04” (1.0 mm) on the 5400. A small code is not what this series is for.",
+   "sourceRef": "Datasheets/Literature_CIJ_Corvus6400PlusSeries_SpecSheetWEB.md, Character Height Range — https://www.axim.example/products/productcoding/smallcharacter/6400ps",
+   "author": "Corvus 6400 Plus Series spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "PLUS"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "charHeightMm",
+     "compareOp": "lt",
+     "compareValue": "2.1"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The Plus series starts at 2.1 mm. For a smaller code quote the standard 6400 series, or the 5400 below 1.8 mm."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-PLUS-CARTON",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "Carton coding to 20.1 mm is what the 6420 and 6440 Plus add.",
+   "detail": "Carton Coding Height: '0.791”' — 20.1 mm — for the 6420 and 6440 Plus, against 'N/A' for the 6400 and 6410 Plus. The standard series sheet carries no such row at all, so a large carton code is the reason to reach for this series.",
+   "sourceRef": "Datasheets/Literature_CIJ_Corvus6400PlusSeries_SpecSheetWEB.md, Carton Coding Height — https://www.axim.example/products/productcoding/smallcharacter/6400ps",
+   "author": "Corvus 6400 Plus Series spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6420PLUS,6440PLUS"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "substrate",
+     "compareOp": "includesAny",
+     "compareValue": "carton,case,corrugated"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "good",
+     "message": "Carton coding to 20.1 mm, which the standard series does not publish."
+    }
+   ]
+  }
+ ]
+}

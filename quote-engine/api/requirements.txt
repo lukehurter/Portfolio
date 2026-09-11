@@ -1,0 +1,25 @@
+# Axim CPQ service
+#
+# Same stack as Planning Analytics — but that project's app has never been deployed
+# either (only its SQL and Power BI model are live), so this stack is a shared choice
+# and not a proven install. Pinned to majors; pin exactly at deployment time from
+# whatever `pip freeze` gives on the server.
+
+fastapi==0.115.*
+uvicorn[standard]==0.32.*
+pydantic==2.9.*
+pyodbc==5.2.*
+
+# Not tests only, though it was filed that way: auth.py imports httpx at module
+# scope to fetch Entra's published signing keys, so the service will not start
+# without it. A dependency mislabelled as optional is one nobody installs on the
+# box that needs it.
+httpx==0.27.*
+
+# tests only
+pytest==8.*
+
+# Validating the Microsoft 365 access token: signature against Entra's
+# published signing keys, plus issuer and audience. The app never handles a
+# password, so this is the whole of what it needs to know who is calling.
+python-jose[cryptography]==3.3.*

@@ -1,0 +1,1143 @@
+{
+  "$comment": [
+    "Discount ceilings written on the price pages themselves.",
+    "",
+    "'Max Discount 5%' against a part, in the discount column of the row that part",
+    "sits on. Unambiguous in a way most of the workbook comments are not, which is",
+    "why these 29 were the ones seeded active while the other 144 stayed drafts.",
+    "",
+    "They were seeded straight into cpq.rule and never went through this generator,",
+    "so the service capped them and the preview did not. Both engines read a cap off",
+    "a rule action; generating them here puts the same ceiling in front of the rep",
+    "and on the order. See data/discount-caps.md."
+  ],
+  "rules": [
+    {
+      "ruleCode": "W-001",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Cbl, CIJ Daisy Chain, 10', IP67, DB9M-M, HD Shielded (PDEM Cable) is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-001 (CIJ workbook, 3. Pick your accessories, G28)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "712295"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "712295",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-002",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Kit, Integration Cabling, 7.5m, CIJ (Machine Integration) is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-002 (CIJ workbook, 3. Pick your accessories, G29)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "404771"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "404771",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-006",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "60\\\" Pole, PH Stnd, CIJ, SS is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Two cells carry the same note on this part; both are named below. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-006 (CIJ workbook, 3. Pick your accessories, G38), W-017 (CIJ workbook, 3. Pick your accessories, G60)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "559427"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "559427",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-011",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "PH Stnd, No Base, CIJ, SS is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-011 (CIJ workbook, 3. Pick your accessories, G54)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "456049"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "456049",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-012",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "H-Base Kit, PH Stnd, CIJ, SS is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-012 (CIJ workbook, 3. Pick your accessories, G55)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "140262"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "140262",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-013",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Flr/Conv Mnt Kit, PH Stnd, CIJ, SS is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-013 (CIJ workbook, 3. Pick your accessories, G56)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "806909"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "806909",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-014",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Link Assy, PH Stnd, CIJ, SS is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-014 (CIJ workbook, 3. Pick your accessories, G57)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "419376"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "419376",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-015",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "PH Mnt Assy, PH Stnd, CIJ, SS is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-015 (CIJ workbook, 3. Pick your accessories, G58)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "922770"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "922770",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-016",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Quick Adjust Kit, PH Stnd, CIJ, SS is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-016 (CIJ workbook, 3. Pick your accessories, G59)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "188194"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "188194",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-018",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "72\\\" Pole, PH Stnd, CIJ, SS is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-018 (CIJ workbook, 3. Pick your accessories, G61)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "091570"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "091570",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-019",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "36\\\" Pole, PH Stnd, CIJ, SS is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-019 (CIJ workbook, 3. Pick your accessories, G62)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "774936"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "774936",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-020",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "23\\\" Pole, PH Stnd, CIJ, SS is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-020 (CIJ workbook, 3. Pick your accessories, G63)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "380413"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "380413",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-021",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "12\\\" Pole, PH Stnd, CIJ, SS is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-021 (CIJ workbook, 3. Pick your accessories, G64)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "797711"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "797711",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-022",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "PH Mnt Assy, Direct Mnt, CIJ, SS is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-022 (CIJ workbook, 3. Pick your accessories, G65)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "322718"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "322718",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-023",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Sensor Mnt, EZ Pro Controller, CIJ is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-023 (CIJ workbook, 3. Pick your accessories, G66)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "947270"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "947270",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-024",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Kit, Beacon Mnt, 6400 Cabinet is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-024 (CIJ workbook, 3. Pick your accessories, G67)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "150725"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "150725",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-025",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Kit, Sensor Mnt, TriTronics FSxxx, CIJ is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-025 (CIJ workbook, 3. Pick your accessories, G68)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "538272"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "538272",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-026",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "RLC DTC, CIJ Conv. Mnt (for 806909) is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-026 (CIJ workbook, 3. Pick your accessories, G69)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "862419"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "862419",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-027",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Single Printer Cart, 6400 Series, SS, Made in USA is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-027 (CIJ workbook, 3. Pick your accessories, G71)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "497859"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "497859",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-028",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Dual Printer Cart, 6400, SS, Made in USA is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-028 (CIJ workbook, 3. Pick your accessories, G72)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "469931"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "469931",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-029",
+      "technologyCode": "CIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Kit, Membrane Air Dryer, 6400 is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-029 (CIJ workbook, 3. Pick your accessories, G79)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "660136"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "660136",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-069",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Cbl, Remote HMI, PALM, 10'  (Recommended for Enclosures / Taller Stands) is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-069 (PALM workbook, LB5200 PL6300 CONFIG, G107)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "565214"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "565214",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-078",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Kit, Sensor Brkt, Alt Mnt, ALP  (Mounts Sensor to Opposite Side of Applicator) is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-078 (PALM workbook, LB5200 PL6300 CONFIG, G127)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "346311"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "346311",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-079",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Kit, Sensor Brkt w/ Reflector, PALM, SS  (Conveyor Mnt) is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-079 (PALM workbook, LB5200 PL6300 CONFIG, G128)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "134728"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "134728",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-080",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Kit, Sensor Brkt, PALM, SS (Conveyor Mnt) is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-080 (PALM workbook, LB5200 PL6300 CONFIG, G129)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "205078"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "205078",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-081",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "54\\\" T-Base Stand is capped at 10%.",
+      "detail": "'10% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-081 (PALM workbook, LB5200 PL6300 CONFIG, G136)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "284546Z05"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "284546Z05",
+          "maxDiscount": 0.1
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-082",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "72\\\" T-Base Stand w/ Back-Crank is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-082 (PALM workbook, LB5200 PL6300 CONFIG, G137)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "268360T99FL"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "268360T99FL",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-083",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "54\\\" U-Base Stand is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-083 (PALM workbook, LB5200 PL6300 CONFIG, G138)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "081634P77"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "081634P77",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-084",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "72\\\" U-Base Stand w/ Back-Crank is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-084 (PALM workbook, LB5200 PL6300 CONFIG, G139)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "506484A64EJ"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "506484A64EJ",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-085",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "54\\\" Floor Mnt Stand, 360 Deg Base, 18\\\" Horiztonal Adjustment is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-085 (PALM workbook, LB5200 PL6300 CONFIG, G140)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "034486Q18054VT"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "034486Q18054VT",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-086",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "72\\\" Floor Mnt Stand, 360 Deg Base, 18\\\" Horiztonal Adjustment w/ Back-Crank is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-086 (PALM workbook, LB5200 PL6300 CONFIG, G141)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "043680R50965GRRA"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "043680R50965GRRA",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-087",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Docking Cleats, 3/PK, RLC Stands  (3 for T-Base, 2 for U-Base) is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-087 (PALM workbook, LB5200 PL6300 CONFIG, G143)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "882526"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "882526",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-088",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Kit, 15/20\\\" FASA Support, PALM (Adjustable - All stands) is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-088 (PALM workbook, LB5200 PL6300 CONFIG, G146)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "478635"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "478635",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-101",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Environmental enclosure, E-Tamp, Top Down is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-101 (PALM workbook, LB5200 PL6300 CONFIG, G175)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "806998WG"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "806998WG",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-103",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Environmental enclosure, E-Tamp, Side Apply/Nose-up/Nose-Down is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-103 (PALM workbook, LB5200 PL6300 CONFIG, G176)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "551370NU"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "551370NU",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-105",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Environmental enclosure, E-FASA, Top Down is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-105 (PALM workbook, LB5200 PL6300 CONFIG, G177)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "905428RS"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "905428RS",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-107",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Environmental enclosure, E-FASA, Side Apply is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-107 (PALM workbook, LB5200 PL6300 CONFIG, G178)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "431583XM"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "431583XM",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-109",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Environmental enclosure, E-FASA, Nose-Up/Nose-Down is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-109 (PALM workbook, LB5200 PL6300 CONFIG, G179)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "920848NM"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "920848NM",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-111",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Kit, Rotational Assy, Enviro Encl, PALM, RLC is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-111 (PALM workbook, LB5200 PL6300 CONFIG, G180)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "721013"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "721013",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-112",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Tamp Arm Cover Extension - REQUIRED FOR 20/30\\\" TAMP is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-112 (PALM workbook, LB5200 PL6300 CONFIG, G181)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "669569"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "669569",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-113",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Positive Air, With Shut off & filter/regulator is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-113 (PALM workbook, LB5200 PL6300 CONFIG, G182)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "295578"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "295578",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-114",
+      "technologyCode": "PALM",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Electric Heater with Thermostat and On/Off Switch is capped at 5%.",
+      "detail": "'5% Limited Discount' written against this part on the price page. Found in the inactive drafts rather than among the caps: the extractor keyed on the wording 'Max Discount', and the print-and-apply book says 'Limited Discount' instead. Same statement, same column, same unambiguous pair of a part and a percentage.",
+      "sourceRef": "data/discount-caps.md, W-114 (PALM workbook, LB5200 PL6300 CONFIG, G183)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "750925"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "750925",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-127",
+      "technologyCode": "PIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "Designer Pro Basic Design Software is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-127 (PIJ workbook, 3. Pick your accessories, G86)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "SUYFNU681F"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "SUYFNU681F",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-128",
+      "technologyCode": "PIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "PowerForms Suite (up to 3 printers from one controller) is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-128 (PIJ workbook, 3. Pick your accessories, G87)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "PTSSHA698P"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "PTSSHA698P",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-129",
+      "technologyCode": "PIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "SMA(3yr)PowerForms Suite 3 printers is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-129 (PIJ workbook, 3. Pick your accessories, G88)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "UVQZEB2429"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "UVQZEB2429",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-130",
+      "technologyCode": "PIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "PowerForms Suite (up to 5 printers from one controller) is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-130 (PIJ workbook, 3. Pick your accessories, G89)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "XRNDBN621M"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "XRNDBN621M",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-131",
+      "technologyCode": "PIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "SMA(3yr)PowerForms Suite 5 printers is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-131 (PIJ workbook, 3. Pick your accessories, G90)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "NFYUXN4519"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "NFYUXN4519",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-132",
+      "technologyCode": "PIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "PowerForms Suite (up to 10 printers from one controller) is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-132 (PIJ workbook, 3. Pick your accessories, G91)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "ENRMRC272B"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "ENRMRC272B",
+          "maxDiscount": 0.05
+        }
+      ]
+    },
+    {
+      "ruleCode": "W-133",
+      "technologyCode": "PIJ",
+      "ruleType": "discountCap",
+      "severity": "info",
+      "summary": "SMA(3yr)PowerForms Suite 10 printers is capped at 5%.",
+      "detail": "'Max Discount 5%' written against this part on the price page. Seeded straight into cpq.rule by 04_seed_rules.sql until now, which meant the service applied it and the preview did not — a rep could take this to 30% on screen and be refused at 5% on the order.",
+      "sourceRef": "data/discount-caps.md, W-133 (PIJ workbook, 3. Pick your accessories, G92)",
+      "author": "price page comment",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "FEFFYP4688"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "cap",
+          "itemNo": "FEFFYP4688",
+          "maxDiscount": 0.05
+        }
+      ]
+    }
+  ]
+}

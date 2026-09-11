@@ -1,0 +1,306 @@
+{
+  "$comment": [
+    "What an item's own description says it needs.",
+    "",
+    "REPORTED: 'I added some items onto a quote that said they required another item",
+    "in the description but I don't see the item in the catalogue and it never gave a",
+    "warning about it either.' Both halves were true. Thirteen catalogue rows state a",
+    "requirement in prose and there were no require actions anywhere in the rule set,",
+    "and three of the parts named are filed under a different technology from the item",
+    "that needs them, so the item search on the quote cannot see them.",
+    "",
+    "Every rule here cites the catalogue row it came from, which is the price page's",
+    "own wording as it reaches the app. Where a description states a requirement but",
+    "names no orderable part, it is a note and not a requirement — the reasoning for",
+    "each is in data/catalogue-requirements.md."
+  ],
+  "rules": [
+    {
+      "ruleCode": "R-REQ-Airvex-PVC",
+      "technologyCode": "LSR",
+      "ruleType": "requires",
+      "severity": "warn",
+      "summary": "The Airvex AD PVC iQ extractor must be quoted with its hose kit.",
+      "detail": "The extractor's own description says MUST INCLUDE A1020392. A fume extractor with no hose kit is a box that cannot be connected to the laser, and it is the kind of omission that is only found on the install day, because the extractor arrives and looks complete.",
+      "sourceRef": "web/src/api/catalog.ts, 5422938621531391 — \"Fume Extractor, Airvex AD PVC iQ (MUST INCLUDE L6127757)\"",
+      "author": "Axim price page, item description",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "5422938621531391"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "require",
+          "itemNo": "L6127757",
+          "quantity": 1,
+          "message": "Extraction Hose Kit, 4m, 50mm to 75mm, w/ Stayput Nozzle (MUST INCLUDE)"
+        }
+      ]
+    },
+    {
+      "ruleCode": "R-REQ-Airvex-NANO",
+      "technologyCode": "LSR",
+      "ruleType": "requires",
+      "severity": "warn",
+      "summary": "The Airvex AD Nano extractor must be quoted with its hose kit.",
+      "detail": "The extractor's own description says MUST INCLUDE A1020392. A fume extractor with no hose kit is a box that cannot be connected to the laser, and it is the kind of omission that is only found on the install day, because the extractor arrives and looks complete.",
+      "sourceRef": "web/src/api/catalog.ts, 3108100306 — \"Fume Extractor, Airvex AD Nano (MUST INCLUDE L6127757)\"",
+      "author": "Axim price page, item description",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "3108100306"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "require",
+          "itemNo": "L6127757",
+          "quantity": 1,
+          "message": "Extraction Hose Kit, 4m, 50mm to 75mm, w/ Stayput Nozzle (MUST INCLUDE)"
+        }
+      ]
+    },
+    {
+      "ruleCode": "R-REQ-Airvex-ORACLE",
+      "technologyCode": "LSR",
+      "ruleType": "requires",
+      "severity": "warn",
+      "summary": "The Airvex AD Oracle iQ extractor must be quoted with its hose kit.",
+      "detail": "The extractor's own description says MUST INCLUDE A1020392. A fume extractor with no hose kit is a box that cannot be connected to the laser, and it is the kind of omission that is only found on the install day, because the extractor arrives and looks complete.",
+      "sourceRef": "web/src/api/catalog.ts, 7285702543-7805 — \"Fume Extractor, Airvex AD Oracle iQ (MUST INCLUDE L6127757)\"",
+      "author": "Axim price page, item description",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "7285702543-7805"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "require",
+          "itemNo": "L6127757",
+          "quantity": 1,
+          "message": "Extraction Hose Kit, 4m, 50mm to 75mm, w/ Stayput Nozzle (MUST INCLUDE)"
+        }
+      ]
+    },
+    {
+      "ruleCode": "R-REQ-Airvex-ORACLE-SA",
+      "technologyCode": "LSR",
+      "ruleType": "requires",
+      "severity": "warn",
+      "summary": "The Airvex AD Oracle SAiQ extractor must be quoted with its hose kit.",
+      "detail": "The extractor's own description says MUST INCLUDE A1020392. A fume extractor with no hose kit is a box that cannot be connected to the laser, and it is the kind of omission that is only found on the install day, because the extractor arrives and looks complete.",
+      "sourceRef": "web/src/api/catalog.ts, 9841223553-3876 — \"Fume Extractor, Airvex AD Oracle SAiQ (MUST INCLUDE L6127757)\"",
+      "author": "Axim price page, item description",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "9841223553-3876"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "require",
+          "itemNo": "L6127757",
+          "quantity": 1,
+          "message": "Extraction Hose Kit, 4m, 50mm to 75mm, w/ Stayput Nozzle (MUST INCLUDE)"
+        }
+      ]
+    },
+    {
+      "ruleCode": "R-REQ-PH-BRACKET-VERT",
+      "technologyCode": "PIJ",
+      "ruleType": "requires",
+      "severity": "warn",
+      "summary": "The tool-less vertical bracket mounts on the conveyor mounting kit.",
+      "detail": "The bracket's description says Requires 5760821. That kit is filed under VIJ and this bracket under PIJ, so it does not appear in the item search on a PIJ quote — which is why this rule hands the part over rather than telling the rep to go and find it.",
+      "sourceRef": "web/src/api/catalog.ts, 6727262 — \"Vertical Adjustment PH Bracket, TOOL-LESS (Requires 9592660)\"",
+      "author": "Axim price page, item description",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "6727262"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "require",
+          "itemNo": "9592660",
+          "quantity": 1,
+          "message": "Single Print Head Conveyor Mounting Kit, 9 or 18 Dot — filed under VIJ, so the item search on this quote will not show it."
+        }
+      ]
+    },
+    {
+      "ruleCode": "R-REQ-PH-BRACKET-LIN",
+      "technologyCode": "PIJ",
+      "ruleType": "requires",
+      "severity": "warn",
+      "summary": "The tool-less linear bracket needs the mounting kit and the vertical bracket.",
+      "detail": "The bracket's description names both. 9592660 is filed under VIJ and does not appear in the item search on a PIJ quote.",
+      "sourceRef": "web/src/api/catalog.ts, 5334300 — \"Linear Adjustment PH Bracket, TOOL-LESS (Requires 9592660 & 6727262)\"",
+      "author": "Axim price page, item description",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "5334300"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "require",
+          "itemNo": "9592660",
+          "quantity": 1,
+          "message": "Single Print Head Conveyor Mounting Kit, 9 or 18 Dot — filed under VIJ, so the item search on this quote will not show it."
+        },
+        {
+          "actionType": "require",
+          "itemNo": "6727262",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "ruleCode": "R-REQ-ALARM-IO-BOARD",
+      "technologyCode": "VIJ",
+      "ruleType": "requires",
+      "severity": "warn",
+      "summary": "The alarm tower is driven by the I/O board and does not work without it.",
+      "detail": "REPORTED as the part that could not be found. The description writes the board as 5760-392 and the catalogue row is 6870691, so searching for what the description says returns nothing — and the board is filed under PIJ while the tower is VIJ, so even the right number would not appear in the item search on this quote. The description is Orbit's and is not edited here; the number that finds it is stated below.",
+      "sourceRef": "web/src/api/catalog.ts, 1334426 — \"I/O Alarm Tower, 3 color (Requires I/O Board 5760-392)\"",
+      "author": "Axim price page, item description",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "1334426"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "require",
+          "itemNo": "6870691",
+          "quantity": 1,
+          "message": "I/O Board Kit — the catalogue writes it 6870691, without the hyphen the description uses, and files it under PIJ."
+        }
+      ]
+    },
+    {
+      "ruleCode": "R-REQ-QUICKSWITCH-IO",
+      "technologyCode": "CIJ",
+      "ruleType": "note",
+      "severity": "warn",
+      "summary": "The 6400 Quickswitch kit needs an I/O board, and the description does not say which.",
+      "detail": "Written as a note rather than a requirement on purpose. The only I/O board in the catalogue is 6870691, which is the HR2600 controller's; assuming an 6400 takes the same one would put a wrong part on a quote with a rule behind it. The rep is told to confirm the board instead of being handed a guess.",
+      "sourceRef": "web/src/api/catalog.ts, 830440 — \"Quickswitch Kit 6400 RS232 - Hand Scanner (requires i/o board)\"",
+      "author": "Axim price page, item description",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "830440"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "warn",
+          "message": "This kit requires an I/O board and the price page does not say which one. Confirm the board for the 6400 before sending — the only I/O board in the catalogue is the HR2600's."
+        }
+      ]
+    },
+    {
+      "ruleCode": "R-REQ-Airvex-CONNECTOR",
+      "technologyCode": "LSR",
+      "ruleType": "note",
+      "severity": "info",
+      "summary": "The M12A connector goes with a Airvex extractor.",
+      "detail": "The description states the pairing without naming a row: Airvex is the manufacturer of several extractors here. Quoted on its own it is probably a spare, which is legitimate, so this says so rather than blocking.",
+      "sourceRef": "web/src/api/catalog.ts, 553698 — \"M12A-5pin-F Connector, Airvex, CSL (MUST INCLUDE WITH Airvex)\"",
+      "author": "Axim price page, item description",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "553698"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "warn",
+          "message": "This connector is specified to be included with a Airvex extractor. Check there is one on the quote, or that this is being sold as a spare."
+        }
+      ]
+    },
+    {
+      "ruleCode": "R-REQ-TAMP-COVER",
+      "technologyCode": "PALM",
+      "ruleType": "note",
+      "severity": "info",
+      "summary": "The tamp arm cover extension is only for the 20 and 30 inch tamps.",
+      "detail": "A condition on the tamp stroke, which the quote does not carry as a field, so it cannot be graded. Stated so a rep quoting a shorter tamp is not paying for an extension it does not need, and one quoting a 20 or 30 inch tamp does not leave it off.",
+      "sourceRef": "web/src/api/catalog.ts, 669569 — \"Tamp Arm Cover Extension - REQUIRED FOR 20/30\" TAMP\"",
+      "author": "Axim price page, item description",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "669569"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "warn",
+          "message": "This extension is required for a 20\" or 30\" tamp and is not needed on a shorter one. Check the tamp stroke on this quote."
+        }
+      ]
+    },
+    {
+      "ruleCode": "R-REQ-LOGO-FIXTURE",
+      "technologyCode": "PALM",
+      "ruleType": "note",
+      "severity": "warn",
+      "summary": "The IV18 logo fixture needs a support structure that is not a catalogue part.",
+      "detail": "The description is explicit that the structure is special-quoted or supplied by the customer, so there is nothing to require. The lead time is the part most likely to be missed: five to six weeks against one to four for a standard build.",
+      "sourceRef": "web/src/api/catalog.ts, 0337317 — \"Logo Fixture for IV18 - 1\" print heads.  Requires support structure for mounting.  Support structure may be special quoted or customer supplied.  5-6 week lead time.\"",
+      "author": "Axim price page, item description",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "0337317"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "warn",
+          "message": "This fixture needs a support structure, which is special-quoted or customer supplied rather than a catalogue part. Lead time is 5-6 weeks."
+        }
+      ]
+    },
+    {
+      "ruleCode": "R-APPR-6420-MAINT-5YR",
+      "technologyCode": "CIJ",
+      "ruleType": "note",
+      "severity": "warn",
+      "summary": "Five-year maintenance modules for the 6420 need RSM approval.",
+      "detail": "The description says 'Need RSM Approval, Existing only'. Two conditions in five words: it is approved rather than simply quoted, and it is for machines already installed rather than a new one. Written as an approval so the quote cannot go out without the decision being recorded against it.",
+      "sourceRef": "web/src/api/catalog.ts, 3425425 — \"6420 5 year Maintenance Modules (Need RSM Approval, Existing only)\"",
+      "author": "Axim price page, item description",
+      "triggers": [
+        {
+          "triggerType": "item",
+          "itemNo": "3425425"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "approve",
+          "approverRole": "Regional Sales Manager"
+        },
+        {
+          "actionType": "warn",
+          "message": "Five-year maintenance modules are for machines already installed, and need Regional Sales Manager approval."
+        }
+      ]
+    }
+  ]
+}

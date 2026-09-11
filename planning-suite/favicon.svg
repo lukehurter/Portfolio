@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Axim">
+  <title>Axim</title>
+  <!-- The wordmark's printhead, on its own, sized for a 16px tab. The four jets
+       are kept and the substrate bar is dropped: at this size a fifth element is
+       a smudge. -->
+  <rect width="64" height="64" rx="13" fill="#0B2E4F"/>
+  <g fill="#FFFFFF">
+    <rect x="12" y="16" width="8" height="34" rx="4"/>
+    <rect x="24" y="22" width="8" height="28" rx="4"/>
+    <rect x="36" y="28" width="8" height="22" rx="4"/>
+    <rect x="48" y="34" width="8" height="16" rx="4"/>
+  </g>
+</svg>

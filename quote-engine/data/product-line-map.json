@@ -1,0 +1,391 @@
+{
+  "$comment": [
+    "Product Line -> technology and type. The whole classification, in 43 rows.",
+    "",
+    "Global_Product_Hierarchy.xlsx classifies all 18,822 parts by Product Class,",
+    "Product Line and Product Type. This file turns that into the two things the",
+    "quoting tool needs: which price book a part belongs to, and what KIND of",
+    "thing it is. Product Type is carried through separately as the model, for",
+    "rule matching.",
+    "",
+    "WHY A FILE AND NOT CODE",
+    "",
+    "43 rows is a business decision, not logic. It is here so it can be corrected",
+    "without a deployment, and every row says who decided it.",
+    "",
+    "WHY Product Class IS NOT ENOUGH ON ITS OWN",
+    "",
+    "'Coding' is four price books wearing one Product Class: Hi Res is piezo, IV",
+    "is valve jet, Thermal Jet is thermal inkjet, and Engines are the printhead",
+    "engines behind them. Mapping Class alone would put all four in one book.",
+    "",
+    "confidence 'confirmed' came from you. 'assumed' is my reading of the line",
+    "name and needs a look - those are the rows to check first."
+  ],
+  "roles": [
+    "printer",
+    "printhead",
+    "ink",
+    "consumable",
+    "accessory",
+    "spare",
+    "service",
+    "warranty",
+    "promo",
+    "part"
+  ],
+  "lines": [
+    {
+      "line": "Corvus 6400",
+      "class": "CIJ",
+      "technology": "CIJ",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "Corvus 5400",
+      "class": "CIJ",
+      "technology": "CIJ",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "Corvus 3400",
+      "class": "CIJ",
+      "technology": "CIJ",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "Corvus Legacy",
+      "class": "CIJ",
+      "technology": "CIJ",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "CIJ Print Heads",
+      "class": "CIJ",
+      "technology": "CIJ",
+      "role": "printhead",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "CIJ Consumables",
+      "class": "CIJ",
+      "technology": "CIJ",
+      "role": "consumable",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "CIJ Accessories",
+      "class": "CIJ",
+      "technology": "CIJ",
+      "role": "accessory",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "CIJ Service Parts",
+      "class": "CIJ",
+      "technology": "CIJ",
+      "role": "spare",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "CIJ Promo Discounts",
+      "class": "CIJ",
+      "technology": "CIJ",
+      "role": "promo",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "TTO Printers",
+      "class": "TTO",
+      "technology": "TTO",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "TTO Consumables",
+      "class": "TTO",
+      "technology": "TTO",
+      "role": "consumable",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "TTO Accessories",
+      "class": "TTO",
+      "technology": "TTO",
+      "role": "accessory",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "TTO Parts",
+      "class": "TTO",
+      "technology": "TTO",
+      "role": "spare",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "TTO Service",
+      "class": "TTO",
+      "technology": "TTO",
+      "role": "service",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "Print and Apply",
+      "class": "ALP",
+      "technology": "PALM",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "Label Applicator",
+      "class": "ALP",
+      "technology": "PALM",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "Print Engines",
+      "class": "ALP",
+      "technology": "PALM",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "ALP Consumables",
+      "class": "ALP",
+      "technology": "PALM",
+      "role": "consumable",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "ALP Accessories",
+      "class": "ALP",
+      "technology": "PALM",
+      "role": "accessory",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "ALP Parts",
+      "class": "ALP",
+      "technology": "PALM",
+      "role": "spare",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "ALP Service",
+      "class": "ALP",
+      "technology": "PALM",
+      "role": "service",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "Apply Modules",
+      "class": "ALP",
+      "technology": "PALM",
+      "role": "accessory",
+      "quotable": true,
+      "confidence": "assumed",
+      "note": "A configurable module of a print-and-apply system rather than a standalone machine, so it is not offered as a machine to grade. Change role to printer if you want these to appear in the machine list."
+    },
+    {
+      "line": "ALP Options",
+      "class": "ALP",
+      "technology": "PALM",
+      "role": "accessory",
+      "quotable": true,
+      "confidence": "assumed"
+    },
+    {
+      "line": "Material Handling",
+      "class": "ALP",
+      "technology": "PALM",
+      "role": "accessory",
+      "quotable": true,
+      "confidence": "assumed",
+      "note": "Conveyors and stands. 1,260 rows under ALP and 3 under TTO; the 3 TTO rows follow the same rule."
+    },
+    {
+      "line": "System Web",
+      "class": "ALP",
+      "technology": "PALM",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "assumed"
+    },
+    {
+      "line": "System Hand",
+      "class": "ALP",
+      "technology": "PALM",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "assumed"
+    },
+    {
+      "line": "System Orientation",
+      "class": "ALP",
+      "technology": "PALM",
+      "role": "accessory",
+      "quotable": true,
+      "confidence": "assumed"
+    },
+    {
+      "line": "Hi Res",
+      "class": "Coding",
+      "technology": "PIJ",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "IV",
+      "class": "Coding",
+      "technology": "VIJ",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "Thermal Jet",
+      "class": "Coding",
+      "technology": "TIJ",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "Engines",
+      "class": "Coding",
+      "technology": "PIJ",
+      "role": "printhead",
+      "quotable": true,
+      "confidence": "assumed",
+      "note": "342 rows. Read as the printhead engines behind Hi Res. If Engines spans more than one price book this row has to split by Product Type."
+    },
+    {
+      "line": "Service",
+      "class": "Coding",
+      "technology": null,
+      "role": "service",
+      "quotable": false,
+      "confidence": "assumed",
+      "note": "8 rows, no technology in the name. Not offered until it is known which book they belong to."
+    },
+    {
+      "line": "DNR",
+      "class": "Coding",
+      "technology": null,
+      "role": "spare",
+      "quotable": false,
+      "confidence": "assumed",
+      "note": "Read as do-not-reorder. Never quotable."
+    },
+    {
+      "line": "COD",
+      "class": "Coding",
+      "technology": null,
+      "role": "service",
+      "quotable": false,
+      "confidence": "assumed"
+    },
+    {
+      "line": "CSL LASER",
+      "class": "LASER",
+      "technology": "LSR",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "SL LASER",
+      "class": "LASER",
+      "technology": "LSR",
+      "role": "printer",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "LASER ACCESSORIES",
+      "class": "LASER",
+      "technology": "LSR",
+      "role": "accessory",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "LASER TUBE",
+      "class": "LASER",
+      "technology": "LSR",
+      "role": "spare",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "LASER SERVICE",
+      "class": "LASER",
+      "technology": "LSR",
+      "role": "service",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "LASER PROMO SKU",
+      "class": "LASER",
+      "technology": "LSR",
+      "role": "promo",
+      "quotable": true,
+      "confidence": "confirmed"
+    },
+    {
+      "line": "Scanners",
+      "class": "Vision Systems",
+      "technology": null,
+      "role": "accessory",
+      "quotable": false,
+      "confidence": "assumed",
+      "note": "Vision Systems has no price book yet. 3 rows."
+    },
+    {
+      "line": "Axim NEXT",
+      "class": "IIoT and Management",
+      "technology": null,
+      "role": "service",
+      "quotable": false,
+      "confidence": "assumed",
+      "note": "Software and IIoT. No price book yet. 2 rows."
+    },
+    {
+      "line": "Lease Billing",
+      "class": "Lease Billing",
+      "technology": null,
+      "role": "service",
+      "quotable": false,
+      "confidence": "assumed",
+      "note": "Finance, not product. 1 row."
+    }
+  ]
+}

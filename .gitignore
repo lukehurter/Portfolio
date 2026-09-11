@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+build/_node_modules_stash/
+
+# Build output
+dist/
+dist-preview/
+dist-pricebook/
+.vite/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backups
+*.bak
+
+# Editor/tooling scratch
+.claude/
+
+# Build tooling stays local. It maps real names to the fictional ones.
+build/

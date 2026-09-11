@@ -1,0 +1,424 @@
+{
+ "$comment": [
+  "Which ink goes with which printhead, from the workbook's Ink Types sheet.",
+  "",
+  "`category` is the two-digit ink position in the part number, so this is",
+  "what turns a category back into the inks it stands for — the part number",
+  "says 17 and the rep needs to know that means 1010, 1014, 1015 and the",
+  "rest, and which printheads each will run on."
+ ],
+ "source": "CLEAN Axim Direct Corvus 7300 Series Price Pages v1.4.xlsx",
+ "counts": {
+  "inks": 50
+ },
+ "inks": [
+  {
+   "ink": "1009",
+   "name": "1009 Black pigmented",
+   "category": "72",
+   "printheads": [
+    "PH4 MIDI+"
+   ]
+  },
+  {
+   "ink": "1010",
+   "name": "1010 Black",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1014",
+   "name": "1014 Black plastic-adherent",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI",
+    "PH4 MIDI+"
+   ]
+  },
+  {
+   "ink": "1015",
+   "name": "1015 Black strong plastic-film",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1016",
+   "name": "1016 Black plastic-film",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1018",
+   "name": "1018 Red",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1033",
+   "name": "1033 Blue pigmented",
+   "category": "72",
+   "printheads": [
+    "PH4 MIDI+"
+   ]
+  },
+  {
+   "ink": "1035",
+   "name": "1035 Black water removable",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1056",
+   "name": "1056 Black wet process",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1058",
+   "name": "1058 Black bottling",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI",
+    "PH4 MINI"
+   ]
+  },
+  {
+   "ink": "1061",
+   "name": "1061 Black ultra strong plastic-adherent",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1062",
+   "name": "1062 Black oil penetrating",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1063",
+   "name": "1063 Black grease penetrating",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1065",
+   "name": "1065 Black dry glass",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1068",
+   "name": "1068 Black bottling",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1070",
+   "name": "1070 Black alkali-removable",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1075",
+   "name": "1075 Black alcohol-resistant",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1077",
+   "name": "1077 Black retort",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1079",
+   "name": "1079 Yellow pigmented",
+   "category": "72",
+   "printheads": [
+    "PH4 MIDI+"
+   ]
+  },
+  {
+   "ink": "1085",
+   "name": "1085 Black",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1088",
+   "name": "1088 Yellow bottling",
+   "category": "72",
+   "printheads": [
+    "PH4 MIDI+"
+   ]
+  },
+  {
+   "ink": "1121",
+   "name": "1121 Clear UV-readable",
+   "category": "27",
+   "printheads": [
+    "PH4 MIDI",
+    "PH4 MINI"
+   ]
+  },
+  {
+   "ink": "1130",
+   "name": "1130 Black PE ink",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1240",
+   "name": "1240 Black fast-drying",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI",
+    "PH4 MIDI+",
+    "PH4 MINI"
+   ]
+  },
+  {
+   "ink": "1243",
+   "name": "1243 Blue fast-drying",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1248",
+   "name": "1248 Brown fast-drying",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI",
+    "PH4 MIDI+"
+   ]
+  },
+  {
+   "ink": "1281",
+   "name": "1281 Thermochromic purple to pink",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1290",
+   "name": "1290 Thermochromic black to blue",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1291",
+   "name": "1291 Thermochromic black to blue",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1405",
+   "name": "1405 Black ultra-fast-drying",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "2035",
+   "name": "2035 Black ethanol",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "2040",
+   "name": "2040 Blue wet indicator ink",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "3085",
+   "name": "3085 Black alcohol-resistant",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "3103",
+   "name": "3103 Black mixed base",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI",
+    "PH4 MIDI+"
+   ]
+  },
+  {
+   "ink": "3110",
+   "name": "3110 Black",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "3123",
+   "name": "3123 Blue mixed base",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "3124",
+   "name": "3124 Green mixed base",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "3160",
+   "name": "3160 Clear security",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "3203",
+   "name": "3203 Black",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "3240",
+   "name": "3240 Black",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "3401",
+   "name": "3401 Black",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "3415",
+   "name": "3415 Black strong plastic-film",
+   "category": "17",
+   "printheads": [
+    "PH4 MIDI"
+   ]
+  },
+  {
+   "ink": "1043",
+   "name": "1043 Opaque blue",
+   "category": "67",
+   "printheads": [
+    "PH4 MIDI+"
+   ]
+  },
+  {
+   "ink": "1053",
+   "name": "1053 Blue pigmented",
+   "category": "67",
+   "printheads": [
+    "PH4 MIDI+"
+   ]
+  },
+  {
+   "ink": "1059",
+   "name": "1059 White pigmented",
+   "category": "67",
+   "printheads": [
+    "PH4 MIDI+"
+   ]
+  },
+  {
+   "ink": "1069",
+   "name": "1069 White pigmented",
+   "category": "67",
+   "printheads": [
+    "PH4 MIDI+"
+   ]
+  },
+  {
+   "ink": "1306",
+   "name": "1306 Brilliant white",
+   "category": "67",
+   "printheads": [
+    "PH4 MIDI+"
+   ]
+  },
+  {
+   "ink": "1311",
+   "name": "1311 High-opacity grey",
+   "category": "67",
+   "printheads": [
+    "PH4 MIDI+"
+   ]
+  },
+  {
+   "ink": "1316",
+   "name": "1316 Brilliant white",
+   "category": "74",
+   "printheads": [
+    "PH4 MIDI",
+    "PH4 MINI"
+   ]
+  },
+  {
+   "ink": "1320",
+   "name": "1320 White cable ink",
+   "category": "67",
+   "printheads": [
+    "PH4 MIDI+"
+   ]
+  }
+ ]
+}

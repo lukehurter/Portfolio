@@ -1,0 +1,266 @@
+{
+  "$comment": [
+    "Which TECHNOLOGY suits the line, read off the substrate.",
+    "",
+    "WHY THIS FILE EXISTS",
+    "",
+    "The 55 rules in application-rules.json all come off datasheets, and every one",
+    "of them is a limit on a machine: this model prints a single line to 574 fpm,",
+    "that print head throws 6.35mm. They are good rules and they answered the wrong",
+    "question. A rule keyed to a model can only ever grade machines inside the",
+    "technology the rep is already looking at, so switching from CIJ to laser to TTO",
+    "produced three lists of ungraded machines and the tool had no opinion on the",
+    "choice that matters most.",
+    "",
+    "Measured before this file existed: on a 620 fpm dark corrugated case line, CIJ",
+    "returned 710 ungraded machines and 237 not-recommended, while TTO and laser",
+    "returned every machine ungraded. Nothing read the substrate at all — not one",
+    "rule in the file mentioned it.",
+    "",
+    "WHERE THESE COME FROM",
+    "",
+    "Axim's own product pages, captured in data/sources/pages/. The",
+    "pages say what each technology is FOR, in sentences a rep would recognise:",
+    "the IV series lists the substrates it pairs with, the Ridgeline prints on porous",
+    "surfaces, the T800 is for web and foil. Every rule below quotes one.",
+    "",
+    "WHAT IS DELIBERATELY NOT HERE",
+    "",
+    "No rule condemns a substrate for not appearing on a list. 'includesAny' only",
+    "ever matches something a page names, so an unfamiliar substrate makes these",
+    "rules go quiet rather than guess — a rep typing 'PETG clamshell' should get",
+    "silence, not a verdict assembled out of the words it does not contain.",
+    "",
+    "No laser substrate rule either way. The laser pages describe what the fiber",
+    "and CO2 lasers mark well; they say nothing about what they mark badly, and the",
+    "preview catalogue has no laser machine to grade in any case — see ENGINEERED",
+    "in QuoteBuilder.tsx for why."
+  ],
+  "rules": [
+    {
+      "ruleCode": "A-TECH-TTO-RIGID",
+      "technologyCode": "TTO",
+      "ruleType": "applicationFit",
+      "severity": "warn",
+      "summary": "A thermal transfer overprinter prints onto a flexible web, not onto a rigid pack.",
+      "detail": "The TTO range is described for 'web and foil printing applications', and the T400 print areas are quoted as intermittent and continuous — both describe film moving past a printhead under a ribbon. A rigid pack has nothing to feed. Code it directly with an inkjet, or apply a printed label.",
+      "sourceRef": "https://www.axim.example/products/productcoding/thermaltransfer, Thorne T800 — 'web and foil printing applications'",
+      "author": "axim.example, Thermal Transfer Overprinters (TTO)",
+      "triggers": [
+        {
+          "triggerType": "profile",
+          "profileField": "substrate",
+          "compareOp": "includesAny",
+          "compareValue": "glass,jar,can,metal,corrugat,carton,case,drum,pail,bottle,pipe,wood,tray"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "grade",
+          "fitGrade": "notRecommended",
+          "message": "A TTO prints onto a flexible film or foil web. This substrate is rigid, so there is no web to print on."
+        }
+      ]
+    },
+    {
+      "ruleCode": "A-TECH-TTO-WEB",
+      "technologyCode": "TTO",
+      "ruleType": "applicationFit",
+      "severity": "info",
+      "summary": "Film, foil, pouches and labels are what a TTO is for.",
+      "detail": "'Extended uptime makes the Thorne T800 a versatile printer for web and foil printing applications.' This is the technology's own ground, so the rule says so rather than leaving the machine ungraded.",
+      "sourceRef": "https://www.axim.example/products/productcoding/thermaltransfer, Thorne T800",
+      "author": "axim.example, Thermal Transfer Overprinters (TTO)",
+      "triggers": [
+        {
+          "triggerType": "profile",
+          "profileField": "substrate",
+          "compareOp": "includesAny",
+          "compareValue": "film,web,foil,laminate,pouch,bag,sachet,wrapper,label,flow wrap,flowwrap,lidding"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "grade",
+          "fitGrade": "good",
+          "message": "Film and foil web is what a thermal transfer overprinter is built for."
+        }
+      ]
+    },
+    {
+      "ruleCode": "A-TECH-VIJ-SUBSTRATE",
+      "technologyCode": "VIJ",
+      "ruleType": "applicationFit",
+      "severity": "info",
+      "summary": "The IV series names the substrates it pairs with, and this is one of them.",
+      "detail": "'Substrates that pair perfectly with the IV series include corrugate, plastic, metal, glass, drywall, wood products, pipe and carpet.' Large-character valve jet is the low cost per mark answer on all of them.",
+      "sourceRef": "https://www.axim.example/products/casecoding/largecharacterinkjet, Substrates that pair perfectly with the IV series",
+      "author": "axim.example, Integrated Valve Ink Jet",
+      "triggers": [
+        {
+          "triggerType": "profile",
+          "profileField": "substrate",
+          "compareOp": "includesAny",
+          "compareValue": "corrugat,plastic,metal,glass,drywall,wood,pipe,carpet,case,carton,lumber,board"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "grade",
+          "fitGrade": "good",
+          "message": "The IV series names this substrate as one it pairs with."
+        }
+      ]
+    },
+    {
+      "ruleCode": "A-TECH-VIJ-SMALL-CHAR",
+      "technologyCode": "VIJ",
+      "ruleType": "applicationFit",
+      "severity": "warn",
+      "summary": "Below 3/16 inch the valve jet cannot form the character.",
+      "detail": "'It is perfect for coding applications that require fonts as small as 3/16\" and as large as 2\".' 3/16 inch is 4.76mm, and that is the floor, not a preference — a valve puts down one dot per opening. Small character work is continuous inkjet or thermal inkjet.",
+      "sourceRef": "https://www.axim.example/products/casecoding/largecharacterinkjet, fonts as small as 3/16\"",
+      "author": "axim.example, Integrated Valve Ink Jet",
+      "triggers": [
+        {
+          "triggerType": "profile",
+          "profileField": "charHeightMm",
+          "compareOp": "lt",
+          "compareValue": "4.76"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "grade",
+          "fitGrade": "notRecommended",
+          "message": "The valve jet prints down to 3/16 inch (4.76mm). This character height is smaller than the technology can form."
+        }
+      ]
+    },
+    {
+      "ruleCode": "A-TECH-PIJ-CASE",
+      "technologyCode": "PIJ",
+      "ruleType": "applicationFit",
+      "severity": "info",
+      "summary": "High-resolution impulse jet is aimed at cases and secondary packaging.",
+      "detail": "'Our impulse jet technology is engineered to achieve the sharpest high-resolution prints on secondary packaging and cases with the most forgiving of throw distances', with 'nearly 35% improved barcode scanability over other industrial inkjet printers'.",
+      "sourceRef": "https://www.axim.example/products/casecoding/highresolutioninkjet, Ridgeline 3200",
+      "author": "axim.example, High Resolution Industrial Inkjet Printing for Case Coding",
+      "triggers": [
+        {
+          "triggerType": "profile",
+          "profileField": "substrate",
+          "compareOp": "includesAny",
+          "compareValue": "corrugat,case,carton,tray,fibreboard,fiberboard,kraft,shipper,box"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "grade",
+          "fitGrade": "good",
+          "message": "Cases and secondary packaging are what the impulse jet is engineered for."
+        }
+      ]
+    },
+    {
+      "ruleCode": "A-TECH-CIJ-PRIMARY",
+      "technologyCode": "CIJ",
+      "ruleType": "applicationFit",
+      "severity": "info",
+      "summary": "Continuous inkjet marks primary packs of almost any material.",
+      "detail": "'Continuous inkjet printers can mark onto virtually any substrate type ranging from plastic bags, glass jars, metal cans, paper cartons and more. Small character inkjet printers are mainly used for primary packaging of consumer goods products.'",
+      "sourceRef": "https://www.axim.example/products/productcoding/small-character, What is CIJ or continuous inkjet technology?",
+      "author": "axim.example, Small Character Continuous Inkjet Printers",
+      "triggers": [
+        {
+          "triggerType": "profile",
+          "profileField": "substrate",
+          "compareOp": "includesAny",
+          "compareValue": "bottle,jar,can,pouch,bag,film,tube,cap,sachet,extrud,wire,cable,foil,blister,ampoule,vial"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "grade",
+          "fitGrade": "good",
+          "message": "A primary pack of this kind is ordinary continuous inkjet work."
+        }
+      ]
+    },
+    {
+      "ruleCode": "A-TECH-CIJ-SECONDARY",
+      "technologyCode": "CIJ",
+      "ruleType": "applicationFit",
+      "severity": "warn",
+      "summary": "A case is secondary packaging, which is not where small character CIJ is usually put.",
+      "detail": "'Small character inkjet printers are mainly used for primary packaging of consumer goods products.' A CIJ will mark a case, but it prints to 11.94mm at the largest and costs more per mark than a valve jet. The usual answers for a case are the IV series or the Ridgeline 3200.",
+      "sourceRef": "https://www.axim.example/products/productcoding/small-character, mainly used for primary packaging",
+      "author": "axim.example, Small Character Continuous Inkjet Printers",
+      "triggers": [
+        {
+          "triggerType": "profile",
+          "profileField": "substrate",
+          "compareOp": "includesAny",
+          "compareValue": "corrugat,case,shipper,fibreboard,fiberboard"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "grade",
+          "fitGrade": "caveat",
+          "message": "This is a case. Small character CIJ is aimed at primary packs — a valve jet or the Ridgeline 3200 is the usual case coder."
+        }
+      ]
+    },
+    {
+      "ruleCode": "A-TECH-PALM-GRADED-BARCODE",
+      "technologyCode": "PALM",
+      "ruleType": "applicationFit",
+      "severity": "info",
+      "summary": "A guaranteed barcode grade is a labelling claim.",
+      "detail": "'The first half of the Axim solution consists of a labeling system, such as the PA/5000LT, that provides machine-readable, guaranteed \"A\" grade bar codes, every time' — and 'Guaranteed \"A\" grade verifiable bar codes (when using Axim label and ribbon materials)'. Where the customer has specified a grade, print and apply is the technology that carries the guarantee.",
+      "sourceRef": "https://www.axim.example/aboutaxim/casecodingcompliance/benefitsofdualtechnology, Axim's Dual Technology Solution",
+      "author": "axim.example, Case Code Compliance",
+      "triggers": [
+        {
+          "triggerType": "profile",
+          "profileField": "barcodeRequirements",
+          "compareOp": "includesAny",
+          "compareValue": "grade a,a grade,grade b,b grade,grade c,c grade,verifi,gs1-128,gs1 128,scc-14,itf-14,sscc"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "grade",
+          "fitGrade": "good",
+          "message": "Print and apply carries the barcode grade guarantee, with Axim label and ribbon materials."
+        }
+      ]
+    },
+    {
+      "ruleCode": "A-TECH-VIJ-GRADED-BARCODE",
+      "technologyCode": "VIJ",
+      "ruleType": "applicationFit",
+      "severity": "warn",
+      "summary": "The valve jet is medium resolution, so it does not answer a specified barcode grade.",
+      "detail": "The compliance page splits the two halves of the job: the labeller gives 'guaranteed \"A\" grade bar codes', while the Integrated Valve is for 'medium resolution printing on-demand of human readable codes direct to carton'. Human readable is the claim — a graded barcode is not.",
+      "sourceRef": "https://www.axim.example/aboutaxim/casecodingcompliance/benefitsofdualtechnology, IJ/3000 Integrated Valve",
+      "author": "axim.example, Case Code Compliance",
+      "triggers": [
+        {
+          "triggerType": "profile",
+          "profileField": "barcodeRequirements",
+          "compareOp": "includesAny",
+          "compareValue": "grade a,a grade,grade b,b grade,grade c,c grade,verifi"
+        }
+      ],
+      "actions": [
+        {
+          "actionType": "grade",
+          "fitGrade": "caveat",
+          "message": "Valve jet is medium resolution and human readable. A specified barcode grade wants a label or high-resolution inkjet."
+        }
+      ]
+    }
+  ]
+}

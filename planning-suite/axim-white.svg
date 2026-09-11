@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2109 261" role="img"
+     aria-label="Axim Marking Systems">
+  <title>Axim Marking Systems</title>
+  <!--
+    A wordmark for a company that does not exist, so the page has something in
+    the corner that is ours to put there. Drawn rather than fetched: one file,
+    no font dependency, no request that can 404 on somebody else's machine.
+
+    The mark is a printhead over a moving line. Four descending strokes are the
+    jets; the bar beneath them is the product going past. currentColor is not
+    used, because this sits on a dark header and has to stay white wherever the
+    surrounding theme goes.
+  -->
+  <g fill="#FFFFFF">
+    <!-- the four jets -->
+    <rect x="8"   y="46"  width="26" height="104" rx="13"/>
+    <rect x="52"  y="66"  width="26" height="84"  rx="13"/>
+    <rect x="96"  y="86"  width="26" height="64"  rx="13"/>
+    <rect x="140" y="106" width="26" height="44"  rx="13"/>
+    <!-- the substrate passing beneath -->
+    <rect x="8" y="182" width="158" height="22" rx="11" opacity=".55"/>
+  </g>
+
+  <!-- AXIM -->
+  <g fill="#FFFFFF">
+    <!-- A -->
+    <path d="M232 204 L316 46 h34 l84 158 h-52 l-15-30 h-70 l-15 30z
+             M319 132 h38 l-19-38z"/>
+    <!-- X -->
+    <path d="M462 46 h56 l40 54 40-54 h56 l-68 79 68 79 h-56 l-40-54-40 54 h-56
+             l68-79z"/>
+    <!-- I -->
+    <rect x="700" y="46" width="48" height="158" rx="6"/>
+    <!-- M -->
+    <path d="M792 204 V46 h58 l52 96 52-96 h58 v158 h-48 V128 l-44 76 h-36
+             l-44-76 v76z"/>
+  </g>
+
+  <!-- MARKING SYSTEMS -->
+  <g fill="#FFFFFF" opacity=".72"
+     font-family="Segoe UI,system-ui,-apple-system,sans-serif"
+     font-size="52" font-weight="500" letter-spacing="14">
+    <text x="1108" y="168">MARKING SYSTEMS</text>
+  </g>
+</svg>

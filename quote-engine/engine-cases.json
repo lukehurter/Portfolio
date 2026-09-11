@@ -1,0 +1,2996 @@
+{
+  "$comment": [
+    "Worked examples that BOTH rule engines must reproduce exactly.",
+    "",
+    "web/src/engine/evaluate.ts runs the preview build. api/engine.py is the",
+    "authority in production. They are separate implementations of one algorithm,",
+    "which is a real risk: two engines that disagree would price the same quote two",
+    "ways, and the disagreement would show up as a customer receiving a number the",
+    "business never sanctioned.",
+    "",
+    "So neither is allowed to change alone. web/src/engine/evaluate.test.ts and",
+    "api/tests/test_engine.py both read this file and assert against it. If someone",
+    "changes one engine, a test fails on the other side.",
+    "",
+    "The fixtures are deliberately small and made up for this file. Real part",
+    "numbers are not used here, because a golden test should say what it is testing",
+    "and nothing else.",
+    "",
+    "Money is compared to the cent, discounts to four decimal places.",
+    "suggestCases exercise `suggest` rather than `evaluate`: candidate filtering, ranking, and the machine-identity grouping that turns 947 Corvus SKUs back into the nine machines they configure.",
+    "",
+    "narrowingCases cover what the application rules out BEFORE anything is",
+    "graded — see data/narrowing-rules.json, which they run against directly",
+    "rather than through a copy, because the rules are the thing under test.",
+    "They use fixtures.narrowingItems rather than fixtures.items so that adding a",
+    "printer to make a point does not break the cases that count the others."
+  ],
+  "fixtures": {
+    "today": "2026-08-05",
+    "categories": [
+      {
+        "code": "system",
+        "displayName": "System",
+        "maxDiscount": 0.3
+      },
+      {
+        "code": "accessories",
+        "displayName": "Accessories",
+        "maxDiscount": 0.18
+      },
+      {
+        "code": "consumables",
+        "displayName": "Consumables",
+        "maxDiscount": null
+      }
+    ],
+    "items": [
+      {
+        "itemNo": "T-PRINTER-A",
+        "description": "Test printer A",
+        "prodCat": "T10",
+        "prodCatDesc": "Test printers",
+        "technologyCode": "CIJ",
+        "itemRole": "printer",
+        "discountCatCode": "system",
+        "listPrice": 10000,
+        "stdCost": 5000,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {
+          "Color": "Black"
+        },
+        "model": "6400"
+      },
+      {
+        "itemNo": "T-PRINTER-B",
+        "description": "Test printer B, white ink",
+        "prodCat": "T10",
+        "prodCatDesc": "Test printers",
+        "technologyCode": "CIJ",
+        "itemRole": "printer",
+        "discountCatCode": "system",
+        "listPrice": 12000,
+        "stdCost": 6600,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {
+          "Color": "White"
+        },
+        "model": "6440"
+      },
+      {
+        "itemNo": "T-BRACKET",
+        "description": "Test bracket",
+        "prodCat": "T20",
+        "prodCatDesc": "Test accessories",
+        "technologyCode": "CIJ",
+        "itemRole": "accessory",
+        "discountCatCode": "accessories",
+        "listPrice": 500,
+        "stdCost": 260,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {}
+      },
+      {
+        "itemNo": "T-CLAMP",
+        "description": "Test clamp",
+        "prodCat": "T20",
+        "prodCatDesc": "Test accessories",
+        "technologyCode": "CIJ",
+        "itemRole": "accessory",
+        "discountCatCode": "accessories",
+        "listPrice": 200,
+        "stdCost": 104,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {}
+      },
+      {
+        "itemNo": "T-INK",
+        "description": "Test ink, no standard cost",
+        "prodCat": "T30",
+        "prodCatDesc": "Test consumables",
+        "technologyCode": "CIJ",
+        "itemRole": "consumable",
+        "discountCatCode": "consumables",
+        "listPrice": 300,
+        "stdCost": null,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {}
+      },
+      {
+        "itemNo": "T-PALM-PAD",
+        "description": "Test PALM pad",
+        "prodCat": "T40",
+        "prodCatDesc": "Test PALM",
+        "technologyCode": "PALM",
+        "itemRole": "accessory",
+        "discountCatCode": "accessories",
+        "listPrice": 900,
+        "stdCost": 400,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {}
+      },
+      {
+        "itemNo": "T-CIJ-6400-BLACK",
+        "description": "6400 2M Standard 1240 Standard",
+        "prodCat": "T10",
+        "prodCatDesc": "Test printers",
+        "technologyCode": "CIJ",
+        "itemRole": "printer",
+        "discountCatCode": "system",
+        "listPrice": 10000,
+        "stdCost": 5000,
+        "uom": "EA",
+        "isActive": true,
+        "model": "6400",
+        "attributes": {
+          "Printer Type": "6400 Dye Based",
+          "Ink": "1240 MEK",
+          "Color": "Black"
+        }
+      },
+      {
+        "itemNo": "T-CIJ-6400-BLUE",
+        "description": "6400 2M Standard 1243 Blue",
+        "prodCat": "T10",
+        "prodCatDesc": "Test printers",
+        "technologyCode": "CIJ",
+        "itemRole": "printer",
+        "discountCatCode": "system",
+        "listPrice": 10500,
+        "stdCost": 5000,
+        "uom": "EA",
+        "isActive": true,
+        "model": "6400",
+        "attributes": {
+          "Printer Type": "6400 Dye Based",
+          "Ink": "1243 MEK",
+          "Color": "Blue"
+        }
+      },
+      {
+        "itemNo": "T-CIJ-6440-BLACK",
+        "description": "6440 2M Standard 1240 Standard",
+        "prodCat": "T10",
+        "prodCatDesc": "Test printers",
+        "technologyCode": "CIJ",
+        "itemRole": "printer",
+        "discountCatCode": "system",
+        "listPrice": 20000,
+        "stdCost": 9000,
+        "uom": "EA",
+        "isActive": true,
+        "model": "6440",
+        "attributes": {
+          "Printer Type": "6440 Fully Pigmented",
+          "Ink": "1240 MEK",
+          "Color": "Black"
+        }
+      },
+      {
+        "itemNo": "T-CIJ-6440-WHITE",
+        "description": "6440 2M Standard 3240 White",
+        "prodCat": "T10",
+        "prodCatDesc": "Test printers",
+        "technologyCode": "CIJ",
+        "itemRole": "printer",
+        "discountCatCode": "system",
+        "listPrice": 21000,
+        "stdCost": 9000,
+        "uom": "EA",
+        "isActive": true,
+        "model": "6440",
+        "attributes": {
+          "Printer Type": "6440 Fully Pigmented",
+          "Ink": "3240 Acetone",
+          "Color": "White"
+        }
+      },
+      {
+        "itemNo": "T-PALM-APPLICATOR",
+        "description": "Test PALM applicator",
+        "prodCat": "T40",
+        "prodCatDesc": "Test PALM",
+        "technologyCode": "PALM",
+        "itemRole": "printer",
+        "discountCatCode": "system",
+        "listPrice": 20000,
+        "stdCost": 11000,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {},
+        "model": "T-APPLY"
+      },
+      {
+        "itemNo": "T-ROUND-CENT",
+        "description": "Test consumable, priced to land on half a cent",
+        "prodCat": "T30",
+        "prodCatDesc": "Test consumables",
+        "technologyCode": "CIJ",
+        "itemRole": "consumable",
+        "discountCatCode": "consumables",
+        "listPrice": 5.0,
+        "stdCost": 2.0,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {},
+        "model": null
+      },
+      {
+        "itemNo": "T-ROUND-MILL",
+        "description": "Test consumable, priced to land on half a hundredth of a cent",
+        "prodCat": "T30",
+        "prodCatDesc": "Test consumables",
+        "technologyCode": "CIJ",
+        "itemRole": "consumable",
+        "discountCatCode": "consumables",
+        "listPrice": 1.05,
+        "stdCost": 0.5,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {},
+        "model": null
+      }
+    ],
+    "rules": [
+      {
+        "ruleCode": "T-CAP",
+        "technologyCode": "CIJ",
+        "ruleType": "discountCap",
+        "summary": "The bracket is capped at 5 percent.",
+        "detail": "Max Discount 5%",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "info",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "item",
+            "itemNo": "T-BRACKET"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "cap",
+            "itemNo": "T-BRACKET",
+            "maxDiscount": 0.05
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-CAP-TIGHTER",
+        "technologyCode": "CIJ",
+        "ruleType": "discountCap",
+        "summary": "A second rule caps the same bracket harder.",
+        "detail": "Max Discount 2%",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "info",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "item",
+            "itemNo": "T-BRACKET"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "cap",
+            "itemNo": "T-BRACKET",
+            "maxDiscount": 0.02
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-REQ",
+        "technologyCode": "CIJ",
+        "ruleType": "requires",
+        "summary": "The bracket needs two clamps.",
+        "detail": "Order (2) clamps with the bracket",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "warn",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "item",
+            "itemNo": "T-BRACKET"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "require",
+            "itemNo": "T-CLAMP",
+            "quantity": 2
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-LAPSED",
+        "technologyCode": "CIJ",
+        "ruleType": "requires",
+        "summary": "A rule whose effective_to has passed.",
+        "detail": "Should never fire.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "block",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": "2026-06-30",
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "item",
+            "itemNo": "T-PRINTER-A"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "require",
+            "itemNo": "T-INK",
+            "quantity": 1
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-PALM-ONLY",
+        "technologyCode": "PALM",
+        "ruleType": "note",
+        "summary": "A PALM rule that must not appear on a CIJ quote.",
+        "detail": "Belongs to another technology.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "info",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "role",
+            "itemRole": "accessory"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "warn",
+            "message": "PALM only."
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-BIG",
+        "technologyCode": null,
+        "ruleType": "approval",
+        "summary": "Orders of 20,000 or more need a down payment.",
+        "detail": "50% down over 20,000.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "info",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "total",
+            "compareOp": "gte",
+            "compareValue": "20000"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "warn",
+            "message": "50 percent down payment required."
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-OVER",
+        "technologyCode": null,
+        "ruleType": "approval",
+        "summary": "Past a stated maximum raises an approval.",
+        "detail": "Approval, not refusal.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "warn",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "always"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "approve",
+            "approverRole": "Regional Sales Manager"
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-ELIG",
+        "technologyCode": "CIJ",
+        "ruleType": "eligibility",
+        "summary": "The trade-out credit has two conditions.",
+        "detail": "Both must hold.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "block",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "item",
+            "itemNo": "T-INK"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "approve",
+            "approverRole": "Regional Sales Manager",
+            "message": "Trade-out credit does not qualify."
+          }
+        ],
+        "conditions": [
+          {
+            "seq": 1,
+            "label": "Quoted with a white-ink printer",
+            "conditionKind": "attribute",
+            "attrName": "Color",
+            "attrValue": "White"
+          },
+          {
+            "seq": 2,
+            "label": "Existing customer",
+            "conditionKind": "flag",
+            "flagName": "existingCustomer"
+          }
+        ]
+      },
+      {
+        "ruleCode": "T-FIT-BAD",
+        "technologyCode": "CIJ",
+        "ruleType": "applicationFit",
+        "summary": "Black ink does not read on a dark substrate.",
+        "detail": "Fit rule.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "warn",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "profile",
+            "profileField": "substrate",
+            "compareOp": "includes",
+            "compareValue": "dark"
+          },
+          {
+            "triggerType": "attribute",
+            "attrName": "Color",
+            "attrValue": "Black"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "grade",
+            "fitGrade": "notRecommended",
+            "message": "Black on dark will not be legible."
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-EXCLUDE-EMPTY",
+        "technologyCode": "CIJ",
+        "ruleType": "excludes",
+        "summary": "An exclude action naming no part. Must never block.",
+        "detail": "A malformed row that predates validation. The engine must ignore it.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "block",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "always"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "exclude",
+            "message": "Would have blocked everything."
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-MODEL-IN",
+        "technologyCode": "CIJ",
+        "ruleType": "applicationFit",
+        "summary": "Named models are past their speed ceiling above 574.",
+        "detail": "Stands in for a datasheet stating one figure for several models.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "warn",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "model",
+            "compareOp": "in",
+            "compareValue": "6400,6410"
+          },
+          {
+            "triggerType": "profile",
+            "profileField": "lineSpeedFpm",
+            "compareOp": "gt",
+            "compareValue": "574"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "grade",
+            "fitGrade": "notRecommended",
+            "message": "Past the stated single-line maximum."
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-MODEL-BOUNDARY",
+        "technologyCode": "CIJ",
+        "ruleType": "applicationFit",
+        "summary": "The 6400 tops out at 8.64 mm characters.",
+        "detail": "A converted inch figure. The threshold is exclusive: 8.64 is inside the range.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "warn",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "model",
+            "compareOp": "in",
+            "compareValue": "6400"
+          },
+          {
+            "triggerType": "profile",
+            "profileField": "charHeightMm",
+            "compareOp": "gt",
+            "compareValue": "8.64"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "grade",
+            "fitGrade": "notRecommended",
+            "message": "Taller than this model prints."
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-NOCON",
+        "technologyCode": "CIJ",
+        "ruleType": "applicationFit",
+        "summary": "A long throw needs checking.",
+        "detail": "Exists to prove an unconstrained field silences the rules that read it.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "warn",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "profile",
+            "profileField": "throwDistMm",
+            "compareOp": "gt",
+            "compareValue": "10"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "grade",
+            "fitGrade": "caveat",
+            "message": "Confirm print quality at this throw."
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-PICKONE",
+        "technologyCode": "CIJ",
+        "ruleType": "duplicate",
+        "summary": "The bracket and the clamp are alternatives.",
+        "detail": null,
+        "sourceRef": "engine-cases fixture",
+        "author": "test",
+        "severity": "warn",
+        "effectiveFrom": "2020-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "always"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "pickOne",
+            "itemNo": "T-BRACKET"
+          },
+          {
+            "actionType": "pickOne",
+            "itemNo": "T-CLAMP"
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-BARE",
+        "technologyCode": "CIJ",
+        "ruleType": "note",
+        "summary": "A printer with no accessory on the quote.",
+        "detail": null,
+        "sourceRef": "engine-cases fixture",
+        "author": "test",
+        "severity": "warn",
+        "effectiveFrom": "2020-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "role",
+            "itemRole": "printer"
+          },
+          {
+            "triggerType": "role",
+            "itemRole": "accessory",
+            "compareOp": "ne"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "warn",
+            "message": "Nothing on this quote mounts the printer."
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-MANY-ACC",
+        "technologyCode": "CIJ",
+        "ruleType": "duplicate",
+        "summary": "Three or more distinct accessories.",
+        "detail": null,
+        "sourceRef": "engine-cases fixture",
+        "author": "test",
+        "severity": "warn",
+        "effectiveFrom": "2020-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "role",
+            "itemRole": "accessory",
+            "minCount": 3
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "warn",
+            "message": "Three or more accessories."
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-SUBSTRATE-FAMILY",
+        "technologyCode": "CIJ",
+        "ruleType": "applicationFit",
+        "summary": "A family of substrates named in one rule.",
+        "detail": "Holds 'includesAny' equal in both engines: matches any listed term inside the free text, and matches nothing when none of them appear.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "warn",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "profile",
+            "profileField": "substrate",
+            "compareOp": "includesAny",
+            "compareValue": "film,foil,web"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "warn",
+            "message": "Substrate is in the film family."
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-FIT-TALL",
+        "technologyCode": "CIJ",
+        "ruleType": "applicationFit",
+        "summary": "The head prints 25.4 mm; four chain to 101.6 mm.",
+        "detail": "Stands in for the eight shipped print-height rules, which all have this shape: a head's stated print height, against how tall the mark is.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "warn",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "profile",
+            "profileField": "markHeightMm",
+            "compareOp": "gt",
+            "compareValue": "25.4"
+          },
+          {
+            "triggerType": "profile",
+            "profileField": "markHeightMm",
+            "compareOp": "lte",
+            "compareValue": "101.6"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "grade",
+            "fitGrade": "caveat",
+            "message": "Taller than one head. These chain up to four."
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-FIT-CHAIN",
+        "technologyCode": "CIJ",
+        "ruleType": "applicationFit",
+        "summary": "Past the whole chain nothing reaches it.",
+        "detail": "Stands in for the four shipped chain rules: past one head is a caveat with a head count, past the whole chain is a refusal.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "warn",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "profile",
+            "profileField": "markHeightMm",
+            "compareOp": "gt",
+            "compareValue": "101.6"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "grade",
+            "fitGrade": "notRecommended",
+            "message": "Even four chained heads do not reach this."
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-REQ-MSG",
+        "technologyCode": "CIJ",
+        "ruleType": "requires",
+        "summary": "The white-ink printer needs the clamp, and the clamp is hard to find.",
+        "detail": "A require action carrying a message. The catalogue-requirement rules use this to say why searching for the part will not turn it up: three of them point at a part filed under a different technology from the item that needs it, and the item search is filtered to the quote's own book.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "warn",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "item",
+            "itemNo": "T-PRINTER-B"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "require",
+            "itemNo": "T-CLAMP",
+            "quantity": 1,
+            "message": "filed under VIJ, so the item search will not show it"
+          }
+        ],
+        "conditions": []
+      },
+      {
+        "ruleCode": "T-PALM-FIT-BAD",
+        "technologyCode": "PALM",
+        "ruleType": "applicationFit",
+        "summary": "The applicator will not take a label this narrow.",
+        "detail": "A PALM rule, so that a mixed quote can show each machine graded by its own book rather than by the book the quote was started in.",
+        "sourceRef": "engine-cases fixture",
+        "author": "fixture",
+        "severity": "warn",
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "isActive": true,
+        "triggers": [
+          {
+            "triggerType": "model",
+            "compareOp": "eq",
+            "compareValue": "T-APPLY"
+          },
+          {
+            "triggerType": "profile",
+            "profileField": "labelWidthMm",
+            "compareOp": "lt",
+            "compareValue": "20"
+          }
+        ],
+        "actions": [
+          {
+            "actionType": "grade",
+            "fitGrade": "notRecommended",
+            "message": "Narrower than the applicator takes."
+          }
+        ],
+        "conditions": []
+      }
+    ],
+    "narrowingItems": [
+      {
+        "itemNo": "N-PRN-POROUS-BLACK",
+        "description": "Coder, porous black",
+        "prodCat": "T90",
+        "prodCatDesc": "Narrowing fixtures",
+        "technologyCode": "CIJ",
+        "itemRole": "printer",
+        "discountCatCode": "system",
+        "listPrice": 100.0,
+        "stdCost": 50.0,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {
+          "Surface": "Porous",
+          "Color": "Black"
+        },
+        "model": null
+      },
+      {
+        "itemNo": "N-PRN-NONPOR-BLUE",
+        "description": "Coder, non-porous blue",
+        "prodCat": "T90",
+        "prodCatDesc": "Narrowing fixtures",
+        "technologyCode": "CIJ",
+        "itemRole": "printer",
+        "discountCatCode": "system",
+        "listPrice": 100.0,
+        "stdCost": 50.0,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {
+          "Surface": "Non-porous",
+          "Color": "Blue"
+        },
+        "model": null
+      },
+      {
+        "itemNo": "N-PRN-POROUS-BLUE",
+        "description": "Coder, porous blue",
+        "prodCat": "T90",
+        "prodCatDesc": "Narrowing fixtures",
+        "technologyCode": "CIJ",
+        "itemRole": "printer",
+        "discountCatCode": "system",
+        "listPrice": 100.0,
+        "stdCost": 50.0,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {
+          "Surface": "Porous",
+          "Color": "Blue"
+        },
+        "model": null
+      },
+      {
+        "itemNo": "N-BRACKET",
+        "description": "Printhead bracket, blue handle",
+        "prodCat": "T90",
+        "prodCatDesc": "Narrowing fixtures",
+        "technologyCode": "CIJ",
+        "itemRole": "accessory",
+        "discountCatCode": "system",
+        "listPrice": 100.0,
+        "stdCost": 50.0,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {},
+        "model": null
+      },
+      {
+        "itemNo": "N-INK-POROUS-BLACK",
+        "description": "Porous Black Thermo 1240",
+        "prodCat": "T90",
+        "prodCatDesc": "Narrowing fixtures",
+        "technologyCode": "CIJ",
+        "itemRole": "ink",
+        "discountCatCode": "system",
+        "listPrice": 100.0,
+        "stdCost": 50.0,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {},
+        "model": null
+      },
+      {
+        "itemNo": "N-INK-NONPOR-BLACK",
+        "description": "Non-Porous (MEK) Black 1243",
+        "prodCat": "T90",
+        "prodCatDesc": "Narrowing fixtures",
+        "technologyCode": "CIJ",
+        "itemRole": "ink",
+        "discountCatCode": "system",
+        "listPrice": 100.0,
+        "stdCost": 50.0,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {},
+        "model": null
+      },
+      {
+        "itemNo": "N-INK-POROUS-BLUE",
+        "description": "Porous Blue 2040",
+        "prodCat": "T90",
+        "prodCatDesc": "Narrowing fixtures",
+        "technologyCode": "CIJ",
+        "itemRole": "ink",
+        "discountCatCode": "system",
+        "listPrice": 100.0,
+        "stdCost": 50.0,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {},
+        "model": null
+      },
+      {
+        "itemNo": "N-INK-GRAY",
+        "description": "Porous Gray 1900",
+        "prodCat": "T90",
+        "prodCatDesc": "Narrowing fixtures",
+        "technologyCode": "CIJ",
+        "itemRole": "ink",
+        "discountCatCode": "system",
+        "listPrice": 100.0,
+        "stdCost": 50.0,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {},
+        "model": null
+      },
+      {
+        "itemNo": "N-INK-GREY",
+        "description": "Porous Grey 1901",
+        "prodCat": "T90",
+        "prodCatDesc": "Narrowing fixtures",
+        "technologyCode": "CIJ",
+        "itemRole": "ink",
+        "discountCatCode": "system",
+        "listPrice": 100.0,
+        "stdCost": 50.0,
+        "uom": "EA",
+        "isActive": true,
+        "attributes": {},
+        "model": null
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "prices a single line and states margin",
+      "why": "The base path. 10,000 list at 18% is 8,200 net; cost 5,000 gives 39.02% margin.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0.18
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "extendedList": 10000.0,
+        "extendedNet": 8200.0,
+        "orderTotal": 8200.0,
+        "totalDiscount": 0.18,
+        "marginPct": 0.3902,
+        "marginNote": null,
+        "blocked": false,
+        "requiredApprovals": [],
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "appliedDiscount": 0.18,
+            "cappedByRule": null,
+            "netUnit": 8200.0,
+            "extendedNet": 8200.0
+          }
+        ],
+        "traceCodes": []
+      }
+    },
+    {
+      "name": "the tightest cap wins when two rules cap the same part",
+      "why": "Quoting the looser of two caps is never the safe reading, so 2% beats 5%.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0.18,
+          "accessories": 0.18
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-BRACKET",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "extendedList": 10500.0,
+        "extendedNet": 8690.0,
+        "orderTotal": 8690.0,
+        "blocked": false,
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "appliedDiscount": 0.18,
+            "cappedByRule": null
+          },
+          {
+            "itemNo": "T-BRACKET",
+            "appliedDiscount": 0.02,
+            "cappedByRule": "T-CAP-TIGHTER",
+            "netUnit": 490.0,
+            "extendedNet": 490.0
+          }
+        ],
+        "traceCodes": [
+          "T-CAP-TIGHTER",
+          "T-REQ"
+        ]
+      }
+    },
+    {
+      "name": "a requires rule asks for what is missing, and stops once it is there",
+      "why": "The rep needs the shortfall, not a restatement of the rule.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "accessories": 0.0
+        },
+        "lines": [
+          {
+            "itemNo": "T-BRACKET",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-CLAMP",
+            "quantity": 2
+          }
+        ]
+      },
+      "expect": {
+        "extendedList": 900.0,
+        "extendedNet": 900.0,
+        "blocked": false,
+        "traceStatuses": {
+          "T-REQ": "satisfied"
+        }
+      }
+    },
+    {
+      "name": "a lapsed rule does not fire",
+      "why": "Effective dating is checked before any rule is considered.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "blocked": false,
+        "traceCodesAbsent": [
+          "T-LAPSED"
+        ]
+      }
+    },
+    {
+      "name": "a rule from another technology does not appear",
+      "why": "A PALM rule on a CIJ quote teaches a rep to stop reading the trace.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "accessories": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-BRACKET",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "traceCodesAbsent": [
+          "T-PALM-ONLY"
+        ]
+      }
+    },
+    {
+      "name": "an exclude action naming no part never blocks",
+      "why": "A malformed row must not take every quote down with it.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "blocked": false,
+        "traceCodesAbsent": [
+          "T-EXCLUDE-EMPTY"
+        ]
+      }
+    },
+    {
+      "name": "an order-value trigger fires only above its threshold",
+      "why": "Before the 'total' trigger existed this rule fired on every quote.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 2
+          }
+        ]
+      },
+      "expect": {
+        "extendedNet": 20000.0,
+        "traceCodes": [
+          "T-BIG"
+        ]
+      }
+    },
+    {
+      "name": "exceeding a stated maximum raises an approval, it does not block",
+      "why": "A rep may quote past the ceiling; the quote then names the figure and the ceiling.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0.35
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "extendedNet": 6500.0,
+        "blocked": false,
+        "requiredApprovals": [
+          {
+            "ruleCode": "T-OVER",
+            "requestedPct": 0.35,
+            "statedMax": 0.3,
+            "approverRole": "Regional Sales Manager"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a discount on a category no line uses raises nothing",
+      "why": "An unused slider is not a request.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0.1,
+          "accessories": 0.9
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "extendedNet": 9000.0,
+        "requiredApprovals": []
+      }
+    },
+    {
+      "name": "a failed eligibility rule blocks and names which conditions failed",
+      "why": "\"No\" without \"which\" is useless to a rep.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0,
+          "consumables": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-INK",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "blocked": true,
+        "traceStatuses": {
+          "T-ELIG": "blocked"
+        },
+        "traceHeadlineContains": {
+          "T-ELIG": "Quoted with a white-ink printer"
+        }
+      }
+    },
+    {
+      "name": "the same eligibility rule passes when both conditions hold",
+      "why": "The white-ink printer satisfies condition 1 and the flag satisfies condition 2.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {},
+        "flags": {
+          "existingCustomer": true
+        },
+        "categoryDiscounts": {
+          "system": 0,
+          "consumables": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-B",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-INK",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "blocked": false,
+        "traceStatuses": {
+          "T-ELIG": "satisfied"
+        }
+      }
+    },
+    {
+      "name": "margin is withheld, with a reason, when a line has no standard cost",
+      "why": "A blank that gets read as zero is worse than saying why the number is missing.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {},
+        "flags": {
+          "existingCustomer": true
+        },
+        "categoryDiscounts": {
+          "system": 0,
+          "consumables": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-B",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-INK",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "marginPct": null,
+        "marginNoteContains": "1 of 2 lines carry no standard cost"
+      }
+    },
+    {
+      "name": "fit grading comes from a rule, and names it",
+      "why": "There is not one threshold compiled into either engine.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {
+          "substrate": "Dark corrugated"
+        },
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-PRINTER-B",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "grade": "notRecommended",
+            "reasonCodes": [
+              "T-FIT-BAD"
+            ]
+          },
+          {
+            "itemNo": "T-PRINTER-B",
+            "grade": "notAssessed",
+            "reasonCodes": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "an empty quote prices to zero and blocks nothing",
+      "why": "The builder evaluates before anything is added; it must not throw or block.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {},
+        "lines": []
+      },
+      "expect": {
+        "extendedList": 0,
+        "extendedNet": 0,
+        "orderTotal": 0,
+        "totalDiscount": 0,
+        "blocked": false,
+        "marginPct": null,
+        "requiredApprovals": []
+      }
+    },
+    {
+      "name": "a model list matches the models it names",
+      "why": "A datasheet states one ceiling for several models, so a rule has to be able to name them. Without this the Python model trigger was untested.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {
+          "lineSpeedFpm": 800
+        },
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "grade": "notRecommended",
+            "reasonCodes": [
+              "T-MODEL-IN"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "a model list does not catch a model it does not name",
+      "why": "REPORTED SHAPE. Written as 'includes 89' this caught the 6440 too, which made a rule saying only the 6440 is IP65 apply to the 6440. The list names 6400 and 6410; the 6440 must come through clean.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {
+          "lineSpeedFpm": 800
+        },
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-B",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-B",
+            "grade": "notAssessed",
+            "reasonCodes": []
+          }
+        ],
+        "traceCodesAbsent": [
+          "T-MODEL-IN"
+        ]
+      }
+    },
+    {
+      "name": "a converted threshold is exclusive at the boundary",
+      "why": "8.64 mm is 0.34 inch, the top of the stated range, so it is inside it. An inclusive comparison would rule out the exact figure the datasheet permits.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {
+          "charHeightMm": 8.64
+        },
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "grade": "notAssessed",
+            "reasonCodes": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "one hundredth past the boundary does fire",
+      "why": "The other half of the boundary: the rule must still work.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {
+          "charHeightMm": 8.65
+        },
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "grade": "notRecommended",
+            "reasonCodes": [
+              "T-MODEL-BOUNDARY"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "a stated throw distance fires the rule that reads it",
+      "why": "Control for the next case.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {
+          "throwDistMm": 20
+        },
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-B",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-B",
+            "grade": "caveat",
+            "reasonCodes": [
+              "T-NOCON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "an unconstrained field silences every rule that reads it",
+      "why": "'Any throw distance' has to mean the throw rules go quiet, not that they evaluate against a blank and narrow the list anyway. Same profile as the case above, so only noConstraint differs.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": null,
+        "lineName": null,
+        "profile": {
+          "throwDistMm": 20
+        },
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-B",
+            "quantity": 1
+          }
+        ],
+        "noConstraint": [
+          "throwDistMm"
+        ]
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-B",
+            "grade": "notAssessed",
+            "reasonCodes": []
+          }
+        ],
+        "traceCodesAbsent": [
+          "T-NOCON"
+        ]
+      }
+    },
+    {
+      "name": "pickOne questions two alternatives on one quote",
+      "why": "Five printhead poles of different lengths are a choice, not a kit. Quoting the bracket and the clamp together used to pass in silence.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {},
+        "lines": [
+          {
+            "itemNo": "T-BRACKET",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-CLAMP",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "traceCodes": [
+          "T-PICKONE"
+        ],
+        "traceStatuses": {
+          "T-PICKONE": "warning"
+        },
+        "traceHeadlineContains": {
+          "T-PICKONE": "Only one of these"
+        },
+        "traceCodesAbsent": [
+          "T-BARE"
+        ]
+      }
+    },
+    {
+      "name": "pickOne stays quiet when only one of the set is quoted",
+      "why": "Choosing one alternative is the correct outcome, not a finding.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {},
+        "lines": [
+          {
+            "itemNo": "T-BRACKET",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "traceCodesAbsent": [
+          "T-PICKONE"
+        ]
+      }
+    },
+    {
+      "name": "an absent role fires the bare-printer note",
+      "why": "role + compareOp 'ne' engages when nothing quoted has that role, so a printer with no accessory can be questioned. A printer sold with nothing to mount it on used to go out silently.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {},
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "traceCodes": [
+          "T-BARE"
+        ],
+        "traceHeadlineContains": {
+          "T-BARE": "mounts the printer"
+        }
+      }
+    },
+    {
+      "name": "the bare-printer note goes quiet once an accessory is on the quote",
+      "why": "The inverted role trigger must stop engaging as soon as the gap is filled.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {},
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-BRACKET",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "traceCodesAbsent": [
+          "T-BARE"
+        ]
+      }
+    },
+    {
+      "name": "a role trigger counts distinct items, not quantity",
+      "why": "Six of one ink is a year's supply; six different service items is somebody adding the whole list. Two accessories at quantity 9 must NOT trip a three-accessory rule.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {},
+        "lines": [
+          {
+            "itemNo": "T-BRACKET",
+            "quantity": 9
+          },
+          {
+            "itemNo": "T-CLAMP",
+            "quantity": 9
+          }
+        ]
+      },
+      "expect": {
+        "traceCodesAbsent": [
+          "T-MANY-ACC"
+        ]
+      }
+    },
+    {
+      "name": "three distinct accessories trips the heap rule",
+      "why": "This is the shape of 'all the mounting hardware went on the quote'.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {},
+        "lines": [
+          {
+            "itemNo": "T-BRACKET",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-CLAMP",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-PALM-PAD",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "traceCodes": [
+          "T-MANY-ACC"
+        ],
+        "traceStatuses": {
+          "T-MANY-ACC": "warning"
+        }
+      }
+    },
+    {
+      "name": "includesAny matches one term inside free text",
+      "why": "A substrate is typed by a person, so the rule has to find 'film' inside 'BOPP film, printed'.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "flags": {},
+        "categoryDiscounts": {},
+        "lines": [
+          {
+            "itemNo": "T-BRACKET",
+            "quantity": 1
+          }
+        ],
+        "profile": {
+          "substrate": "BOPP film, printed"
+        }
+      },
+      "expect": {
+        "traceCodes": [
+          "T-SUBSTRATE-FAMILY"
+        ],
+        "traceStatuses": {
+          "T-SUBSTRATE-FAMILY": "warning"
+        }
+      }
+    },
+    {
+      "name": "includesAny stays silent on a substrate nobody listed",
+      "why": "The comparator must never condemn a substrate for the words it does not contain. 'PETG clamshell' gets silence, not a verdict.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "flags": {},
+        "categoryDiscounts": {},
+        "lines": [
+          {
+            "itemNo": "T-BRACKET",
+            "quantity": 1
+          }
+        ],
+        "profile": {
+          "substrate": "PETG clamshell"
+        }
+      },
+      "expect": {
+        "traceCodesAbsent": [
+          "T-SUBSTRATE-FAMILY"
+        ]
+      }
+    },
+    {
+      "name": "a priced line says what the item is",
+      "$why": "The configurator reads itemRole and model off the priced line to know which requirements a quote already satisfies. Both engines gained the fields in the same session and neither had a case, so they could have drifted silently — which is the exact failure this file exists to prevent.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-BRACKET",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "itemRole": "printer",
+            "model": "6400"
+          },
+          {
+            "itemNo": "T-BRACKET",
+            "itemRole": "accessory",
+            "model": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "a rule naming a kind of part carries that kind out of the engine",
+      "$why": "T-BARE fires on 'a printer is quoted and no accessory is'. The kind it wants is in its own trigger, and the screen turns it into a filtered picker. Reading it off the trigger rather than a table means a rule written later gets a picker for free, and means the remedy can never disagree with the condition.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "traceCodes": [
+          "T-BARE"
+        ],
+        "tracePickRoles": {
+          "T-BARE": "accessory"
+        }
+      }
+    },
+    {
+      "name": "a rule that names exact parts offers no picker",
+      "$why": "T-REQ knows the part number and the shortfall, so it carries a one-click fix instead of a picker. Offering both would be two remedies for one finding, and the screen would have to pick.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-BRACKET",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "traceCodes": [
+          "T-REQ"
+        ],
+        "tracePickRolesAbsent": [
+          "T-REQ"
+        ]
+      }
+    },
+    {
+      "name": "an item nothing has graded is not called a good fit",
+      "$why": "The default used to be 'good', so a machine no rule had examined was drawn the same as one a datasheet endorses. Absence of evidence needs its own grade or it silently becomes evidence of absence.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "profile": {
+          "substrate": "corrugated case"
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-B",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-B",
+            "grade": "notAssessed",
+            "reasonCodes": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "room on the pack does not rule a head out",
+      "why": "REPORTED. markingWindowMm is the space AVAILABLE, and the print-height rules read it as the height REQUIRED — so a 200 mm clear panel ruled out every head printing less than 200 mm. The roomier the product, the fewer machines would take it. A 6 mm code in a 200 mm window fits any of them.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ],
+        "profile": {
+          "charHeightMm": 6,
+          "markingWindowMm": 200
+        }
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "grade": "notAssessed",
+            "reasonCodes": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "an unconstrained character height silences what is derived from it",
+      "why": "'Any character height' has to carry to the mark height too, or the shrug is honoured for the question and ignored for the rules behind it.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ],
+        "profile": {
+          "charHeightMm": 15,
+          "linesOfPrint": 2
+        },
+        "noConstraint": [
+          "charHeightMm"
+        ]
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "grade": "notAssessed",
+            "reasonCodes": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "a mark past one head is a chain, not a refusal",
+      "why": "REPORTED: 'if the mark is too big the tool says nothing will work when a daisy chain would be the solution.' Eight lines of 8 mm is 64 mm of mark on a 25.4 mm head — three heads — and the grade now says so instead of ruling the technology out.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ],
+        "profile": {
+          "charHeightMm": 8,
+          "linesOfPrint": 8
+        }
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "grade": "caveat",
+            "reasonCodes": [
+              "T-FIT-TALL"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "past the whole chain it really is a refusal",
+      "why": "The other side of the same rule. Sixteen lines of 8 mm is 128 mm, past what four chained heads cover, so no number of heads reaches it and the caveat must not fire.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ],
+        "profile": {
+          "charHeightMm": 8,
+          "linesOfPrint": 16
+        }
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "grade": "notRecommended",
+            "reasonCodes": [
+              "T-FIT-CHAIN"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "an optional line is priced and left out of the total",
+      "why": "Asked for by the sales team: a rep wants to put a second head or a year of ink in front of the customer without it landing in the price they read. T-PRINTER-A at 18% is 8,200; the optional T-CLAMP is priced at its own 18% — 2 x 164 = 328 — and none of it reaches the order total. Margin is the committed line only: T-INK carries no standard cost, and before this it would have suppressed the margin figure entirely.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0.18,
+          "accessories": 0.18
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-CLAMP",
+            "quantity": 2,
+            "optional": true
+          }
+        ]
+      },
+      "expect": {
+        "extendedList": 10000.0,
+        "extendedNet": 8200.0,
+        "orderTotal": 8200.0,
+        "totalDiscount": 0.18,
+        "marginPct": 0.3902,
+        "marginNote": null,
+        "optionalNet": 328.0,
+        "blocked": false,
+        "requiredApprovals": [],
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "appliedDiscount": 0.18,
+            "netUnit": 8200.0,
+            "extendedNet": 8200.0
+          },
+          {
+            "itemNo": "T-CLAMP",
+            "appliedDiscount": 0.18,
+            "netUnit": 164.0,
+            "extendedNet": 328.0
+          }
+        ],
+        "traceCodes": []
+      }
+    },
+    {
+      "name": "a flat amount comes off the order and is stated as a percentage",
+      "why": "Asked for by the sales team: a negotiation ends at 'call it eight thousand', not at a percentage. 10,000 list less 18% is 8,200; 200 off leaves 8,000, which is 20% of list. The percentage is what every ceiling is written in, so it has to be the figure that is reported.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0.18
+        },
+        "flatDiscount": 200,
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "extendedList": 10000.0,
+        "extendedNet": 8000.0,
+        "orderTotal": 8000.0,
+        "totalDiscount": 0.2,
+        "flatDiscountApplied": 200.0,
+        "blocked": false,
+        "requiredApprovals": [],
+        "traceCodes": []
+      }
+    },
+    {
+      "name": "a flat amount larger than the quote does not make it negative",
+      "why": "A typo, and the only safe reading of one. Clamped at the net rather than rejected, because a rep mid-negotiation should see a zero and fix it, not lose the quote.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0
+        },
+        "flatDiscount": 99999,
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "extendedList": 10000.0,
+        "extendedNet": 0.0,
+        "orderTotal": 0.0,
+        "totalDiscount": 1.0,
+        "flatDiscountApplied": 10000.0,
+        "blocked": false,
+        "traceCodes": []
+      }
+    },
+    {
+      "name": "an optional line is not discounted away by the flat amount either",
+      "why": "The flat amount is money off the ORDER, and an optional line is not on the order. Both mechanisms have to agree about which lines are the quote or the two of them together produce a number from nowhere.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0.18,
+          "accessories": 0
+        },
+        "flatDiscount": 200,
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-CLAMP",
+            "quantity": 1,
+            "optional": true
+          }
+        ]
+      },
+      "expect": {
+        "extendedList": 10000.0,
+        "extendedNet": 8000.0,
+        "orderTotal": 8000.0,
+        "flatDiscountApplied": 200.0,
+        "optionalNet": 200.0,
+        "marginPct": 0.375,
+        "traceCodes": []
+      }
+    },
+    {
+      "name": "a required part's note reaches the rep, and the fix carries the part",
+      "why": "REPORTED: an item whose description required another item gave no warning, and the part it named could not be found in the catalogue because it is filed under a different technology. The require action answers both — it hands over the part rather than asking the rep to search for it, and the message says why searching would fail. Both engines have to word it the same, because the rep reads one and the service stores the other.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0.18
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-B",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "traceCodes": [
+          "T-REQ-MSG"
+        ],
+        "traceStatuses": {
+          "T-REQ-MSG": "action"
+        },
+        "traceHeadlineContains": {
+          "T-REQ-MSG": "filed under VIJ, so the item search will not show it"
+        }
+      }
+    },
+    {
+      "name": "and goes quiet once that part is on the quote",
+      "why": "The other half. A requirement that keeps asking after it has been met is a warning a rep learns to scroll past.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0.18
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-B",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-CLAMP",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "traceStatuses": {
+          "T-REQ-MSG": "satisfied"
+        },
+        "traceHeadlineContains": {
+          "T-REQ-MSG": "is on the quote"
+        }
+      }
+    },
+    {
+      "name": "a second solution is graded by its own book, and only by its own",
+      "why": "A quote carried one technologyCode and rules were chosen by it, so an applicator added to a CIJ quote was priced, totalled, printed on the customer's copy and never graded — silence that reads as approval. Both halves are here: the PALM machine now answers to the PALM rule, and the CIJ printer beside it does not. That second half is the reason the filter existed, and it is enforced per item now rather than per quote.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {
+          "substrate": "dark corrugated",
+          "labelWidthMm": 10
+        },
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0.18
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-PALM-APPLICATOR",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PALM-APPLICATOR",
+            "grade": "notRecommended",
+            "reasonCodes": [
+              "T-PALM-FIT-BAD"
+            ]
+          },
+          {
+            "itemNo": "T-PRINTER-A",
+            "grade": "notRecommended",
+            "reasonCodes": [
+              "T-FIT-BAD"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "a station answers a question differently from the line",
+      "why": "A quote holds one application, which is honest for what is true of the line and the room and wrong for what is true of a position on it — the date code on the bottle is not the height of the text on the case label. Measured against the shipped rules, 18 of the 21 book pairs share at least one station-level field, so one answer was serving two stations with nothing saying so. T-FIT-BAD refuses black on dark; the quote says dark corrugated and the CIJ station says white film, so the refusal lifts for it.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {
+          "substrate": "dark corrugated",
+          "labelWidthMm": 10
+        },
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0.18
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1,
+            "solutionId": "s1"
+          },
+          {
+            "itemNo": "T-PALM-APPLICATOR",
+            "quantity": 1,
+            "solutionId": "s2"
+          }
+        ],
+        "solutions": [
+          {
+            "id": "s1",
+            "name": null,
+            "technologyCode": "CIJ",
+            "profile": {
+              "substrate": "white film"
+            }
+          },
+          {
+            "id": "s2",
+            "name": null,
+            "technologyCode": "PALM"
+          }
+        ]
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "grade": "notAssessed",
+            "reasonCodes": [],
+            "solutionId": "s1"
+          },
+          {
+            "itemNo": "T-PALM-APPLICATOR",
+            "grade": "notRecommended",
+            "reasonCodes": [
+              "T-PALM-FIT-BAD"
+            ],
+            "solutionId": "s2"
+          }
+        ]
+      }
+    },
+    {
+      "name": "and a station that says nothing still takes the line's answer",
+      "why": "Absent means 'same as the line', which is the common case and has to cost nothing to say. The PALM station carries an override for a different field and still inherits the substrate.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {
+          "substrate": "dark corrugated",
+          "labelWidthMm": 10
+        },
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0.18
+        },
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1,
+            "solutionId": "s1"
+          },
+          {
+            "itemNo": "T-PALM-APPLICATOR",
+            "quantity": 1,
+            "solutionId": "s2"
+          }
+        ],
+        "solutions": [
+          {
+            "id": "s1",
+            "name": null,
+            "technologyCode": "CIJ"
+          },
+          {
+            "id": "s2",
+            "name": null,
+            "technologyCode": "PALM",
+            "profile": {
+              "labelWidthMm": 10
+            }
+          }
+        ]
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "grade": "notRecommended",
+            "reasonCodes": [
+              "T-FIT-BAD"
+            ],
+            "solutionId": "s1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rounds half up, on the decimal value, in both engines",
+      "why": "The two engines rounded differently and nothing here could see it. engine.py used round(Decimal(str(n)), N) — half to EVEN — while evaluate.ts used Math.round(n * 100) / 100 — half up on the binary float. Every fixture price in this file was a round hundred, so no case ever produced a half and the corpus asserted agreement it was not testing. These two lines produce one half at each scale, with ordinary money and an ordinary discount. T-ROUND-CENT: 5.00 less 17.5% is 4.125 exactly, so extendedNet is 4.13 and half-to-even would say 4.12. T-ROUND-MILL: 1.05 less 17.5% is 0.86625 exactly, so netUnit is 0.8663 and half-to-even would say 0.8662. Both are the commercial answer: half a cent goes up. Consumables carries no ceiling, so nothing here needs approval and the case is only about arithmetic.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {},
+        "flags": {},
+        "categoryDiscounts": {
+          "consumables": 0.175
+        },
+        "lines": [
+          {
+            "itemNo": "T-ROUND-CENT",
+            "quantity": 1
+          },
+          {
+            "itemNo": "T-ROUND-MILL",
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "extendedList": 6.05,
+        "extendedNet": 5.0,
+        "orderTotal": 5.0,
+        "totalDiscount": 0.1736,
+        "marginPct": 0.5,
+        "marginNote": null,
+        "blocked": false,
+        "lines": [
+          {
+            "itemNo": "T-ROUND-CENT",
+            "netUnit": 4.125,
+            "extendedList": 5.0,
+            "extendedNet": 4.13
+          },
+          {
+            "itemNo": "T-ROUND-MILL",
+            "netUnit": 0.8663,
+            "extendedList": 1.05,
+            "extendedNet": 0.87
+          }
+        ]
+      }
+    },
+    {
+      "name": "two solutions share a price book and are graded apart",
+      "why": "A solution used to BE a price book — solutions were keyed by technology code, so a quote could hold at most one CIJ station and the second had nowhere to live. A rep quoting two production lines that both need a coder is the ordinary case. Here the same printer is quoted at two stations: the quote says dark corrugated and T-FIT-BAD refuses black on dark, so station one is not recommended; station two answers white film for itself and the refusal lifts. One item number, two solutions, two grades — which is why fit is assessed per (solution, item) and not per item.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {
+          "substrate": "dark corrugated",
+          "labelWidthMm": 10
+        },
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0.18
+        },
+        "solutions": [
+          {
+            "id": "s1",
+            "name": "Line 1 — bottle",
+            "technologyCode": "CIJ"
+          },
+          {
+            "id": "s2",
+            "name": "Line 2 — case",
+            "technologyCode": "CIJ",
+            "profile": {
+              "substrate": "white film"
+            }
+          }
+        ],
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1,
+            "solutionId": "s1"
+          },
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1,
+            "solutionId": "s2"
+          }
+        ]
+      },
+      "expect": {
+        "extendedList": 20000.0,
+        "extendedNet": 16400.0,
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "solutionId": "s1",
+            "grade": "notRecommended",
+            "reasonCodes": [
+              "T-FIT-BAD"
+            ]
+          },
+          {
+            "itemNo": "T-PRINTER-A",
+            "solutionId": "s2",
+            "grade": "notAssessed",
+            "reasonCodes": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "a station's own 'no constraint' silences rules for that station only",
+      "why": "The 'any / does not matter' answers are part of the application, so a station that answers the application answers these too. They are NOT merged field by field the way the profile is: a list is answered as a whole, so absent means 'as the quote says' and present — even empty — means this station was asked. Here the quote says dark corrugated and T-FIT-BAD refuses black on dark. Station two waves the substrate off, so the rule goes quiet for it and stays firing for station one. Ticking 'any' on the case labeller must not silence the bottle coder.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "customerNo": null,
+        "customerName": "Test Co",
+        "lineName": null,
+        "profile": {
+          "substrate": "dark corrugated",
+          "labelWidthMm": 10
+        },
+        "flags": {},
+        "categoryDiscounts": {
+          "system": 0.18
+        },
+        "solutions": [
+          {
+            "id": "s1",
+            "name": null,
+            "technologyCode": "CIJ"
+          },
+          {
+            "id": "s2",
+            "name": null,
+            "technologyCode": "CIJ",
+            "noConstraint": [
+              "substrate"
+            ]
+          }
+        ],
+        "lines": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1,
+            "solutionId": "s1"
+          },
+          {
+            "itemNo": "T-PRINTER-A",
+            "quantity": 1,
+            "solutionId": "s2"
+          }
+        ]
+      },
+      "expect": {
+        "fit": [
+          {
+            "itemNo": "T-PRINTER-A",
+            "solutionId": "s1",
+            "grade": "notRecommended",
+            "reasonCodes": [
+              "T-FIT-BAD"
+            ]
+          },
+          {
+            "itemNo": "T-PRINTER-A",
+            "solutionId": "s2",
+            "grade": "notAssessed",
+            "reasonCodes": []
+          }
+        ]
+      }
+    }
+  ],
+  "suggestCases": [
+    {
+      "name": "without an identity, every configuration is its own row",
+      "why": "The behaviour before grouping, kept as a case so the default cannot change by accident: six CIJ printers in the fixtures, six rows.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "profile": {}
+      },
+      "expect": {
+        "count": 6,
+        "variants": {}
+      }
+    },
+    {
+      "name": "groups configurations of one machine onto one row",
+      "why": "Printer Type says which machine a Corvus SKU is; ink and colour say how it is filled. Two machines, four SKUs, two rows, and each says how many ways there are to order it.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "profile": {}
+      },
+      "identity": [
+        "Printer Type"
+      ],
+      "expect": {
+        "count": 4,
+        "variants": {
+          "T-CIJ-6400-BLACK": 2,
+          "T-CIJ-6440-BLACK": 2
+        }
+      }
+    },
+    {
+      "name": "the representative is the best-graded configuration, not the first",
+      "why": "Grouping happens after the ranking, so the row that speaks for a machine is the one that fits best. Item numbers alone would have picked 6400-BLACK and 6440-BLACK either way; what this pins is that the identity travels with whichever row wins.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "profile": {}
+      },
+      "identity": [
+        "Printer Type"
+      ],
+      "expect": {
+        "identityOf": {
+          "T-CIJ-6400-BLACK": {
+            "Printer Type": "6400 Dye Based"
+          },
+          "T-CIJ-6440-BLACK": {
+            "Printer Type": "6440 Fully Pigmented"
+          }
+        },
+        "variants": {
+          "T-CIJ-6400-BLACK": 2,
+          "T-CIJ-6440-BLACK": 2
+        }
+      }
+    },
+    {
+      "name": "an identity attribute already filtered on is not grouped on",
+      "why": "Once a rep has said which machine, its configurations are exactly what they are looking at. The grouping lifts itself rather than hiding the choice behind the row that made it.",
+      "draft": {
+        "technologyCode": "CIJ",
+        "profile": {}
+      },
+      "identity": [
+        "Printer Type"
+      ],
+      "attributes": {
+        "Printer Type": "6400 Dye Based"
+      },
+      "expect": {
+        "count": 2,
+        "variants": {}
+      }
+    }
+  ],
+  "narrowingCases": [
+    {
+      "name": "a porous application drops non-porous inks and keeps what says nothing",
+      "why": "The base case. The bracket carries neither fact and survives; the non-porous ink states it in words and does not.",
+      "technologyCode": "CIJ",
+      "profile": {
+        "porosity": "porous"
+      },
+      "roles": [
+        "printer",
+        "ink",
+        "accessory"
+      ],
+      "expect": {
+        "applied": [
+          "N-POROSITY"
+        ],
+        "narrow": {
+          "Surface": [
+            "Porous"
+          ]
+        },
+        "survivors": [
+          "N-BRACKET",
+          "N-INK-GRAY",
+          "N-INK-GREY",
+          "N-INK-POROUS-BLACK",
+          "N-INK-POROUS-BLUE",
+          "N-PRN-POROUS-BLACK",
+          "N-PRN-POROUS-BLUE"
+        ]
+      }
+    },
+    {
+      "name": "a non-porous application is the mirror image",
+      "why": "The lookbehind is the whole point: (?<!non-)(?<!non)\\bporous\\b must drop 'Porous Black' and keep 'Non-Porous (MEK) Black'.",
+      "technologyCode": "CIJ",
+      "profile": {
+        "porosity": "nonPorous"
+      },
+      "roles": [
+        "printer",
+        "ink",
+        "accessory"
+      ],
+      "expect": {
+        "applied": [
+          "N-POROSITY"
+        ],
+        "narrow": {
+          "Surface": [
+            "Non-porous"
+          ]
+        },
+        "survivors": [
+          "N-BRACKET",
+          "N-INK-NONPOR-BLACK",
+          "N-PRN-NONPOR-BLUE"
+        ]
+      }
+    },
+    {
+      "name": "an ink colour is matched by word, not by substring",
+      "why": "'black ink' means Black and Black Thermo and does not mean Blue. The bracket is called 'blue handle' and is an accessory, so the colour words are not read in its description.",
+      "technologyCode": "CIJ",
+      "profile": {
+        "inkType": "black ink"
+      },
+      "roles": [
+        "printer",
+        "ink",
+        "accessory"
+      ],
+      "expect": {
+        "applied": [
+          "N-INK-COLOUR"
+        ],
+        "narrow": {
+          "Color": [
+            "Black"
+          ]
+        },
+        "survivors": [
+          "N-BRACKET",
+          "N-INK-NONPOR-BLACK",
+          "N-INK-POROUS-BLACK",
+          "N-PRN-POROUS-BLACK"
+        ]
+      }
+    },
+    {
+      "name": "grey and gray are one colour spelt two ways",
+      "why": "Asking for one must never deny the other, or half a colour's stock disappears on a spelling.",
+      "technologyCode": "CIJ",
+      "profile": {
+        "inkType": "grey ink"
+      },
+      "roles": [
+        "ink"
+      ],
+      "expect": {
+        "applied": [
+          "N-INK-COLOUR"
+        ],
+        "narrow": {},
+        "survivors": [
+          "N-INK-GRAY",
+          "N-INK-GREY"
+        ]
+      }
+    },
+    {
+      "name": "both rules apply together",
+      "why": "Porosity and colour narrow independently and compose; only the ink that is both porous and black survives.",
+      "technologyCode": "CIJ",
+      "profile": {
+        "porosity": "porous",
+        "inkType": "black ink"
+      },
+      "roles": [
+        "printer",
+        "ink",
+        "accessory"
+      ],
+      "expect": {
+        "applied": [
+          "N-POROSITY",
+          "N-INK-COLOUR"
+        ],
+        "narrow": {
+          "Surface": [
+            "Porous"
+          ],
+          "Color": [
+            "Black"
+          ]
+        },
+        "survivors": [
+          "N-BRACKET",
+          "N-INK-POROUS-BLACK",
+          "N-PRN-POROUS-BLACK"
+        ]
+      }
+    },
+    {
+      "name": "an application that says neither narrows nothing",
+      "why": "A rule that engages on an empty profile would quietly remove most of a book from a rep who has not told the tool anything yet.",
+      "technologyCode": "CIJ",
+      "profile": {},
+      "roles": [
+        "printer",
+        "ink",
+        "accessory"
+      ],
+      "expect": {
+        "applied": [],
+        "narrow": {},
+        "survivors": [
+          "N-BRACKET",
+          "N-INK-GRAY",
+          "N-INK-GREY",
+          "N-INK-NONPOR-BLACK",
+          "N-INK-POROUS-BLACK",
+          "N-INK-POROUS-BLUE",
+          "N-PRN-NONPOR-BLUE",
+          "N-PRN-POROUS-BLACK",
+          "N-PRN-POROUS-BLUE"
+        ]
+      }
+    },
+    {
+      "name": "roles decide what is offered at all",
+      "why": "suggest() was machine-only with the filter written inline, so the tool went silent about the ink and the bracket the moment a machine was chosen. Machines when the caller says nothing.",
+      "technologyCode": "CIJ",
+      "profile": {},
+      "roles": null,
+      "expect": {
+        "applied": [],
+        "narrow": {},
+        "survivors": [
+          "N-PRN-NONPOR-BLUE",
+          "N-PRN-POROUS-BLACK",
+          "N-PRN-POROUS-BLUE"
+        ]
+      }
+    }
+  ]
+}

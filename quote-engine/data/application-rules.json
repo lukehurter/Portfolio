@@ -1,0 +1,3548 @@
+{
+ "$comment": [
+  "Application-fit rules taken from published Axim and Corvus specifications.",
+  "",
+  "WHY EVERY ROW CARRIES A SOURCE",
+  "",
+  "Earlier in this project I concluded from site navigation that the Corvus 6420",
+  "did not exist and edited a rule accordingly. It does exist. So the rule for",
+  "this file is that no figure appears here unless it is printed on a datasheet,",
+  "and the row names the document and the line it came from. A reviewer must be",
+  "able to check any number in under a minute.",
+  "",
+  "Anything I could not source is not here. Inventing thresholds for equipment",
+  "that quotes real money is the one thing this tool must not do.",
+  "",
+  "THE PORTFOLIO IS A SOURCE, NOT A BROCHURE",
+  "",
+  "TTO and VIJ were empty for a while on the grounds that Axim publishes no",
+  "datasheet PDF for them. That was wrong. The captured product pages carry",
+  "specification tables — the T400 pages give the thermal bar size, the ambient",
+  "range and an IP rating, and the IV pages give print speeds, print distance",
+  "and print height. It was all sitting in the captured pages while the",
+  "two technologies had no rules at all.",
+  "",
+  "IP20 on the T400 and XL series is the most valuable line in any of it. The",
+  "second digit of an IP rating is water and 0 means none, so a washdown line",
+  "rules the technology out rather than derating it.",
+  "",
+  "The same was true of TIJ, whose figures are on the TJ500 and TJ1000 pages.",
+  "Its 50°F floor is the highest in the range — every other technology here is",
+  "rated to 40 or 41°F — so a cool room that suits a CIJ can be out of spec for",
+  "a thermal jet, and nothing would have said so.",
+  "",
+  "What the portfolio does not carry is the engineering judgement on the",
+  "application analysis form: air turbulence, guide rails, washdown. Those are",
+  "quoted verbatim into data/application-analysis-notes.md and cited from there,",
+  "so a reviewer can check every word against something in the repository.",
+  "",
+  "SOURCES",
+  "",
+  "  6400   Axim-Corvus-6400-technical-datasheet.pdf, doc ref DCORVUS89000424",
+  "  CSL60  Axim-Corvus-CSL60-Laser-Coder-Datasheet.pdf, (c)2018",
+  "  PL6300 Axim-PL6300-Technical-Datasheet.pdf, doc ref DPL63000TS524",
+  "  ScanMark  ScanMark-Spec-Sheet.pdf, doc ref DSCA1022",
+  "  Ridgeline  Ridgeline-5000-Technical-Datasheet-1.pdf, doc ref DRESSP0424",
+  "",
+  "All five are in data/sources/documents/ — see sources/documents.md for where",
+  "Axim publishes each of them.",
+  "",
+  "  TTO    data/sources/pages/ngt2.md, ngt6-6e.md, ngt8-8e.md",
+  "  VIJ    data/sources/pages/iv18-dot-...md, iv9-dot-...md",
+  "  TIJ    data/sources/pages/tj500-...md, tj1000-...md",
+  "  TIJ/VIJ  data/application-analysis-notes.md, quoting the App Analysis form",
+  "",
+  "UNIT CONVERSIONS ARE SHOWN, NOT HIDDEN",
+  "",
+  "The datasheets state character height in inches and the profile holds",
+  "millimetres. Each row shows the inch figure it came from alongside the",
+  "millimetre threshold, so a conversion error is visible rather than buried."
+ ],
+ "rules": [
+  {
+   "ruleCode": "A-CIJ-SPD-6400",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Above 574 fpm the 6400 is past its single-line maximum.",
+   "detail": "Corvus 6400 technical data, PRINT / Max speed single line: '6400: Up to 574 FPM'. Faster lines need an 6410 or above.",
+   "sourceRef": "Axim-Corvus-6400-technical-datasheet.pdf (DCORVUS89000424), Max speed single line — https://www.axim.example/Portals/0/adam/Content/pC7OwFgRNkm_yOQy0Z1O9w/DownloadUrl/Axim%20Corvus%208900%20technical%20datasheet.pdf",
+   "author": "Corvus 6400 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6400,6400LI"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "574"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The 6400 prints a single line to 574 fpm. This line runs faster."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-SPD-6410",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Above 1,433 fpm the 6410 and 6420 are past their single-line maximum.",
+   "detail": "Corvus 6400 technical data, Max speed single line: '6410/6420: Up to 1,433 FPM'. Only the 6440 goes faster, at 1,791 FPM.",
+   "sourceRef": "Axim-Corvus-6400-technical-datasheet.pdf (DCORVUS89000424), Max speed single line — https://www.axim.example/Portals/0/adam/Content/pC7OwFgRNkm_yOQy0Z1O9w/DownloadUrl/Axim%20Corvus%208900%20technical%20datasheet.pdf",
+   "author": "Corvus 6400 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6410"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "1433"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The 6410 prints a single line to 1,433 fpm. Consider the 6440 at 1,791 fpm."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-SPD-6420",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Above 1,433 fpm the 6420 is past its single-line maximum.",
+   "detail": "Corvus 6400 technical data, Max speed single line: '6410/6420: Up to 1,433 FPM'.",
+   "sourceRef": "Axim-Corvus-6400-technical-datasheet.pdf (DCORVUS89000424), Max speed single line — https://www.axim.example/Portals/0/adam/Content/pC7OwFgRNkm_yOQy0Z1O9w/DownloadUrl/Axim%20Corvus%208900%20technical%20datasheet.pdf",
+   "author": "Corvus 6400 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6420"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "1433"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The 6420 prints a single line to 1,433 fpm. Consider the 6440 at 1,791 fpm."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-SPD-MAX",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "block",
+   "summary": "Above 1,791 fpm the 6440 is past its single-line maximum.",
+   "detail": "Corvus 6400 technical data, Max speed single line: '6440: Up to 1,791 FPM'. That is the fastest figure in the range, so beyond it the application needs a laser: the Corvus CSL60 is rated to 2,952 ft/min.",
+   "sourceRef": "Axim-Corvus-6400-technical-datasheet.pdf (DCORVUS89000424) and Axim-Corvus-CSL60-Laser-Coder-Datasheet.pdf — https://www.axim.example/Portals/0/adam/Content/pC7OwFgRNkm_yOQy0Z1O9w/DownloadUrl/Axim%20Corvus%208900%20technical%20datasheet.pdf",
+   "author": "Corvus 6400 and CSL60 datasheets",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6440"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "1791"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The 6440 prints a single line to 1,791 fpm, the fastest in the range. A CSL60 laser is rated to 2,952 ft/min."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-CHR-6400",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Past 8.6 mm the 6400 needs the larger printhead.",
+   "detail": "REPLACES a rule that refused above 8.64 mm (0.34\") as the range's ceiling. The Corvus per-model datasheets state a character height range of 1.8 to 20 mm on the PH4 Standard printhead and 2.1 to 20 mm on the Standard Plus, for the 6410, 6420 and 6440 alike — see data/vendor-docs.json, which transcribes them. The Axim combined sheet's narrower figure tracks the PH4 Compact. Which printhead a part carries is stated in its description and not in an attribute a trigger can read, so this names both figures instead of choosing one. Corvus 6400 technical data, Character height range: '6400/6410: 0.07\" - 0.34\"'. 0.34 inch is 8.64 mm. The 6420 and 6440 reach 0.47 inch, which is 11.94 mm.",
+   "sourceRef": "Axim-Corvus-6400-technical-datasheet.pdf (DCORVUS89000424), Character height range — https://www.axim.example/Portals/0/adam/Content/pC7OwFgRNkm_yOQy0Z1O9w/DownloadUrl/Axim%20Corvus%208900%20technical%20datasheet.pdf",
+   "author": "Corvus 6400 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6400,6400LI"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "charHeightMm",
+     "compareOp": "gt",
+     "compareValue": "8.64"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Past the 8.6 mm (0.34\") stated on the Axim 6400 sheet. Corvus states 20 mm on the PH4 Standard and Standard Plus — confirm the printhead."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-CHR-6410",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Past 8.6 mm the 6410 needs the larger printhead.",
+   "detail": "REPLACES a rule that refused above 8.64 mm (0.34\") as the range's ceiling. The Corvus per-model datasheets state a character height range of 1.8 to 20 mm on the PH4 Standard printhead and 2.1 to 20 mm on the Standard Plus, for the 6410, 6420 and 6440 alike — see data/vendor-docs.json, which transcribes them. The Axim combined sheet's narrower figure tracks the PH4 Compact. Which printhead a part carries is stated in its description and not in an attribute a trigger can read, so this names both figures instead of choosing one. Corvus 6400 technical data, Character height range: '6400/6410: 0.07\" - 0.34\"'. 0.34 inch is 8.64 mm.",
+   "sourceRef": "Axim-Corvus-6400-technical-datasheet.pdf (DCORVUS89000424), Character height range — https://www.axim.example/Portals/0/adam/Content/pC7OwFgRNkm_yOQy0Z1O9w/DownloadUrl/Axim%20Corvus%208900%20technical%20datasheet.pdf",
+   "author": "Corvus 6400 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6410"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "charHeightMm",
+     "compareOp": "gt",
+     "compareValue": "8.64"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Past the 8.6 mm (0.34\") stated on the Axim 6400 sheet. Corvus states 20 mm for the 6410 on the PH4 Standard and Standard Plus — confirm the printhead."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-CHR-MAX",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Past 11.9 mm the 6420 and 6440 need the larger printhead.",
+   "detail": "REPLACES a rule that refused above 11.94 mm (0.47\") as the range's ceiling. The Corvus per-model datasheets state a character height range of 1.8 to 20 mm on the PH4 Standard printhead and 2.1 to 20 mm on the Standard Plus, for the 6410, 6420 and 6440 alike — see data/vendor-docs.json, which transcribes them. The Axim combined sheet's narrower figure tracks the PH4 Compact. Which printhead a part carries is stated in its description and not in an attribute a trigger can read, so this names both figures instead of choosing one. Corvus 6400 technical data, Character height range: '6420/6440: 0.07\" - 0.47\"'. 0.47 inch is 11.94 mm, the tallest in the range. Taller characters are a large-character or laser application.",
+   "sourceRef": "Axim-Corvus-6400-technical-datasheet.pdf (DCORVUS89000424), Character height range — https://www.axim.example/Portals/0/adam/Content/pC7OwFgRNkm_yOQy0Z1O9w/DownloadUrl/Axim%20Corvus%208900%20technical%20datasheet.pdf",
+   "author": "Corvus 6400 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6420,6440"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "charHeightMm",
+     "compareOp": "gt",
+     "compareValue": "11.94"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Past the 11.9 mm (0.47\") stated on the Axim 6400 sheet. Corvus states 20 mm for the 6420 and 6440 on the PH4 Standard and Standard Plus — confirm the printhead."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-IP-WASH",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Only the 6440 is IP65. The rest of the range is IP55.",
+   "detail": "Corvus 6400 technical data, Ingress protection rating: '6400/6410/6420: IP55, 6440: IP65'. IP55 is protection against dust and low-pressure water jets, which is not a washdown rating.",
+   "sourceRef": "Axim-Corvus-6400-technical-datasheet.pdf (DCORVUS89000424), Ingress protection rating — https://www.axim.example/Portals/0/adam/Content/pC7OwFgRNkm_yOQy0Z1O9w/DownloadUrl/Axim%20Corvus%208900%20technical%20datasheet.pdf",
+   "author": "Corvus 6400 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6400,6400PLUS,6400LI,6410,6410PLUS,6420,6420PLUS"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "washdown"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Washdown area. Only the 6440 is IP65; the 6400, 6410 and 6420 are IP55."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-IP-6440-OK",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "The 6440 is the IP65 machine in the range, for washdown areas.",
+   "detail": "Corvus 6400 technical data, Ingress protection rating: '6440: IP65'.",
+   "sourceRef": "Axim-Corvus-6400-technical-datasheet.pdf (DCORVUS89000424), Ingress protection rating — https://www.axim.example/Portals/0/adam/Content/pC7OwFgRNkm_yOQy0Z1O9w/DownloadUrl/Axim%20Corvus%208900%20technical%20datasheet.pdf",
+   "author": "Corvus 6400 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6440,6440PLUS"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "washdown"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "good",
+     "message": "IP65, which is the washdown rating in this range."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-LINES",
+   "technologyCode": "CIJ",
+   "ruleType": "note",
+   "severity": "info",
+   "summary": "The 6400 and 6410 print 3 lines; the 6420 and 6440 print 5.",
+   "detail": "Corvus 6400 technical data, Max lines of print: '6400/6410: 3 lines, 6420/6440: 5 lines'. Worth checking against what has to go on the pack before the machine is chosen.",
+   "sourceRef": "Axim-Corvus-6400-technical-datasheet.pdf (DCORVUS89000424), Max lines of print — https://www.axim.example/Portals/0/adam/Content/pC7OwFgRNkm_yOQy0Z1O9w/DownloadUrl/Axim%20Corvus%208900%20technical%20datasheet.pdf",
+   "author": "Corvus 6400 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6400,6400PLUS,6400LI,6410,6410PLUS,6420,6420PLUS,6440,6440PLUS"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "6400 and 6410 print 3 lines, 6420 and 6440 print 5. Check the message will fit."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-TEMP",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The 6400 range is rated to 113°F ambient, or 122°F on Corvus 1240 ink.",
+   "detail": "Corvus 6400 technical data, Operating temperature range: '41-113°F (32-122°F for Corvus 1240 ink)'. A hot area either needs the ink changed or the printer moved.",
+   "sourceRef": "Axim-Corvus-6400-technical-datasheet.pdf (DCORVUS89000424), Operating temperature range — https://www.axim.example/Portals/0/adam/Content/pC7OwFgRNkm_yOQy0Z1O9w/DownloadUrl/Axim%20Corvus%208900%20technical%20datasheet.pdf",
+   "author": "Corvus 6400 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6400,6400PLUS,6400LI,6410,6410PLUS,6420,6420PLUS,6440,6440PLUS"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "high temperature"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Rated to 113°F ambient, or 122°F on Corvus 1240 ink. Confirm the ambient at the printhead."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-SPEED",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "The CSL60 is the high-speed answer, to 2,952 ft/min.",
+   "detail": "CSL60 datasheet, Performance / Line Speed: 'Up to 2,952 ft/min (Code and Substrate Dependent)'. The 60W tube is described as suited to hard-to-mark materials such as glass and PET, and to high-speed lines.",
+   "sourceRef": "Axim-Corvus-CSL60-Laser-Coder-Datasheet.pdf, Performance / Line Speed — https://www.axim.example/Portals/0/PDF/Axim-Corvus-CSL60-Laser-Coder-Datasheet.pdf",
+   "author": "Corvus CSL60 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "CSL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "1500"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "good",
+     "message": "Rated to 2,952 ft/min, code and substrate dependent."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-IP-WASH",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The CSL60 laser head is IP54 as standard; IP65 is an option.",
+   "detail": "CSL60 datasheet, Physical Characteristics / Laser Head Protection Class: 'IP54 or IP65 (Optional)'. Cooling changes with it: 'IP54 Air Cooled, IP65 Blower Unit'. A washdown area has to be quoted with the IP65 configuration.",
+   "sourceRef": "Axim-Corvus-CSL60-Laser-Coder-Datasheet.pdf, Laser Head Protection Class — https://www.axim.example/Portals/0/PDF/Axim-Corvus-CSL60-Laser-Coder-Datasheet.pdf",
+   "author": "Corvus CSL60 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "CSL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "washdown"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Standard head is IP54. Quote the IP65 option and the blower cooling unit for washdown."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-TEMP",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The CSL60 is rated to 104°F ambient, lower than the CIJ range.",
+   "detail": "CSL60 datasheet, Operating Temperature Range: '41 - 104°F Ambient'. The 6400 range reaches 113°F, so a hot area may rule the laser out where inkjet still works.",
+   "sourceRef": "Axim-Corvus-CSL60-Laser-Coder-Datasheet.pdf, Operating Temperature Range — https://www.axim.example/Portals/0/PDF/Axim-Corvus-CSL60-Laser-Coder-Datasheet.pdf",
+   "author": "Corvus CSL60 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "CSL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "high temperature"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Rated to 104°F ambient. Confirm the ambient before committing to a laser here."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-SPEED",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "PL6300 line speed depends entirely on the apply module.",
+   "detail": "PL6300 technical data, LINE SPEED: 'Wipe: Up to 300 FPM, E-FASA: Up to 75 FPM, E-WASA: Up to 125 FPM, High Speed Tamp: Up to 300+ FPM'. A wipe module and an E-FASA differ fourfold, so the module has to be chosen against the line speed rather than after it.",
+   "sourceRef": "Axim-PL6300-Technical-Datasheet.pdf (DPL63000TS524), LINE SPEED — https://www.axim.example/Portals/0/adam/Content/kz0RfVyTLUGlFiswfxHTlw/DownloadUrl/Axim%20PL6300%20Technical%20Datasheet.pdf",
+   "author": "Axim PL6300 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "PL6300"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "75"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Above 75 fpm rules out E-FASA. Wipe and High Speed Tamp reach 300 fpm; E-WASA 125."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-SPEED-MAX",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Above 300 fpm no PL6300 apply module is rated for the line.",
+   "detail": "PL6300 technical data, LINE SPEED: the fastest figures stated are 'Wipe: Up to 300 FPM' and 'High Speed Tamp: Up to 300+ FPM'. Beyond that the application needs engineering review rather than a catalogue answer.",
+   "sourceRef": "Axim-PL6300-Technical-Datasheet.pdf (DPL63000TS524), LINE SPEED — https://www.axim.example/Portals/0/adam/Content/kz0RfVyTLUGlFiswfxHTlw/DownloadUrl/Axim%20PL6300%20Technical%20Datasheet.pdf",
+   "author": "Axim PL6300 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "PL6300"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "300"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past the fastest stated PL6300 figure of 300 fpm. Refer to Application Engineering."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-TEMP",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The PL6300 is rated to 104°F and 85% relative humidity, non-condensing.",
+   "detail": "PL6300 technical data: 'Temperature 41°F to 104°F' and 'Humidity 10 to 85% relative humidity, non-condensing'. A chilled or freezer area risks condensation, which the rating excludes.",
+   "sourceRef": "Axim-PL6300-Technical-Datasheet.pdf (DPL63000TS524), Temperature and Humidity — https://www.axim.example/Portals/0/adam/Content/kz0RfVyTLUGlFiswfxHTlw/DownloadUrl/Axim%20PL6300%20Technical%20Datasheet.pdf",
+   "author": "Axim PL6300 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "PL6300"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "refrigerated"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Rated 41-104°F and non-condensing. A chilled area needs the condensation risk checked."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-CONDENSATION",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The PL6300 humidity rating excludes condensation.",
+   "detail": "PL6300 technical data: 'Humidity 10 to 85% relative humidity, non-condensing'. Where condensation forms on the pack, labels stop adhering and the rating no longer covers the machine — a separate question from ambient temperature.",
+   "sourceRef": "Axim-PL6300-Technical-Datasheet.pdf (DPL63000TS524), Humidity — https://www.axim.example/Portals/0/adam/Content/kz0RfVyTLUGlFiswfxHTlw/DownloadUrl/Axim%20PL6300%20Technical%20Datasheet.pdf",
+   "author": "Axim PL6300 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "PL6300"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "condensation or humidity"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Rated to 85% relative humidity, non-condensing. Confirm label adhesion on a damp pack."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-POROUS",
+   "technologyCode": "PIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "ScanMark ink is designed for porous substrates.",
+   "detail": "ScanMark spec sheet: 'Substrates: Designed for porous substrates', 'Excellent adhesion to a variety of porous substrates', 'Optimal contrast on porous substrates'. On a non-porous pack the ink is the wrong choice whatever the printer.",
+   "sourceRef": "ScanMark-Spec-Sheet.pdf (DSCA1022), Substrates — https://www.axim.example/Portals/0/adam/Content/RucqgQtGw0WTgt8_3rIPGA/DownloadUrl/ScanMark%20Spec%20Sheet.pdf",
+   "author": "Axim ScanMark spec sheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "porosity",
+     "compareOp": "eq",
+     "compareValue": "nonPorous"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "ScanMark is specified for porous substrates. Confirm the ink against a non-porous pack."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-BARCODE",
+   "technologyCode": "PIJ",
+   "ruleType": "note",
+   "severity": "info",
+   "summary": "ScanMark is the pigment ink specified for GS1 barcode work.",
+   "detail": "ScanMark spec sheet: 'engineered to meet GS1 barcode requirements', 'Pigment based ink for optimal barcode readability', 'Premium barcode scanability'. It also notes 'the most forgiving of throw distances' on secondary packaging.",
+   "sourceRef": "ScanMark-Spec-Sheet.pdf (DSCA1022), Features and Benefits — https://www.axim.example/Portals/0/adam/Content/RucqgQtGw0WTgt8_3rIPGA/DownloadUrl/ScanMark%20Spec%20Sheet.pdf",
+   "author": "Axim ScanMark spec sheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "messageContent",
+     "compareOp": "includes",
+     "compareValue": "barcode"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "For GS1 barcode work, ScanMark is the specified pigment ink."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-SPD-TEXT",
+   "technologyCode": "PIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Above 250 fpm the Ridgeline 3200 is past its fastest published figure.",
+   "detail": "Ridgeline 3200 technical data, Print speed: 'Alphanumeric text: Up to 250 FPM @ 200 DPI'. That is the fastest number on the sheet, and it already assumes 200 DPI rather than the 300 DPI the head can reach.",
+   "sourceRef": "Ridgeline-5000-Technical-Datasheet-1.pdf (DRESSP0424), Print speed — https://www.axim.example/Portals/0/adam/Content/zCAv1fNCWEqGxnl1RvOluA/DownloadUrl/Ridgeline%205000%20Technical%20Datasheet-1.pdf",
+   "author": "Axim Ridgeline 3200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "Ridgeline 3200,Mark 2,Mark 4"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "250"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past the fastest published Ridgeline figure of 250 fpm at 200 DPI. Refer to Application Engineering."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-SPD-300DPI",
+   "technologyCode": "PIJ",
+   "ruleType": "note",
+   "severity": "info",
+   "summary": "Holding 300 DPI on the Ridgeline 3200 costs line speed.",
+   "detail": "Ridgeline 3200 technical data, Print speed: 'Up to 250 FPM @ 200 DPI' and 'Up to 130 FPM @ 300 DPI', with the note 'Higher line speeds achievable with reduction of DPI'. Above 130 fpm the resolution has to come down, so quote the resolution the line speed allows rather than the best the head can do.",
+   "sourceRef": "Ridgeline-5000-Technical-Datasheet-1.pdf (DRESSP0424), Print speed — https://www.axim.example/Portals/0/adam/Content/zCAv1fNCWEqGxnl1RvOluA/DownloadUrl/Ridgeline%205000%20Technical%20Datasheet-1.pdf",
+   "author": "Axim Ridgeline 3200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "Ridgeline 3200,Mark 2,Mark 4"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "130"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "300 DPI is published to 130 fpm. Above that the resolution drops toward 200 DPI — confirm which the code needs."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-SPD-BARCODE",
+   "technologyCode": "PIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Barcodes on the Ridgeline 3200 are published to 150 fpm.",
+   "detail": "Ridgeline 3200 technical data, Print speed: 'Barcode: Up to 150 FPM @ 200 DPI'. Barcode work has its own, lower figure than text, and a scannable code is the whole point of quoting the machine.",
+   "sourceRef": "Ridgeline-5000-Technical-Datasheet-1.pdf (DRESSP0424), Print speed — https://www.axim.example/Portals/0/adam/Content/zCAv1fNCWEqGxnl1RvOluA/DownloadUrl/Ridgeline%205000%20Technical%20Datasheet-1.pdf",
+   "author": "Axim Ridgeline 3200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "Ridgeline 3200,Mark 2,Mark 4"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "messageContent",
+     "compareOp": "includes",
+     "compareValue": "barcode"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "150"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Barcode print is published to 150 fpm at 200 DPI. This line is faster — get the code verified before quoting."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-THROW-BARCODE",
+   "technologyCode": "PIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Barcodes need the printhead within 1/4 inch (6.35 mm).",
+   "detail": "Ridgeline 3200 technical data, Throw distance: 'Up to 1/4\" for barcodes', with the note 'Best barcodes at 1/8\" and 300 DPI'. 1/4 inch is 6.35 mm and is the outer limit, not the target.",
+   "sourceRef": "Ridgeline-5000-Technical-Datasheet-1.pdf (DRESSP0424), Throw distance — https://www.axim.example/Portals/0/adam/Content/zCAv1fNCWEqGxnl1RvOluA/DownloadUrl/Ridgeline%205000%20Technical%20Datasheet-1.pdf",
+   "author": "Axim Ridgeline 3200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "Ridgeline 3200,Mark 2,Mark 4"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "messageContent",
+     "compareOp": "includes",
+     "compareValue": "barcode"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "throwDistMm",
+     "compareOp": "gt",
+     "compareValue": "6.35"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Barcodes are published to 1/4 inch (6.35 mm) throw, best at 1/8 inch. This gap is wider."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-THROW-TEXT",
+   "technologyCode": "PIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Past 1/2 inch (12.7 mm) throw the Ridgeline 3200 is outside its published range.",
+   "detail": "Ridgeline 3200 technical data, Throw distance: 'Up to 1/2\" for text (application dependent)'. 1/2 inch is 12.7 mm, and the sheet's own 'application dependent' says the figure is not guaranteed even below it.",
+   "sourceRef": "Ridgeline-5000-Technical-Datasheet-1.pdf (DRESSP0424), Throw distance — https://www.axim.example/Portals/0/adam/Content/zCAv1fNCWEqGxnl1RvOluA/DownloadUrl/Ridgeline%205000%20Technical%20Datasheet-1.pdf",
+   "author": "Axim Ridgeline 3200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "Ridgeline 3200,Mark 2,Mark 4"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "throwDistMm",
+     "compareOp": "gt",
+     "compareValue": "12.7"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Published throw is up to 1/2 inch (12.7 mm) for text, and application dependent. This gap is wider."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-WINDOW-MARK2",
+   "technologyCode": "PIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The Mark 2 head prints 2 inches (50.8 mm) tall.",
+   "detail": "Ridgeline 3200 technical data, Print height: 'Mark 2: 2\"'. 2 inches is 50.8 mm. A taller mark needs the Mark 4, or two heads.",
+   "sourceRef": "Ridgeline-5000-Technical-Datasheet-1.pdf (DRESSP0424), Print height — https://www.axim.example/Portals/0/adam/Content/zCAv1fNCWEqGxnl1RvOluA/DownloadUrl/Ridgeline%205000%20Technical%20Datasheet-1.pdf",
+   "author": "Axim Ridgeline 3200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "eq",
+     "compareValue": "Mark 2"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "gt",
+     "compareValue": "50.8"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The Mark 2 prints 2 inches (50.8 mm) tall. This mark is taller — quote the Mark 4 or a second head."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-WINDOW-MARK4",
+   "technologyCode": "PIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The Mark 4 head prints 4 inches (101.6 mm) tall.",
+   "detail": "Ridgeline 3200 technical data, Print height: 'Mark 4: 4\"'. 4 inches is 101.6 mm, and it is the tallest single head on the sheet.",
+   "sourceRef": "Ridgeline-5000-Technical-Datasheet-1.pdf (DRESSP0424), Print height — https://www.axim.example/Portals/0/adam/Content/zCAv1fNCWEqGxnl1RvOluA/DownloadUrl/Ridgeline%205000%20Technical%20Datasheet-1.pdf",
+   "author": "Axim Ridgeline 3200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "eq",
+     "compareValue": "Mark 4"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "gt",
+     "compareValue": "101.6"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The Mark 4 prints 4 inches (101.6 mm) tall, the tallest single head. This mark needs stacked heads."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-TEMP",
+   "technologyCode": "PIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The Ridgeline 3200 is rated to 104°F ambient.",
+   "detail": "Ridgeline 3200 technical data, Environment: 'Ambient operating temp: 40˚ F to 104˚ F'. Above that the machine is outside its rating whatever the ink does.",
+   "sourceRef": "Ridgeline-5000-Technical-Datasheet-1.pdf (DRESSP0424), Environment — https://www.axim.example/Portals/0/adam/Content/zCAv1fNCWEqGxnl1RvOluA/DownloadUrl/Ridgeline%205000%20Technical%20Datasheet-1.pdf",
+   "author": "Axim Ridgeline 3200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "Ridgeline 3200,Mark 2,Mark 4"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMaxF",
+     "compareOp": "gt",
+     "compareValue": "104"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Rated 40-104°F ambient. This area runs hotter — the install needs cooling or a different position."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-WASHDOWN",
+   "technologyCode": "PIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The Ridgeline 3200 IP65 rating is marked estimated on the datasheet.",
+   "detail": "Ridgeline 3200 technical data, IP rating: 'IP65 (estimated)'. The word estimated is Axim's, printed on the sheet. For a washdown line that is not a rating to sell against — it needs confirming before the quote goes out.",
+   "sourceRef": "Ridgeline-5000-Technical-Datasheet-1.pdf (DRESSP0424), IP rating — https://www.axim.example/Portals/0/adam/Content/zCAv1fNCWEqGxnl1RvOluA/DownloadUrl/Ridgeline%205000%20Technical%20Datasheet-1.pdf",
+   "author": "Axim Ridgeline 3200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "Ridgeline 3200,Mark 2,Mark 4"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "washdown"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "The datasheet says 'IP65 (estimated)'. Confirm the rating with Application Engineering before promising washdown."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-CONDENSATION",
+   "technologyCode": "PIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The Ridgeline 3200 humidity rating excludes condensation.",
+   "detail": "Ridgeline 3200 technical data, Environment: 'Operating humidity: 5-90% non-condensing'. The range is wide, but condensation is outside it at any point in the range.",
+   "sourceRef": "Ridgeline-5000-Technical-Datasheet-1.pdf (DRESSP0424), Environment — https://www.axim.example/Portals/0/adam/Content/zCAv1fNCWEqGxnl1RvOluA/DownloadUrl/Ridgeline%205000%20Technical%20Datasheet-1.pdf",
+   "author": "Axim Ridgeline 3200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "Ridgeline 3200,Mark 2,Mark 4"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "condensation or humidity"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Rated 5-90% humidity, non-condensing. Condensation on the pack is outside the rating."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TTO-IP20",
+   "technologyCode": "TTO",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Thermal transfer overprinters are rated IP20 — no liquid protection at all.",
+   "detail": "T406/6e, T408/8e and the Thorne T800 all publish 'IP Rate: IP20'. The second digit of an IP rating is water, and 0 means no protection whatsoever. This is not a machine to derate for a washdown line; it is a machine to keep out of one, or to enclose.",
+   "sourceRef": "https://www.axim.example/products/productcoding/thermaltransfer-overprinting-axim/ngt6e, Specifications — IP Rate (also ngt8-8e.md, thorne-xl5000.md)",
+   "author": "Axim T400 and T800 product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "washdown"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Published IP20 — no water protection. A washdown line needs an enclosure quoted, or a different technology."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TTO-TEMP",
+   "technologyCode": "TTO",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The T400 series is rated 41-104°F.",
+   "detail": "T402+ and T404+ specifications: 'Environmental Temperature 5 - 40°C (41-104°F)'. T406/6e, T408/8e and the T800 publish the same 5-40°C range. Cited to the spec sheet rather than the product page from 8 August 2026: the figure is stated in both and a spec sheet is the stronger reference.",
+   "sourceRef": "Datasheets/Literature_TTO_ThorneNGT_SpecSheetWEB.md, Specifications — Environmental Temperature — https://www.axim.example/products/productcoding/thermaltransfer",
+   "author": "Axim T400 product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMaxF",
+     "compareOp": "gt",
+     "compareValue": "104"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Rated to 104°F. This area runs hotter — the position or the cooling needs reviewing."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TTO-HUMIDITY",
+   "technologyCode": "TTO",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Thermal transfer wants 20-75% humidity, non-condensing.",
+   "detail": "T402+ and T404+ specifications: 'Environment: Relative Humidity (non condensing) 20-75%'. Narrower at both ends than the inkjet ranges — condensation is out, and so is a very dry room, which is unusual enough to be worth saying.",
+   "sourceRef": "https://www.axim.example/products/productcoding/thermaltransfer/ngt2plus, Specifications — Relative Humidity",
+   "author": "Axim T400 product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "condensation or humidity"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Rated 20-75% relative humidity, non-condensing. Condensation on the ribbon or head is outside the rating."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TTO-BAR-53",
+   "technologyCode": "TTO",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "An T402+ prints 53 mm tall; taller needs an T404+.",
+   "detail": "T402+ specifications: 'Thermal bar size 2\" (53mm)' and 'Print area IM 53 x 50 mm'. The thermal bar is a physical width and cannot be exceeded. The T404+ bar is 4\" (107mm). Because the hierarchy files all of these under one Product Type of 'T400 Series', this cannot tell which one is on the quote — hence a caveat rather than a refusal. Cited to the spec sheet rather than the product page from 8 August 2026: the figure is stated in both and a spec sheet is the stronger reference.",
+   "sourceRef": "Datasheets/Literature_TTO_ThorneNGT_SpecSheetWEB.md, Specifications — Thermal bar size — https://www.axim.example/products/productcoding/thermaltransfer",
+   "author": "Axim T402+ product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "T400"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "gt",
+     "compareValue": "53"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Past the 53 mm T402+ print area. The T404+ prints 107 mm, the T406e 160 and the T408 213 — confirm which head this is."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TTO-BAR-107",
+   "technologyCode": "TTO",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Past 107 mm the mark needs an T406 or an T408.",
+   "detail": "REPLACES a rule that said '107 mm is the widest thermal bar published in the T400 series' and graded notRecommended above it. That was wrong, and the document it cited said so: the same specifications table states 160 mm for the T406e and 213 mm for the T408. The Thermal bar size row is given only for the T402+ and T404+, and reading it as the range's ceiling ruled out two machines Axim sells. Thorne T400 specifications, Print area (HxW) intermittent: 'T402+ 2.1 x 3 in (53 x 75 mm), T404+ 4.2 x 3.5 in (107 x 90 mm), T406e 6.3 x 3.9 in (160 x 100 mm), T408 8.4 x 3.9 in (213 x 100 mm), T408e 8.4 x 6.1 in (213 x 155 mm)'. The hierarchy files all of these under one Product Type of 'T400 Series', so a rule cannot tell which is on the quote — hence a caveat naming the machine that takes the next step, rather than a refusal.",
+   "sourceRef": "Datasheets/Literature_TTO_ThorneNGT_SpecSheetWEB.md, SPECIFICATIONS — Print area (HxW) intermittent — https://www.axim.example/products/productcoding/thermaltransfer",
+   "author": "Thorne T400 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "T400"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "gt",
+     "compareValue": "107"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Past the 107 mm T404+ print area. The T406e prints 160 mm and the T408 213 mm — confirm which head this is."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-VIJ-SPD",
+   "technologyCode": "VIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Above 200 fpm the IV series trades resolution for speed.",
+   "detail": "IV18-Dot and IV9-Dot specifications: 'Standard print speeds: Up to 200 FPM' and 'Print speeds w/ reduced resolution: Up to 650 FPM'. The machine keeps running past 200 fpm; the code gets coarser, which matters if anything has to scan. Cited to the spec sheet rather than the product page from 8 August 2026: the figure is stated in both and a spec sheet is the stronger reference.",
+   "sourceRef": "Datasheets/Axim VJ2600 Integrated Valve Jet Datasheet.md, Specifications — Standard print speeds — https://www.axim.example/products/casecodinglabeling/largecharacterinkjetprinter/iv18-dot",
+   "author": "Axim IV series product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "200"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Standard print speed is 200 fpm. Faster is published only at reduced resolution — confirm the code still reads."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-VIJ-SPD-MAX",
+   "technologyCode": "VIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "650 fpm is the fastest figure published for the IV series.",
+   "detail": "IV18-Dot and IV9-Dot specifications: 'Print speeds w/ reduced resolution: Up to 650 FPM'. That already assumes the resolution has been given up, so there is nothing left to trade. Cited to the spec sheet rather than the product page from 8 August 2026: the figure is stated in both and a spec sheet is the stronger reference.",
+   "sourceRef": "Datasheets/Axim VJ2600 Integrated Valve Jet Datasheet.md, Specifications — Print speeds w/ reduced resolution — https://www.axim.example/products/casecodinglabeling/largecharacterinkjetprinter/iv18-dot",
+   "author": "Axim IV series product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "650"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past the fastest published IV figure of 650 fpm, and that is already at reduced resolution."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-VIJ-THROW",
+   "technologyCode": "VIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The IV series prints up to 1/2 inch (12.7 mm) from the product.",
+   "detail": "IV18-Dot and IV9-Dot specifications: 'Print distance: Up to 1/2\"'. 1/2 inch is 12.7 mm, and it is a ceiling rather than a target.",
+   "sourceRef": "https://www.axim.example/products/casecodinglabeling/largecharacterinkjetprinter/iv9-dot, Specifications — Print distance",
+   "author": "Axim IV series product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "throwDistMm",
+     "compareOp": "gt",
+     "compareValue": "12.7"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Published print distance is up to 1/2 inch (12.7 mm). This gap is wider."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-VIJ-TEMP",
+   "technologyCode": "VIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The IV series is rated 40°F to 104°F.",
+   "detail": "IV18-Dot and IV9-Dot specifications: 'Operating environment: 40°F to 104°F'. Cited to the spec sheet rather than the product page from 8 August 2026: the figure is stated in both and a spec sheet is the stronger reference.",
+   "sourceRef": "Datasheets/Axim VJ2600 Integrated Valve Jet Datasheet.md, Specifications — Operating environment — https://www.axim.example/products/casecodinglabeling/largecharacterinkjetprinter/iv18-dot",
+   "author": "Axim IV series product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMaxF",
+     "compareOp": "gt",
+     "compareValue": "104"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Rated 40-104°F. This area runs hotter — the install needs cooling or a different position."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-VIJ-HEIGHT-IV18",
+   "technologyCode": "VIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "IV18 heads print 1 or 2 inches tall.",
+   "detail": "IV18-Dot specifications: 'Print height: 1\" and 2\" print heads'. 2 inches is 50.8 mm and is the taller of the two. A taller mark needs heads stacked. 'The print head can be daisy chained with up to 3 other IV18-Dot print heads, allowing it to print large logos or large multi-lined alphanumeric text messages.' Three others plus the first is four heads of 2 inches: 203.2 mm.",
+   "sourceRef": "https://www.axim.example/products/casecodinglabeling/largecharacterinkjetprinter/iv18-dot, Specifications — Print height; https://www.axim.example/products/casecodinglabeling/largecharacterinkjetprinter/iv18-dot, daisy chaining",
+   "author": "Axim IV18-Dot product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "IV18"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "gt",
+     "compareValue": "50.8"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "lte",
+     "compareValue": "203.2"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "The mark is taller than one head prints (2.0\", 50.8 mm). IV18 heads daisy chain — up to 4, covering 8.0\" (203.2 mm) — so quote the heads the mark needs."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-VIJ-HEIGHT-IV9",
+   "technologyCode": "VIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "IV9 heads print 1/2 or 7/8 inch tall.",
+   "detail": "IV9-Dot specifications: 'Print height: 1/2\" and 7/8\"'. 7/8 inch is 22.2 mm and is the taller of the two, so an IV9 is the wrong head for a deep code — the IV18 reaches 2 inches. 'The print head is available in 1/2\" and 7/8\" print heights and can be daisy-chained with up to 15 other IV9-Dot print heads, allowing you to print large logos or other large multi-lined alpha numeric print messages.' Fifteen others plus the first is sixteen heads of 7/8 inch: 355.2 mm.",
+   "sourceRef": "https://www.axim.example/products/casecodinglabeling/largecharacterinkjetprinter/iv9-dot, Specifications — Print height; https://www.axim.example/products/casecoding/largecharacterinkjet, daisy chaining",
+   "author": "Axim IV9-Dot product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "IV9"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "gt",
+     "compareValue": "22.2"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "lte",
+     "compareValue": "355.2"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "The mark is taller than one head prints (0.87\", 22.2 mm). IV9 heads daisy chain — up to 16, covering 13.98\" (355.2 mm) — so quote the heads the mark needs."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TIJ-SPD",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Above 200 fpm the thermal jet heads trade resolution for speed.",
+   "detail": "TJ500 and TJ1000 specifications: 'Standard print speeds: Up to 200 FPM' and 'Print speeds w/ reduced resolution: Up to 500 FPM'. Both heads print 300 x 300 DPI at the standard speed, which is what makes them worth quoting for a 2D code — so giving that up to go faster deserves saying out loud. Cited to the spec sheet rather than the product page from 8 August 2026: the figure is stated in both and a spec sheet is the stronger reference.",
+   "sourceRef": "Datasheets/Axim HP Thermal Jet System Datasheet.md, Specifications — Standard Print Speeds — https://www.axim.example/products/productcoding/thermalinkjet",
+   "author": "Axim HJ series product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "200"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Standard speed is 200 fpm at 300 DPI. Faster is published only at reduced resolution — confirm the code still reads."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TIJ-SPD-MAX",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "500 fpm is the fastest figure published for the thermal jet heads.",
+   "detail": "TJ500 and TJ1000 specifications: 'Print speeds w/ reduced resolution: Up to 500 FPM'. That figure already assumes the resolution has been given up. Cited to the spec sheet rather than the product page from 8 August 2026: the figure is stated in both and a spec sheet is the stronger reference.",
+   "sourceRef": "Datasheets/Axim HP Thermal Jet System Datasheet.md, Specifications — Print Speeds w/reduced resolution — https://www.axim.example/products/productcoding/thermalinkjet",
+   "author": "Axim HJ series product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "500"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past the fastest published thermal jet figure of 500 fpm, and that is already at reduced resolution."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TIJ-THROW",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Thermal jet prints within 1/4 inch (6.35 mm) of the product.",
+   "detail": "TJ500 and TJ1000 specifications: 'Print distance: Up to 1/4\"'. 1/4 inch is 6.35 mm — half what the valve jet heads reach, and the tightest throw of any technology in the range. It is the figure most often missed when a thermal jet is swapped in for something else.",
+   "sourceRef": "https://www.axim.example/products/productcoding/thermalindustrialinkjetprinter/tj-1000, Specifications — Print Distance",
+   "author": "Axim HJ series product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "throwDistMm",
+     "compareOp": "gt",
+     "compareValue": "6.35"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Published print distance is up to 1/4 inch (6.35 mm). This gap is wider — the head has to come closer."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TIJ-TEMP",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Thermal jet is rated to 104°F.",
+   "detail": "TJ500 and TJ1000 specifications: 'Operating environment: 50°F to 104°F (10°C to 40°C)'. Cited to the spec sheet rather than the product page from 8 August 2026: the figure is stated in both and a spec sheet is the stronger reference.",
+   "sourceRef": "Datasheets/Axim HP Thermal Jet System Datasheet.md, Specifications — Operating Environment — https://www.axim.example/products/productcoding/thermalinkjet",
+   "author": "Axim HJ series product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMaxF",
+     "compareOp": "gt",
+     "compareValue": "104"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Rated to 104°F. This area runs hotter — the install needs cooling or a different position."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TIJ-TEMP-COLD",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Thermal jet stops at 50°F, the highest floor in the range.",
+   "detail": "TJ500 and TJ1000 specifications: 'Operating environment: 50°F to 104°F'. Every other technology here is rated to 40°F or 41°F, so a cool room that suits a CIJ or a valve jet can be below spec for a thermal jet. Worth checking before the swap, not after. Cited to the spec sheet rather than the product page from 8 August 2026: the figure is stated in both and a spec sheet is the stronger reference.",
+   "sourceRef": "Datasheets/Axim HP Thermal Jet System Datasheet.md, Specifications — Operating environment — https://www.axim.example/products/productcoding/thermalinkjet",
+   "author": "Axim HJ series product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMinF",
+     "compareOp": "lt",
+     "compareValue": "50"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Rated down to 50°F only — higher than the rest of the range. Confirm the coldest the area gets."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TIJ-REFRIGERATED",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "A refrigerated area is below the thermal jet's 50°F floor.",
+   "detail": "TJ500 and TJ1000 specifications: 'Operating environment: 50°F to 104°F'. A chilled store or a refrigerated line runs well under 50°F by definition, so this is not a marginal call.",
+   "sourceRef": "https://www.axim.example/products/productcoding/thermalinkjet/tj-500, Specifications — Operating environment",
+   "author": "Axim HJ series product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "refrigerated"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Rated down to 50°F. A refrigerated area is below that — quote a technology rated for the cold."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TIJ-HEIGHT-1IN",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The taller thermal jet head prints 1 inch (25.4 mm).",
+   "detail": "TJ500 and TJ1000 specifications: 'Print height: 1/2\" & 1\" print heads'. 1 inch is 25.4 mm and is the taller of the two. A taller mark needs heads stacked, or another technology. 'Can be daisy chained with up to 8 cartridges for larger print applications.' Eight 1-inch cartridges is 203.2 mm.",
+   "sourceRef": "https://www.axim.example/products/productcoding/thermalindustrialinkjetprinter/tj-1000, Specifications — Print Height; https://www.axim.example/products/productcoding/thermalindustrialinkjetprinter/tj-1000, daisy chaining",
+   "author": "Axim HJ series product pages",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "1.0"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "gt",
+     "compareValue": "25.4"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "lte",
+     "compareValue": "203.2"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "The mark is taller than one head prints (1.0\", 25.4 mm). thermal jet heads daisy chain — up to 8, covering 8.0\" (203.2 mm) — so quote the heads the mark needs."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TIJ-HEIGHT-HALF",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "A 1/2 inch head prints 12.7 mm.",
+   "detail": "TJ500 and TJ1000 specifications: 'Print height: 1/2\" & 1\" print heads'. The hierarchy files these as 'HP 0.5\"' and 'HP 1.0\"', so where a half-inch head is on the quote the limit is 12.7 mm rather than 25.4 mm. 'Can be daisy chained with up to 8 cartridges for larger print application.' Eight half-inch cartridges is 101.6 mm.",
+   "sourceRef": "https://www.axim.example/products/productcoding/thermalinkjet/tj-500, Specifications — Print height; https://www.axim.example/products/productcoding/thermalinkjet/tj-500, daisy chaining",
+   "author": "Axim HJ series product pages",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "0.5"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "gt",
+     "compareValue": "12.7"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "lte",
+     "compareValue": "101.6"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "The mark is taller than one head prints (0.5\", 12.7 mm). thermal jet heads daisy chain — up to 8, covering 4.0\" (101.6 mm) — so quote the heads the mark needs."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TIJ-WASHDOWN",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "No IP rating is published for any part of a TIJ system.",
+   "detail": "Axim's TIJ application analysis form asks 'Wash Down Environs?' and answers it in the same breath: 'controllers, ink sys & PH's aren't IP rated'. The TJ product pages agree by omission — the enclosure is given as 'Industrial thermoplastic, drop resistant', which is a drop claim and not an ingress rating. Neither source gives a number to quote against.",
+   "sourceRef": "data/application-analysis-notes.md, TIJ App Analysis — Wash Down Environs; https://www.axim.example/products/productcoding/thermalindustrialinkjetprinter/tj-1000, Specifications — Enclosure",
+   "author": "Axim TIJ application analysis form and TJ product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "washdown"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "No IP rating is published for the TIJ controller or ink system. A washdown line needs an enclosure quoted, or another technology."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-VIJ-WASHDOWN",
+   "technologyCode": "VIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "No IP rating is published for any part of a VIJ system.",
+   "detail": "Axim's VIJ application analysis form asks 'Wash Down Environs?' and answers it in the same breath: 'controllers, ink sys & PH's aren't IP rated'. The IV product pages do describe the printhead enclosure as 'Stainless steel, environmentally sealed', which is a claim about the head and not an ingress rating for the controller or the ink delivery system. Neither source gives a number to quote against.",
+   "sourceRef": "data/application-analysis-notes.md, VIJ App Analysis — Wash Down Environs; https://www.axim.example/products/casecodinglabeling/largecharacterinkjetprinter/iv18-dot, Specifications — Enclosure",
+   "author": "Axim VIJ application analysis form and IV product pages",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "washdown"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "No IP rating is published for the VIJ controller or ink system. A washdown line needs an enclosure quoted, or another technology."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TIJ-TURBULENCE",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Fast moving air at the printhead spoils high-resolution print.",
+   "detail": "Axim's application analysis form: 'Fast moving air at PH can adversely affect print quality in hi-res applications (IJ & TJ). It can also carry ink vapor to accumulate on surroundings.' Two separate problems — the code, and ink settling on the machine around it.",
+   "sourceRef": "data/application-analysis-notes.md, TIJ App Analysis — Air Turbulence near PH",
+   "author": "Axim TIJ application analysis form",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "air turbulence near printhead"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Moving air at the head degrades hi-res print and carries ink vapour onto surroundings. Shield the head or move the fan."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-VIJ-TURBULENCE",
+   "technologyCode": "VIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Fast moving air at the printhead spoils high-resolution print.",
+   "detail": "Axim's application analysis form: 'Fast moving air at PH can adversely affect print quality in hi-res applications (IJ & TJ). It can also carry ink vapor to accumulate on surroundings.' Two separate problems — the code, and ink settling on the machine around it.",
+   "sourceRef": "data/application-analysis-notes.md, VIJ App Analysis — Air Turbulence near PH",
+   "author": "Axim VIJ application analysis form",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "air turbulence near printhead"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Moving air at the head degrades hi-res print and carries ink vapour onto surroundings. Shield the head or move the fan."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TIJ-RAILS",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Without guide rails the product-to-printhead distance wanders.",
+   "detail": "Axim's application analysis form, on product positioning: 'Distance from product to PH is critical for quality hi-res print'. A pack that can drift across the belt changes its own throw distance, and the print changes with it.",
+   "sourceRef": "data/application-analysis-notes.md, TIJ App Analysis — Guide Rails or other product positioning",
+   "author": "Axim TIJ application analysis form",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "guideRails",
+     "compareOp": "eq",
+     "compareValue": "no"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Distance from product to printhead is critical for hi-res print. Quote guide rails or another way to hold position."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-VIJ-RAILS",
+   "technologyCode": "VIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Without guide rails the product-to-printhead distance wanders.",
+   "detail": "Axim's application analysis form, on product positioning: 'Distance from product to PH is critical for quality hi-res print'. A pack that can drift across the belt changes its own throw distance, and the print changes with it.",
+   "sourceRef": "data/application-analysis-notes.md, VIJ App Analysis — Guide Rails or other product positioning",
+   "author": "Axim VIJ application analysis form",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "guideRails",
+     "compareOp": "eq",
+     "compareValue": "no"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Distance from product to printhead is critical for hi-res print. Quote guide rails or another way to hold position."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-SPD-CEILING",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "block",
+   "summary": "1,791 fpm is the fastest single-line figure anywhere in the CIJ range.",
+   "detail": "Corvus 6400 technical data, Max speed single line: '6440: Up to 1,791 FPM'. A-CIJ-SPD-MAX says the same thing but is scoped to the 6440, so it can only speak for the machine that happens to be the fastest — every other CIJ printer stayed silent above 1,791 and rendered as unassessed. This one is scoped to the technology, which is what the sentence 'the fastest in the range' actually means.",
+   "sourceRef": "Axim-Corvus-6400-technical-datasheet.pdf (DCORVUS89000424), Max speed single line — https://www.axim.example/Portals/0/adam/Content/pC7OwFgRNkm_yOQy0Z1O9w/DownloadUrl/Axim%20Corvus%208900%20technical%20datasheet.pdf",
+   "author": "Corvus 6400 technical datasheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "1791"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past 1,791 fpm, which is the fastest single-line speed published for any CIJ printer here. A CSL60 laser is rated to 2,952 ft/min."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-LSR-SPD-CEILING",
+   "technologyCode": "LSR",
+   "ruleType": "applicationFit",
+   "severity": "block",
+   "summary": "2,952 ft/min is the fastest laser figure published, and it is the fastest figure in the tool.",
+   "detail": "CSL60 datasheet, Performance / Line Speed: 'Up to 2,952 ft/min (Code and Substrate Dependent)'. Nothing in the catalogue is quoted faster, so above this the honest answer is that no machine here meets the requirement — not that the choice is a difficult one. Note the parenthesis: the figure is code- and substrate-dependent, so it is a ceiling on the best case rather than a promise.",
+   "sourceRef": "Axim-Corvus-CSL60-Laser-Coder-Datasheet.pdf, Performance / Line Speed — https://www.axim.example/Portals/0/PDF/Axim-Corvus-CSL60-Laser-Coder-Datasheet.pdf",
+   "author": "Corvus CSL60 datasheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "2952"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past 2,952 ft/min. That is the fastest line speed published for any machine in this tool, so nothing here meets this requirement."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TTO-SPD-CEILING",
+   "technologyCode": "TTO",
+   "ruleType": "applicationFit",
+   "severity": "block",
+   "summary": "115 ft/min is the fastest TTO print speed published.",
+   "detail": "Thorne T400 specifications, Print Speed: 'Max.: 35 m/min / 115 ft/min' for the continuous variant; the intermittent variants are quoted lower at 95, 56 and 46 ft/min. Worth knowing when reading this: the T800 is specified in prints per minute (450 ppm) rather than line speed, so a fast TTO application is often better described by throughput than by fpm.",
+   "sourceRef": "Datasheets/Literature_TTO_ThorneNGT_SpecSheetWEB.md, Print Speed — https://www.axim.example/products/productcoding/thermaltransfer",
+   "author": "Thorne T400 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "115"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past 115 ft/min, the fastest thermal transfer figure published here. A TTO indexes film against a stationary head, so line speed is a hard limit rather than a quality trade-off."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-SPD-CEILING",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "block",
+   "summary": "300 fpm is the fastest print-and-apply line speed published.",
+   "detail": "PL6300 technical datasheet. A-PALM-SPEED-MAX carries the same figure but is scoped to a model, so every other applicator was silent above it. Applying a label needs the pack to be reachable for the length of the apply stroke, which is why this ceiling is so much lower than an inkjet's.",
+   "sourceRef": "Axim-PL6300-Technical-Datasheet.pdf (DPL63000TDS), line speed — https://www.axim.example/Portals/0/adam/Content/kz0RfVyTLUGlFiswfxHTlw/DownloadUrl/Axim%20PL6300%20Technical%20Datasheet.pdf",
+   "author": "Axim PL6300 datasheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "300"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past 300 fpm, the fastest print-and-apply speed published here. Above this, code the pack directly instead of applying a label."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-SPD-CEILING",
+   "technologyCode": "PIJ",
+   "ruleType": "applicationFit",
+   "severity": "block",
+   "summary": "250 fpm is the fastest high-resolution inkjet figure, and that is for text.",
+   "detail": "Ridgeline 3200 technical datasheet. The published figure is for text; barcodes are quoted at 150 fpm, because a barcode has to hold its bar-to-space ratio and a piezo drop has a fixed flight time. A-PIJ-SPD-TEXT holds the same number scoped to a model, which left every other hi-res printer unassessed above it.",
+   "sourceRef": "Ridgeline-5000-Technical-Datasheet-1.pdf (DRESSP0424), print speed — https://www.axim.example/Portals/0/adam/Content/zCAv1fNCWEqGxnl1RvOluA/DownloadUrl/Ridgeline%205000%20Technical%20Datasheet-1.pdf",
+   "author": "Ridgeline 3200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "250"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past 250 fpm, the fastest high-resolution figure published here, and that figure is for text rather than barcodes."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-LINES-6400",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "block",
+   "summary": "The 6400 prints three lines. Five is the 6410 and above.",
+   "detail": "Corvus 6400 series specification, Max Lines of Print: the 6400 column reads 3 and the higher column reads 5. The two columns also differ on character height (0.07-0.34in against 0.07-0.47in) and single-line speed (574 fpm against 1,230), so an application needing four lines is not a close call on the 6400 - it is the wrong column of the table.",
+   "sourceRef": "Datasheets/Literature_CIJ_Corvus6400Series_SpecSheetWEB.md, Max Lines of Print — https://www.axim.example/Portals/0/Downloads/6400-literature.pdf",
+   "author": "Corvus 6400 series spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "6400"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "linesOfPrint",
+     "compareOp": "gt",
+     "compareValue": "3"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The 6400 prints three lines. This application needs more, which is an 6410 or above."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-LINES-MAX",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "block",
+   "summary": "Five lines is the most any CIJ printer here prints.",
+   "detail": "Corvus 6400 series specification, Max Lines of Print: 5 is the highest figure in the range. Beyond it the answer is a different technology rather than a different printer - a thermal jet head prints up to ten lines, and a laser is not limited by lines at all.",
+   "sourceRef": "Datasheets/Literature_CIJ_Corvus6400Series_SpecSheetWEB.md, Max Lines of Print — https://www.axim.example/Portals/0/Downloads/6400-literature.pdf",
+   "author": "Corvus 6400 series spec sheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "linesOfPrint",
+     "compareOp": "gt",
+     "compareValue": "5"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past five lines, the most any CIJ printer here prints. A thermal jet head does ten."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TIJ-LINES-MAX",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "block",
+   "summary": "Ten lines is the published thermal jet maximum.",
+   "detail": "HP Thermal Jet System datasheet: 'high resolution text, barcodes and graphics up to 1\" tall or up to 10 lines of print'. Note the 'or' - the ten-line figure and the one-inch figure are alternatives, not both at once, because they are the same print window divided differently.",
+   "sourceRef": "Datasheets/Axim HP Thermal Jet System Datasheet.md, overview — https://www.axim.example/products/productcoding/thermalinkjet",
+   "author": "Axim HP Thermal Jet datasheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "linesOfPrint",
+     "compareOp": "gt",
+     "compareValue": "10"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past ten lines, the most the thermal jet heads print."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-LINES-CJ250",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "block",
+   "summary": "The CJ250 prints three lines.",
+   "detail": "Corvus CJ250 spec sheet: 'can be used on multiple lines to print up to three lines of information'. It is the portable unit in the range, and the line count is the trade for that.",
+   "sourceRef": "Datasheets/Literature_CIJ_CorvusCJ250_SpecSheetWEB.md, overview",
+   "author": "Corvus CJ250 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "CJ250"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "linesOfPrint",
+     "compareOp": "gt",
+     "compareValue": "3"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The CJ250 prints three lines."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PIJ-BARCODE-THROW",
+   "technologyCode": "PIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "A barcode halves the usable throw distance.",
+   "detail": "HR2600 datasheet, throw distance: 'Up to 1/4\" (6 mm) for Barcodes, Up to 1/2\" for Text (Application Dependent)'. A barcode has to hold its bar-to-space ratio, and drop placement scatters with distance, so the figure that applies is the barcode one whenever a barcode is on the message. Quoting the text figure to a customer printing a GS1 code is how a system passes a demo and fails validation.",
+   "sourceRef": "Datasheets/Axim HR2600 High Resolution Inkjet Datasheet.md, throw distance — https://www.axim.example/products/casecoding/highresolutioninkjet",
+   "author": "Axim HR2600 datasheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "barcodeRequirements",
+     "compareOp": "ne",
+     "compareValue": ""
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "throwDistMm",
+     "compareOp": "gt",
+     "compareValue": "6"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Past 6 mm, which is the barcode figure. 12 mm is the text figure and does not apply once a barcode is on the message."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-VIJ-CHAIN-IV18",
+   "technologyCode": "VIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "4 chained IV18 heads reach 8.0\" (203.2 mm).",
+   "detail": "'The print head can be daisy chained with up to 3 other IV18-Dot print heads, allowing it to print large logos or large multi-lined alphanumeric text messages.' Three others plus the first is four heads of 2 inches: 203.2 mm. A mark taller than the whole chain is past what this technology can print, however many heads are quoted.",
+   "sourceRef": "https://www.axim.example/products/casecodinglabeling/largecharacterinkjetprinter/iv18-dot, daisy chaining",
+   "author": "Axim IV18-Dot product page",
+   "effectiveFrom": "2026-01-01",
+   "effectiveTo": null,
+   "isActive": true,
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "IV18"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "gt",
+     "compareValue": "203.2"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Even 4 chained heads print 8.0\" (203.2 mm), and this mark is taller."
+    }
+   ],
+   "conditions": []
+  },
+  {
+   "ruleCode": "A-VIJ-CHAIN-IV9",
+   "technologyCode": "VIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "16 chained IV9 heads reach 13.98\" (355.2 mm).",
+   "detail": "'The print head is available in 1/2\" and 7/8\" print heights and can be daisy-chained with up to 15 other IV9-Dot print heads, allowing you to print large logos or other large multi-lined alpha numeric print messages.' Fifteen others plus the first is sixteen heads of 7/8 inch: 355.2 mm. A mark taller than the whole chain is past what this technology can print, however many heads are quoted.",
+   "sourceRef": "https://www.axim.example/products/casecoding/largecharacterinkjet, daisy chaining",
+   "author": "Axim IV9-Dot product page",
+   "effectiveFrom": "2026-01-01",
+   "effectiveTo": null,
+   "isActive": true,
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "IV9"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "gt",
+     "compareValue": "355.2"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Even 16 chained heads print 13.98\" (355.2 mm), and this mark is taller."
+    }
+   ],
+   "conditions": []
+  },
+  {
+   "ruleCode": "A-TIJ-CHAIN-1IN",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "8 chained thermal jet heads reach 8.0\" (203.2 mm).",
+   "detail": "'Can be daisy chained with up to 8 cartridges for larger print applications.' Eight 1-inch cartridges is 203.2 mm. A mark taller than the whole chain is past what this technology can print, however many heads are quoted.",
+   "sourceRef": "https://www.axim.example/products/productcoding/thermalindustrialinkjetprinter/tj-1000, daisy chaining",
+   "author": "Axim HJ series product pages",
+   "effectiveFrom": "2026-01-01",
+   "effectiveTo": null,
+   "isActive": true,
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "1.0"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "gt",
+     "compareValue": "203.2"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Even 8 chained heads print 8.0\" (203.2 mm), and this mark is taller."
+    }
+   ],
+   "conditions": []
+  },
+  {
+   "ruleCode": "A-TIJ-CHAIN-HALF",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "8 chained thermal jet heads reach 4.0\" (101.6 mm).",
+   "detail": "'Can be daisy chained with up to 8 cartridges for larger print application.' Eight half-inch cartridges is 101.6 mm. A mark taller than the whole chain is past what this technology can print, however many heads are quoted.",
+   "sourceRef": "https://www.axim.example/products/productcoding/thermalinkjet/tj-500, daisy chaining",
+   "author": "Axim HJ series product pages",
+   "effectiveFrom": "2026-01-01",
+   "effectiveTo": null,
+   "isActive": true,
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "0.5"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "gt",
+     "compareValue": "101.6"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Even 8 chained heads print 4.0\" (101.6 mm), and this mark is taller."
+    }
+   ],
+   "conditions": []
+  },
+  {
+   "ruleCode": "A-PALM-LA7-SPEED",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "LB5200 line speed depends entirely on the apply module.",
+   "detail": "LB5200 specifications, Line Speed: 'Wipe: Up to 300 FPM, E-Tamp and E-Tamp/Blow: Up to 150 FPM, E-FASA: Up to 75 FPM, E-WASA: Up to 125 FPM, High Speed Tamp: 300+ FPM'. A wipe module and an E-FASA differ fourfold, so the module has to be chosen against the line speed rather than after it.",
+   "sourceRef": "Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf, Line Speed — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "LB5200"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "75"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Above 75 fpm rules out E-FASA. E-WASA reaches 125, E-Tamp and E-Tamp/Blow 150, wipe and High Speed Tamp 300."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LA7-SPEED-MAX",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Above 300 fpm no LB5200 apply module is rated for the line.",
+   "detail": "LB5200 specifications, Line Speed: the fastest figures stated are 'Wipe: Up to 300 FPM' and 'High Speed Tamp: 300+ FPM'. Beyond that the application needs engineering review rather than a catalogue answer.",
+   "sourceRef": "Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf, Line Speed — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "LB5200"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "300"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past the fastest stated LB5200 figure of 300 fpm. Refer to Application Engineering."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LA7-RATE",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Above 120 products a minute only the wipe module is rated.",
+   "detail": "LB5200 specifications, Product Rate: 'Wipe: Up to 800 PPM, E-Tamp: Up to 120 PPM, E-Tamp/Blow: Up to 55 PPM, E-FASA: Single Apply Up to 52 PPM; Dual Apply Up to 28 PPM'. Product rate and line speed are different questions and a fast line can still be a low rate — a 22 inch case at 300 fpm is 163 a minute, a 4 inch bottle at 100 fpm is 300.",
+   "sourceRef": "Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf, Product Rate — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "LB5200"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "throughputPpm",
+     "compareOp": "gt",
+     "compareValue": "120"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Above 120 per minute leaves only the wipe module, rated to 800. E-Tamp is 120, E-WASA depends on label length and spacing."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LA7-RATE-MAX",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "800 a minute is the fastest LB5200 product rate published.",
+   "detail": "LB5200 specifications, Product Rate: 'Wipe: Up to 800 PPM' is the highest figure on the sheet, and it is the wipe module only.",
+   "sourceRef": "Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf, Product Rate — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "LB5200"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "throughputPpm",
+     "compareOp": "gt",
+     "compareValue": "800"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past the fastest stated LB5200 rate of 800 per minute, which is wipe only."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LA7-TEMP-HOT",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The LB5200 is rated to 104°F.",
+   "detail": "LB5200 specifications, Temperature: '41°F – 104°F (5°C – 40°C)'. Above that the servo drive and the controller are outside their stated range.",
+   "sourceRef": "Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf, Temperature — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "LB5200"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMaxF",
+     "compareOp": "gt",
+     "compareValue": "104"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Above the LB5200's stated 104°F ceiling."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LA7-TEMP-COLD",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The LB5200 stops at 41°F, so a chilled area is outside its range.",
+   "detail": "LB5200 specifications, Temperature: '41°F – 104°F' and Humidity: '10 to 85% Relative Humidity, Non-Condensing'. A chilled or freezer area is both below the floor and a condensation risk, which the rating excludes.",
+   "sourceRef": "Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf, Temperature — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "LB5200"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMinF",
+     "compareOp": "lt",
+     "compareValue": "41"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Below the LB5200's stated 41°F floor, and a condensation risk its non-condensing rating excludes."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LA7-REFRIGERATED",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "A refrigerated area is below the LB5200's 41°F floor.",
+   "detail": "LB5200 specifications, Temperature: '41°F – 104°F (5°C – 40°C)', Humidity: '10 to 85% Relative Humidity, Non-Condensing'. Chilled areas run below the floor and condense on cold metal.",
+   "sourceRef": "Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf, Temperature and Humidity — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "LB5200"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "refrigerated"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "A refrigerated area is below the LB5200's stated 41°F floor and outside its non-condensing rating."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-ZE-TEMP-HOT",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The Palisade print engines are rated to 104°F.",
+   "detail": "Palisade PE311/PE321 spec sheet, Environmental: 'Operating Temperature: 31°F to 104°F/0°C to 40°C' and 'Operating Humidity: 20% to 95% non-condensing R.H.' The engine sits inside the applicator, so the applicator's own rating is not the whole answer — whichever is narrower governs.",
+   "sourceRef": "Datasheets/Palisade PE311 PE321 Print Engine Specifications.md, Environmental — https://www.palisade.example/content/dam/palisade_dam/en/spec-sheets/ze511-ze521-spec-sheet-en-us.pdf",
+   "author": "Palisade PE311/PE321 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "ZE5"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMaxF",
+     "compareOp": "gt",
+     "compareValue": "104"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Above the print engine's stated 104°F ceiling. The engine is inside the applicator and has its own rating."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-ZE-TEMP-COLD",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The Palisade print engines stop at 31°F.",
+   "detail": "Palisade PE311/PE321 spec sheet, Environmental: 'Operating Temperature: 31°F to 104°F/0°C to 40°C' and 'Operating Humidity: 20% to 95% non-condensing R.H.' The engine sits inside the applicator, so the applicator's own rating is not the whole answer — whichever is narrower governs.",
+   "sourceRef": "Datasheets/Palisade PE311 PE321 Print Engine Specifications.md, Environmental — https://www.palisade.example/content/dam/palisade_dam/en/spec-sheets/ze511-ze521-spec-sheet-en-us.pdf",
+   "author": "Palisade PE311/PE321 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "ZE5"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMinF",
+     "compareOp": "lt",
+     "compareValue": "31"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Below the print engine's stated 31°F floor."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-ZE-REFRIGERATED",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "A refrigerated area is inside the engine's range and against its humidity rating.",
+   "detail": "Palisade PE311/PE321 spec sheet, Environmental: 'Operating Temperature: 31°F to 104°F/0°C to 40°C' and 'Operating Humidity: 20% to 95% non-condensing R.H.' The engine sits inside the applicator, so the applicator's own rating is not the whole answer — whichever is narrower governs.",
+   "sourceRef": "Datasheets/Palisade PE311 PE321 Print Engine Specifications.md, Environmental — https://www.palisade.example/content/dam/palisade_dam/en/spec-sheets/ze511-ze521-spec-sheet-en-us.pdf",
+   "author": "Palisade PE311/PE321 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "ZE5"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "refrigerated"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "A chilled area is within the engine's 31°F floor but its humidity rating is non-condensing, and a cold engine in a warm room condenses. Check the applicator's rating too."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LA7-LBL-WIDE",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The LB5200 takes a label up to 9 inches, and only on the wide web.",
+   "detail": "LB5200 specifications: 'Narrow Web Label Width 0.5\" (12.7 mm) Min. up to 6\" (152.4 mm)' and 'Wide Web Label Width 0.5\" (12.7 mm) Min. up to 9\" (228.6 mm)'. Past 9 inches no configuration is rated.",
+   "sourceRef": "Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf, SPECIFICATIONS — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "LB5200"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "gt",
+     "compareValue": "228.6"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Wider than the LB5200's widest stated label, 9 inches on the wide web."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LA7-LBL-WIDEWEB",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "block",
+   "summary": "Past 6 inches only the wide web LB5200 is rated.",
+   "detail": "LB5200 specifications: 'Narrow Web Label Width 0.5\" (12.7 mm) Min. up to 6\" (152.4 mm)' and 'Wide Web Label Width 0.5\" (12.7 mm) Min. up to 9\" (228.6 mm)'. The two are different machines to order rather than an option to add later. This was a caveat on every LB5200 row, because the catalogue recorded the web width only in the description text and not as an attribute a trigger could read — so a rep quoting the wide web machine was cautioned about a limit that machine does not have. data/build_classification.py derives Web Width from that same description now, so the narrow web rows can be ruled out and the wide web ones left alone.",
+   "sourceRef": "Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf, SPECIFICATIONS — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "LB5200"
+    },
+    {
+     "triggerType": "attribute",
+     "attrName": "Web Width",
+     "attrValue": "Narrow"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "gt",
+     "compareValue": "152.4"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The narrow web LB5200 is rated to 6 inches. This label is wider, so it needs the wide web machine, which is rated to 9."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LA7-LBL-WIDEWEB-OK",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "Past 6 inches the wide web LB5200 is the one that is rated.",
+   "detail": "LB5200 specifications: 'Wide Web Label Width 0.5\" (12.7 mm) Min. up to 9\" (228.6 mm)'. The narrow web machine stops at 6 inches and is ruled out above it by A-PALM-LA7-LBL-WIDEWEB; this is the other half, so a label between 6 and 9 inches reads as a machine that fits rather than as a range where nothing was said.",
+   "sourceRef": "Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf, SPECIFICATIONS — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "LB5200"
+    },
+    {
+     "triggerType": "attribute",
+     "attrName": "Web Width",
+     "attrValue": "Wide"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "gt",
+     "compareValue": "152.4"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "good",
+     "message": "The wide web LB5200 is rated to 9 inches, which covers this label."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LA7-LBL-NARROW",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "An inch or less has to be application tested before it is quoted.",
+   "detail": "LB5200 specifications, stated twice on the sheet: 'Label widths 1\" and below must be application tested and verified'. The floor is 0.5\" (12.7 mm).",
+   "sourceRef": "Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf, SPECIFICATIONS — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "LB5200"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "lte",
+     "compareValue": "25.4"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "The sheet says a label an inch or narrower must be application tested and verified before it is quoted."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LA7-LBL-MIN",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Below half an inch the LB5200 is outside its stated range.",
+   "detail": "LB5200 specifications: label width minimum is 0.5\" (12.7 mm) on both narrow and wide web.",
+   "sourceRef": "Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf, SPECIFICATIONS — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "LB5200"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "lt",
+     "compareValue": "12.7"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Narrower than the LB5200's stated 0.5 inch minimum."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LA7-LBL-LONG",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The LB5200 takes a label up to 22 inches long.",
+   "detail": "LB5200 specifications: 'Label Length 1\" (25.4 mm) Min. up to 22\" (558.8 mm)'.",
+   "sourceRef": "Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf, SPECIFICATIONS — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "LB5200"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelLengthMm",
+     "compareOp": "gt",
+     "compareValue": "558.8"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Longer than the LB5200's stated 22 inch maximum."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-LA7-LBL-SHORT",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The LB5200 needs a label at least an inch long.",
+   "detail": "LB5200 specifications: 'Label Length 1\" (25.4 mm) Min.' The PL6300 goes down to half an inch and the LB5200 does not, which is a real difference between them.",
+   "sourceRef": "Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf, SPECIFICATIONS — https://www.axim.example/Portals/0/Downloads/Axim-LB5200-All-Electric-Label-Applicator-Datasheet.pdf",
+   "author": "Axim LB5200 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "LB5200"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelLengthMm",
+     "compareOp": "lt",
+     "compareValue": "25.4"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Shorter than the LB5200's stated 1 inch minimum. The PL6300 is rated to 0.5."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-PA7-LBL-WIDE",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The PL6300 takes a label up to 6.5 inches.",
+   "detail": "PL6300 technical data: 'Label width 0.5\" to 6.5\"'. The LB5200 reaches 9 on the wide web, which is the reason to move between them.",
+   "sourceRef": "Axim-PL6300-Technical-Datasheet.pdf, TECHNICAL DATA — https://www.axim.example/Portals/0/adam/Content/kz0RfVyTLUGlFiswfxHTlw/DownloadUrl/Axim%20PL6300%20Technical%20Datasheet.pdf",
+   "author": "Axim PL6300 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "PL6300"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "gt",
+     "compareValue": "165.1"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Wider than the PL6300's stated 6.5 inch maximum. The wide web LB5200 reaches 9."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-PA7-LBL-NARROW",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "An inch or less has to be application tested before it is quoted.",
+   "detail": "PL6300 technical data: 'Label widths 1\" and below must be application tested and verified'.",
+   "sourceRef": "Axim-PL6300-Technical-Datasheet.pdf, TECHNICAL DATA — https://www.axim.example/Portals/0/adam/Content/kz0RfVyTLUGlFiswfxHTlw/DownloadUrl/Axim%20PL6300%20Technical%20Datasheet.pdf",
+   "author": "Axim PL6300 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "PL6300"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "lte",
+     "compareValue": "25.4"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "The sheet says a label an inch or narrower must be application tested and verified before it is quoted."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-PA7-LBL-MIN",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Below half an inch the PL6300 is outside its stated range.",
+   "detail": "PL6300 technical data: 'Label width 0.5\" to 6.5\"'.",
+   "sourceRef": "Axim-PL6300-Technical-Datasheet.pdf, TECHNICAL DATA — https://www.axim.example/Portals/0/adam/Content/kz0RfVyTLUGlFiswfxHTlw/DownloadUrl/Axim%20PL6300%20Technical%20Datasheet.pdf",
+   "author": "Axim PL6300 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "PL6300"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "lt",
+     "compareValue": "12.7"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Narrower than the PL6300's stated 0.5 inch minimum."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-PA7-LBL-LONG",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The PL6300 takes a label up to 14 inches long.",
+   "detail": "PL6300 technical data: 'Label length 0.5\" to 14\"'. The LB5200 reaches 22.",
+   "sourceRef": "Axim-PL6300-Technical-Datasheet.pdf, TECHNICAL DATA — https://www.axim.example/Portals/0/adam/Content/kz0RfVyTLUGlFiswfxHTlw/DownloadUrl/Axim%20PL6300%20Technical%20Datasheet.pdf",
+   "author": "Axim PL6300 datasheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "PL6300"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelLengthMm",
+     "compareOp": "gt",
+     "compareValue": "355.6"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Longer than the PL6300's stated 14 inch maximum. The LB5200 reaches 22."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-PE311-LBL-WIDE",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The PE311 engine prints media up to 4.5 inches wide.",
+   "detail": "Palisade PE311/PE321 spec sheet, Media: 'PE311: .625 in./16 mm - 4.5 in./114 mm'. The PE321 takes 3 to 7.1 inches, so a wide label is a different engine rather than a different option.",
+   "sourceRef": "Datasheets/Palisade PE311 PE321 Print Engine Specifications.md, Media — https://www.palisade.example/content/dam/palisade_dam/en/spec-sheets/ze511-ze521-spec-sheet-en-us.pdf",
+   "author": "Palisade PE311/PE321 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "PE311"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "gt",
+     "compareValue": "114.3"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Wider than the PE311's stated 4.5 inch media maximum. The PE321 reaches 7.1."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-PE311-LBL-MIN",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The PE311 engine needs media at least 0.625 inches wide.",
+   "detail": "Palisade PE311/PE321 spec sheet, Media: 'PE311: .625 in./16 mm - 4.5 in./114 mm'.",
+   "sourceRef": "Datasheets/Palisade PE311 PE321 Print Engine Specifications.md, Media — https://www.palisade.example/content/dam/palisade_dam/en/spec-sheets/ze511-ze521-spec-sheet-en-us.pdf",
+   "author": "Palisade PE311/PE321 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "PE311"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "lt",
+     "compareValue": "15.9"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Narrower than the PE311's stated 0.625 inch media minimum."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-PE321-LBL-WIDE",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The PE321 engine prints media up to 7.1 inches wide.",
+   "detail": "Palisade PE311/PE321 spec sheet, Media: 'PE321: 3 in./76 mm - 7.1 in./180 mm'.",
+   "sourceRef": "Datasheets/Palisade PE311 PE321 Print Engine Specifications.md, Media — https://www.palisade.example/content/dam/palisade_dam/en/spec-sheets/ze511-ze521-spec-sheet-en-us.pdf",
+   "author": "Palisade PE311/PE321 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "PE321"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "gt",
+     "compareValue": "180.3"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Wider than the PE321's stated 7.1 inch media maximum."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-PE321-LBL-MIN",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The PE321 engine will not take media under 3 inches.",
+   "detail": "Palisade PE311/PE321 spec sheet, Media: 'PE321: 3 in./76 mm - 7.1 in./180 mm'. The PE311 starts at 0.625, so a narrow label is the smaller engine.",
+   "sourceRef": "Datasheets/Palisade PE311 PE321 Print Engine Specifications.md, Media — https://www.palisade.example/content/dam/palisade_dam/en/spec-sheets/ze511-ze521-spec-sheet-en-us.pdf",
+   "author": "Palisade PE311/PE321 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "PE321"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "lt",
+     "compareValue": "76.2"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Narrower than the PE321's stated 3 inch media minimum. The PE311 goes to 0.625."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-S84-LBL-WIDE",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The K84X engine takes media up to 131 mm wide.",
+   "detail": "Kestrel K84X specifications, Media width: '13 to 131 mm (0.51\" to 5.16\")'. The K86X takes 54 to 180 mm, so a wide label is a different engine.",
+   "sourceRef": "Datasheets/Kestrel K84X K86X Print Engine Specifications.md, Media width — https://www.kestrel.example/products/printers/print-engines/s84nx/specifications/",
+   "author": "Kestrel K84X specifications",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "K84X"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "gt",
+     "compareValue": "131"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Wider than the K84X's stated 131 mm media maximum. The K86X reaches 180."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-S84-LBL-MIN",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The K84X engine needs media at least 13 mm wide.",
+   "detail": "Kestrel K84X specifications, Media width: '13 to 131 mm (0.51\" to 5.16\")'.",
+   "sourceRef": "Datasheets/Kestrel K84X K86X Print Engine Specifications.md, Media width — https://www.kestrel.example/products/printers/print-engines/s84nx/specifications/",
+   "author": "Kestrel K84X specifications",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "K84X"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "lt",
+     "compareValue": "13"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Narrower than the K84X's stated 13 mm media minimum."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-S86-LBL-WIDE",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The K86X engine takes media up to 180 mm wide.",
+   "detail": "Kestrel K86X specifications, Media width: '54 to 180 mm (2.13\" to 7.09\")'.",
+   "sourceRef": "Datasheets/Kestrel K84X K86X Print Engine Specifications.md, Media width — https://www.kestrel.example/products/printers/print-engines/s86nx/specifications/",
+   "author": "Kestrel K86X specifications",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "K86X"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "gt",
+     "compareValue": "180"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Wider than the K86X's stated 180 mm media maximum."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-S86-LBL-MIN",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The K86X engine will not take media under 54 mm.",
+   "detail": "Kestrel K86X specifications, Media width: '54 to 180 mm (2.13\" to 7.09\")'. The K84X starts at 13 mm, so a narrow label is the smaller engine.",
+   "sourceRef": "Datasheets/Kestrel K84X K86X Print Engine Specifications.md, Media width — https://www.kestrel.example/products/printers/print-engines/s86nx/specifications/",
+   "author": "Kestrel K86X specifications",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "K86X"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "labelWidthMm",
+     "compareOp": "lt",
+     "compareValue": "54"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Narrower than the K86X's stated 54 mm media minimum. The K84X goes to 13."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TTO-BAR-160",
+   "technologyCode": "TTO",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Past 160 mm only the T408 is rated.",
+   "detail": "Thorne T400 specifications, Print area (HxW) intermittent: 'T402+ 2.1 x 3 in (53 x 75 mm), T404+ 4.2 x 3.5 in (107 x 90 mm), T406e 6.3 x 3.9 in (160 x 100 mm), T408 8.4 x 3.9 in (213 x 100 mm), T408e 8.4 x 6.1 in (213 x 155 mm)'. The hierarchy files all of these under one Product Type of 'T400 Series', so a rule cannot tell which is on the quote — hence a caveat naming the machine that takes the next step, rather than a refusal.",
+   "sourceRef": "Datasheets/Literature_TTO_ThorneNGT_SpecSheetWEB.md, SPECIFICATIONS — Print area (HxW) intermittent — https://www.axim.example/products/productcoding/thermaltransfer",
+   "author": "Thorne T400 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "T400"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "gt",
+     "compareValue": "160"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Past the 160 mm T406e print area. Only the T408 goes further, at 213 mm."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TTO-BAR-213",
+   "technologyCode": "TTO",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "213 mm is the largest T400 print area published.",
+   "detail": "Thorne T400 specifications, Print area (HxW) intermittent: 'T402+ 2.1 x 3 in (53 x 75 mm), T404+ 4.2 x 3.5 in (107 x 90 mm), T406e 6.3 x 3.9 in (160 x 100 mm), T408 8.4 x 3.9 in (213 x 100 mm), T408e 8.4 x 6.1 in (213 x 155 mm)'. The hierarchy files all of these under one Product Type of 'T400 Series', so a rule cannot tell which is on the quote — hence a caveat naming the machine that takes the next step, rather than a refusal.",
+   "sourceRef": "Datasheets/Literature_TTO_ThorneNGT_SpecSheetWEB.md, SPECIFICATIONS — Print area (HxW) intermittent — https://www.axim.example/products/productcoding/thermaltransfer",
+   "author": "Thorne T400 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "T400"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markHeightMm",
+     "compareOp": "gt",
+     "compareValue": "213"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Taller than the largest print area any Thorne T400 document states, 213 mm on the T408. Refer to Application Engineering."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-CHR-CEILING",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "20 mm is the tallest character any 6400-series sheet states.",
+   "detail": "Corvus 6410, 6420 and 6440 datasheets, Character height: '1.8 to 20 mm' (PH4 Standard) and '2.1 to 20 mm' (PH4 Standard Plus). Nothing in the range prints taller in one pass, on either document. Taller is a large-character or laser application.",
+   "sourceRef": "data/vendor-docs.json, specs.6440.Character height — https://www.corvus.example/wp-content/uploads/2023/06/corvus-6440-datasheet-mp42172_05.pdf",
+   "author": "Corvus 6440 datasheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "charHeightMm",
+     "compareOp": "gt",
+     "compareValue": "20"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Taller than the 20 mm maximum stated on any Corvus 6400-series datasheet. This is a large character or laser application."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-99-SPD-7300",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The 7300 prints a single line to 557 fpm.",
+   "detail": "Corvus 7300 Series brochure, Maximum speed, one line print (5 dot high): 2.83 m/s on both the PH4 Standard and the Standard Plus. It is the base machine of the range and the only one that does not go faster with a bigger printhead.",
+   "sourceRef": "data/vendor-docs.json, specs.7340 — https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "author": "Corvus 7300 Series brochure",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "7300"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "557"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The 7300 prints a single line to 557 fpm. This line runs faster — the 7310 and 7320 reach 1,433."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-99-SPD-991X",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The 7310 and 7320 print a single line to 1,433 fpm.",
+   "detail": "Corvus 7300 Series brochure, Maximum speed, one line print: 7.28 m/s on the PH4 Standard Plus for both models. The 7340 reaches 9.10 m/s.",
+   "sourceRef": "data/vendor-docs.json, specs.7340 — https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "author": "Corvus 7300 Series brochure",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "7310,7320"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "1433"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Past the 1,433 fpm these print on their fastest printhead. The 7340 reaches 1,791, and 1,969 in tower print."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-99-SPD-7340",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Past 1,791 fpm the 7340 needs its tower print mode.",
+   "detail": "Corvus 7300 Series brochure, Maximum speed: 9.10 m/s on the PH4 Standard Plus, and a super-fast tower print of 10 m/s at 5 dot high on the same printhead. Tower print is a different message shape, so it is a caveat rather than a figure a rep can simply quote.",
+   "sourceRef": "data/vendor-docs.json, specs.7340 — https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "author": "Corvus 7300 Series brochure",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "7340,7340 Prism"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "1791"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Past the 1,791 fpm of ordinary single-line print. The 7340 reaches 1,969 in tower print, at 5 dot high — confirm the message suits it."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-99-SPD-MAX",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "1,969 fpm is the fastest figure the 7300 Series states.",
+   "detail": "Corvus 7300 Series brochure: the highest speed anywhere on the sheet is the 7340's tower print at 10 m/s. Beyond that the range is out.",
+   "sourceRef": "data/vendor-docs.json, specs.7340 — https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "author": "Corvus 7300 Series brochure",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "7300,7310,7320,7340,7340 Prism"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "1969"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Faster than anything in the 7300 Series, whose highest stated figure is 1,969 fpm in tower print on the 7340."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-99-CHR-7300",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The 7300 prints characters to 10.7 mm.",
+   "detail": "Corvus 7300 Series brochure, Character height range: 2.1 to 10.7 mm on the PH4 Standard Plus, 1.8 to 8.8 mm on the Standard. The rest of the range reaches 20.",
+   "sourceRef": "data/vendor-docs.json, specs.7340 — https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "author": "Corvus 7300 Series brochure",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "7300"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "charHeightMm",
+     "compareOp": "gt",
+     "compareValue": "10.7"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Taller than the 10.7 mm the 7300 prints. The 7310, 7320 and 7340 reach 20 mm."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-99-CHR-SPECTRUM",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The 7340 Prism prints characters to 17 mm.",
+   "detail": "Corvus 7300 Series brochure, Character height range: 2.1 to 17 mm on the PH4 Standard Plus and 1.8 to 16 mm on the Standard — shorter than the other 7340, which reaches 20 mm, and the trade for its hard-pigmented inks.",
+   "sourceRef": "data/vendor-docs.json, specs.7340 — https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "author": "Corvus 7300 Series brochure",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "7340 Prism"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "charHeightMm",
+     "compareOp": "gt",
+     "compareValue": "17"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Taller than the 17 mm the 7340 Prism prints. The ordinary 7340 reaches 20."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-99-CHR-MAX",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "20 mm is the tallest character the 7300 Series prints.",
+   "detail": "Corvus 7300 Series brochure, Character height range: 1.8 to 20 mm on the PH4 Standard and 2.1 to 20 mm on the Standard Plus. Taller is a large-character or laser application.",
+   "sourceRef": "data/vendor-docs.json, specs.7340 — https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "author": "Corvus 7300 Series brochure",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "7310,7320,7340"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "charHeightMm",
+     "compareOp": "gt",
+     "compareValue": "20"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Taller than the 20 mm maximum stated anywhere in the 7300 Series. This is a large character or laser application."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-99-TEMP",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The 7300 Series is rated to 45 °C / 113 °F.",
+   "detail": "Corvus 7300 Series brochure, Operating temperature range: 5 to 45 °C, and 0 to 50 °C for the Corvus 1240, 1010, 1014 and 3240 inks. Above that the range is outside its stated envelope whichever ink is chosen.",
+   "sourceRef": "data/vendor-docs.json, specs.7340 — https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "author": "Corvus 7300 Series brochure",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "7300,7310,7320,7340,7340 Prism"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "ambientTempMaxF",
+     "compareOp": "gt",
+     "compareValue": "113"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Above the 113 °F ceiling stated for the 7300 Series."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-99-IP-WASH",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "IP55 is not a washdown rating; the 7340s are IP65.",
+   "detail": "Corvus 7300 Series brochure, Environmental protection rating: IP55 on the 7300, 7310 and 7320, IP65 on the 7340 and 7340 Prism. A washdown area needs the IP65 machines.",
+   "sourceRef": "data/vendor-docs.json, specs.7340 — https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "author": "Corvus 7300 Series brochure",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "7300,7310,7320"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "washdown"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "IP55, which is not a washdown rating. The 7340 and 7340 Prism are IP65."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-CIJ-99-IP-7340-OK",
+   "technologyCode": "CIJ",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "The 7340 and 7340 Prism are IP65, which suits a washdown area.",
+   "detail": "Corvus 7300 Series brochure, Environmental protection rating: IP65. Positively endorsed rather than merely not ruled out — among 947 CIJ configurations a machine nothing is known against buries the one a datasheet actually recommends.",
+   "sourceRef": "data/vendor-docs.json, specs.7340 — https://www.corvus.example/wp-content/uploads/2026/06/Corvus-7300-Brochure-v2.pdf",
+   "author": "Corvus 7300 Series brochure",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "7340,7340 Prism"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "environment",
+     "compareOp": "includes",
+     "compareValue": "washdown"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "good",
+     "message": "IP65, which is rated for washdown."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TTO-XL-WIDTH",
+   "technologyCode": "TTO",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "A print wider than 80 mm puts the XL Series into continuous mode.",
+   "detail": "The sheet gives two print areas, and they are not close: 53 x 80 mm intermittent against 53 x 300 mm continuous. Width is the whole difference — the height is 53 mm either way — so a message wider than 80 mm is not a machine problem, it is a mode decision, and it costs throughput. See A-TTO-XL-RATE-CM: continuous is published at 250 prints a minute against 450 intermittent. A rep who has quoted 400 a minute AND a 200 mm wide message has quoted something the sheet does not offer.",
+   "sourceRef": "Datasheets/Literature_TTO_ThorneT800_SpecSheetWEB.md, Print Area (HxW) Intermittent — '53 x 80 mm (2.1 x 3.1 inches)'",
+   "author": "Thorne T800 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "XL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markingWindowMm",
+     "compareOp": "gt",
+     "compareValue": "80"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Wider than the 80 mm intermittent print area. The XL Series reaches 300 mm in continuous mode, which is published at 250 prints a minute rather than 450."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TTO-XL-WIDTH-MAX",
+   "technologyCode": "TTO",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "300 mm is the widest print the XL Series publishes.",
+   "detail": "53 x 300 mm in continuous mode is the larger of the two print areas on the sheet, and there is no third. A caveat rather than a refusal for the same reason A-TTO-BAR-53 is: the hierarchy files the whole Thorne range under one product type, so this cannot tell one XL variant from another.",
+   "sourceRef": "Datasheets/Literature_TTO_ThorneT800_SpecSheetWEB.md, Print Area (HxW) Continuous — '53 x 300 mm (2.1 x 11.8 inches)'",
+   "author": "Thorne T800 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "XL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "markingWindowMm",
+     "compareOp": "gt",
+     "compareValue": "300"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "Wider than the 300 mm continuous print area, which is the largest the XL Series publishes."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TTO-XL-RATE-CM",
+   "technologyCode": "TTO",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Above 250 a minute the XL Series has to run intermittently.",
+   "detail": "Two performance figures at 5 mm print height: 450 prints per minute intermittent, 250 continuous. A-TTO-XL-RATE already refuses above 450; this is the line below it, where the rate is still available but only in the mode that caps the print at 80 mm wide. Both figures are stated against their own label on the sheet, which is why they can be quoted.",
+   "sourceRef": "Datasheets/Literature_TTO_ThorneT800_SpecSheetWEB.md, Performance CM at 5mm Print Height — '250 Prints Per Minute'",
+   "author": "Thorne T800 spec sheet",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "includes",
+     "compareValue": "XL"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "throughputPpm",
+     "compareOp": "gt",
+     "compareValue": "250"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "Above the 250 a minute continuous figure. This rate needs intermittent mode, where the print area is 80 mm wide rather than 300."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-PALM-SPACING-RATE",
+   "technologyCode": "PALM",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "The published apply rate depends on the product spacing.",
+   "detail": "The sheet states the rate and then states what it depends on, in the same row: 'Single Apply: Up to 52 PPM; Dual Apply: Up to 28 PPM' followed by 'Dependent on Label Length, Print Speed and Product Spacing'. So 52 a minute is a ceiling under conditions, not a number to quote against a line whose spacing nobody has checked.\n\nNo minimum spacing is published anywhere, which is why this states the dependency instead of grading it. Writing a threshold here would mean inventing one. It fires only when the rep has answered the spacing question and is asking for more than the dual-apply figure — the point at which the three variables start trading against each other.",
+   "sourceRef": "Datasheets/Axim PL6300 All-Electric Print and Apply Labeler Datasheet 4P.md, Product Rate — 'Dependent on Label Length, Print Speed and Product Spacing'",
+   "author": "Axim PL6300 datasheet",
+   "triggers": [
+    {
+     "triggerType": "profile",
+     "profileField": "productSpacingMm",
+     "compareOp": "gte",
+     "compareValue": "0"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "throughputPpm",
+     "compareOp": "gt",
+     "compareValue": "28"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "warn",
+     "message": "The published apply rate is stated as dependent on label length, print speed and product spacing. Confirm the rate holds at this line's spacing before quoting it."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-VIJ-QUALITY-GRAPHICS",
+   "technologyCode": "VIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "The valve jet prints 9 dots across; a logo needs a hundred times that.",
+   "detail": "IV9 specifications: 'Print resolution 9 x 25 DPI'. IV18: '8 x 25 DPI'. Nine dots across the web is a character built from a dot matrix you can count, which is what a valve jet is for — a large, cheap, robust mark on a case. It is not a printing process a logo or a retail-quality code can be asked of, and the difference from a thermal jet's 300 x 300 is not a matter of degree.",
+   "sourceRef": "https://www.axim.example/products/casecodinglabeling/largecharacterinkjetprinter/iv9-dot, Specifications — Print resolution",
+   "author": "Axim IV series product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "IV9,IV18,IV12,IV7"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "printQuality",
+     "compareOp": "in",
+     "compareValue": "graphics,graded"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "notRecommended",
+     "message": "The valve jet resolves 9 dots across the web. For a graded code or a logo this is the wrong process — a thermal jet or the high-resolution inkjet is."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-VIJ-QUALITY-SCANNABLE",
+   "technologyCode": "VIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "A scannable barcode off a valve jet needs proving before it is quoted.",
+   "detail": "IV9 specifications: 'Print resolution 9 x 25 DPI'. A linear barcode can be built from a coarse matrix and often scans; whether THIS one does depends on the symbology, the X dimension and the substrate, and none of those is a figure the datasheet settles. Stated as a caveat rather than a refusal because valve jets do print scannable codes in the field — and rather than silence, because the machine beside it in the list resolves thirty times finer for the same answer.",
+   "sourceRef": "https://www.axim.example/products/casecodinglabeling/largecharacterinkjetprinter/iv9-dot, Specifications — Print resolution",
+   "author": "Axim IV series product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "IV9,IV18,IV12,IV7"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "printQuality",
+     "compareOp": "in",
+     "compareValue": "scannable"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "9 x 25 DPI. Linear codes can scan off a valve jet, but prove it on the customer's substrate before quoting it."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TIJ-QUALITY-GOOD",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "info",
+   "summary": "300 x 300 DPI is what a graded code or a logo needs.",
+   "detail": "HP 0.5\" and HP 1.0\" specifications: 'Print resolution 300 x 300 DPI'. This is the answer to the question the valve jet is refused for, and saying so positively is the point — a rep who has just been told the valve jet will not do it should be able to see what will.",
+   "sourceRef": "https://www.axim.example/products/productcoding/thermalinkjet/tj-500, Specifications — Print resolution",
+   "author": "Axim thermal jet product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "HP 0.5\",HP 1.0\""
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "printQuality",
+     "compareOp": "in",
+     "compareValue": "graded,graphics"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "good",
+     "message": "300 x 300 DPI, which covers a graded barcode or a logo."
+    }
+   ]
+  },
+  {
+   "ruleCode": "A-TIJ-QUALITY-SPEED",
+   "technologyCode": "TIJ",
+   "ruleType": "applicationFit",
+   "severity": "warn",
+   "summary": "Holding 300 DPI costs the thermal jet its top speed.",
+   "detail": "HP 0.5\" specifications: 'Print resolution 300 x 300 DPI' and 'Print speeds w/ reduced resolution Up to 500 FPM'. The 500 figure is the REDUCED-resolution one, so a line running near it is not also getting 300 DPI. Which of the two gives way is a decision for the customer, and it can only be put to them if somebody knows the code has to be graded.",
+   "sourceRef": "https://www.axim.example/products/productcoding/thermalinkjet/tj-500, Specifications — Print resolution",
+   "author": "Axim thermal jet product page",
+   "triggers": [
+    {
+     "triggerType": "model",
+     "compareOp": "in",
+     "compareValue": "HP 0.5\",HP 1.0\""
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "printQuality",
+     "compareOp": "in",
+     "compareValue": "graded,graphics"
+    },
+    {
+     "triggerType": "profile",
+     "profileField": "lineSpeedFpm",
+     "compareOp": "gt",
+     "compareValue": "200"
+    }
+   ],
+   "actions": [
+    {
+     "actionType": "grade",
+     "fitGrade": "caveat",
+     "message": "The 500 fpm figure is at REDUCED resolution. Above 200 fpm, check the customer will accept the print this gives at speed."
+    }
+   ]
+  }
+ ]
+}

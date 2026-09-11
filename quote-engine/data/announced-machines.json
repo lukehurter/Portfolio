@@ -1,0 +1,30 @@
+{
+ "$comment": [
+  "Machines that exist and cannot be quoted yet.",
+  "",
+  "REPORTED: \"Also you can add the corvus 9000 series. Here is the brochure / specs",
+  "/ datasheet.\" Added — but not to the catalogue, because no price page carries",
+  "it. The CIJ book in this repo is 2026 H1 and Corvus published the 9000 Series in",
+  "June 2026, so there is no Orbit part number and no price. Inventing either to",
+  "make the machine appear in the machine list would put a part number that does",
+  "not exist onto a customer's quote, which is worse than the machine being",
+  "absent. It is shown as what it is instead: announced, documented, not",
+  "orderable. The moment Orbit carries the parts they come through the catalogue",
+  "like everything else and this entry can go.",
+  "",
+  "Every figure is transcribed from the Corvus brochure named in `documents` — see",
+  "make_announced.py for how the merged table columns were resolved, and for the",
+  "four figures that independently match the Corvus 6440 datasheet already in this",
+  "repo.",
+  "",
+  "Axim's own page does not publish the brochure: both its brochure links go",
+  "to a contact form. The Corvus link is the document itself.",
+  "",
+  "RETIRED 21 August 2026. The Corvus 9000 Series was the only entry here. Its price",
+  "page arrived with 133 part numbers, so the machines are in the catalogue like",
+  "any other and this file is empty — which is what it is supposed to look like.",
+  "The test that says an announced model must not be in the catalogue is what",
+  "flagged it, exactly as intended."
+ ],
+ "series": []
+}

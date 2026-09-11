@@ -1,0 +1,1350 @@
+{
+ "$comment": [
+  "The Corvus 7300 series as the price page lists it.",
+  "",
+  "Extracted by data/extract_7300.py from the CLEAN workbook in",
+  "Price Page Extract/, which carries no prices — every List Price column in",
+  "it is empty. Part numbers, descriptions and availability only.",
+  "",
+  "112 of the 133 are Inactive. A catalogue that ignored that would offer a",
+  "rep five times as many machines as can actually be ordered."
+ ],
+ "source": "CLEAN Axim Direct Corvus 7300 Series Price Pages v1.4.xlsx",
+ "counts": {
+  "items": 133,
+  "orderable": 21,
+  "inactive": 112
+ },
+ "items": [
+  {
+   "itemNo": "K410-U0-17-CVS",
+   "description": "7300 IP55 PH4 MIDI 2M",
+   "availability": "Stocked",
+   "isActive": true,
+   "printer": "0",
+   "printhead": "U",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K410-U0-27-CVS",
+   "description": "7300 IP55 PH4 MIDI 2M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "U",
+   "length": "0",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K410-U1-17-CVS",
+   "description": "7300 IP55 PH4 2M R/A",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "0",
+   "printhead": "U",
+   "length": "1",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K410-U1-27-CVS",
+   "description": "7300 IP55 PH4 MIDI 2M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "U",
+   "length": "1",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K410-U2-17-CVS",
+   "description": "7300 IP55 PH4 MIDI 4M",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "0",
+   "printhead": "U",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K410-U2-27-CVS",
+   "description": "7300 IP55 PH4 MIDI 4M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "U",
+   "length": "2",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K410-U3-17-CVS",
+   "description": "7300 IP55 PH4 MIDI 4M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "U",
+   "length": "3",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K410-U3-27-CVS",
+   "description": "7300 IP55 PH4 MIDI 4M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "U",
+   "length": "3",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K410-U6-17-CVS",
+   "description": "7300 IP55 PH4 MIDI 6M",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "0",
+   "printhead": "U",
+   "length": "6",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K410-U6-27-CVS",
+   "description": "7300 IP55 PH4 MIDI 6M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "U",
+   "length": "6",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K410-U7-17-CVS",
+   "description": "7300 IP55 PH4 MIDI 6M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "U",
+   "length": "7",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K410-U7-27-CVS",
+   "description": "7300 IP55 PH4 MIDI 6M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "U",
+   "length": "7",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K410-W0-17-CVS",
+   "description": "7300 IP55 PH4 MIDI+ 2M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "W",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K410-W0-72-CVS",
+   "description": "7300 IP55 PH4 MIDI+ 2M",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "0",
+   "printhead": "W",
+   "length": "0",
+   "ink": "72"
+  },
+  {
+   "itemNo": "K410-W1-72-CVS",
+   "description": "7300 IP55 PH4 MIDI+ 2M R/A 1079",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "W",
+   "length": "1",
+   "ink": "72"
+  },
+  {
+   "itemNo": "K410-W2-17-CVS",
+   "description": "7300 IP55 PH4 MIDI+ 4M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "W",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K410-W2-72-CVS",
+   "description": "7300 IP55 PH4 MIDI+ 4M",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "0",
+   "printhead": "W",
+   "length": "2",
+   "ink": "72"
+  },
+  {
+   "itemNo": "K410-W3-72-CVS",
+   "description": "7300 IP55 PH4 MIDI+ 4M R/A 1079",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "W",
+   "length": "3",
+   "ink": "72"
+  },
+  {
+   "itemNo": "K410-X0-17-CVS",
+   "description": "7300 IP55 PH4 MIDI 2M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "X",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K410-X0-27-CVS",
+   "description": "7300 IP55 PH4 MIDI 2M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "X",
+   "length": "0",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K410-X2-17-CVS",
+   "description": "7300 IP55 PH4 MIDI 4M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "X",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K410-X2-27-CVS",
+   "description": "7300 IP55 PH4 MIDI 4M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "0",
+   "printhead": "X",
+   "length": "2",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-10-17-CVS",
+   "description": "7310 IP55 PH4 MINI 2M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "1",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-10-27-CVS",
+   "description": "7310 IP55 PH4 MINI 2M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "1",
+   "length": "0",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-11-17-CVS",
+   "description": "7310 IP55 PH4 MINI 2M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "1",
+   "length": "1",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-11-27-CVS",
+   "description": "7310 IP55 PH4 MINI 2M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "1",
+   "length": "1",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-12-17-CVS",
+   "description": "7310 IP55 PH4 MINI 4M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "1",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-12-27-CVS",
+   "description": "7310 IP55 PH4 MINI 4M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "1",
+   "length": "2",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-13-17-CVS",
+   "description": "7310 IP55 PH4 MINI 4M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "1",
+   "length": "3",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-13-27-CVS",
+   "description": "7310 IP55 PH4 MINI 4M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "1",
+   "length": "3",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-20-17-CVS",
+   "description": "7310 IP55 PH4 MINI 2M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "2",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-20-27-CVS",
+   "description": "7310 IP55 PH4 MINI 2M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "2",
+   "length": "0",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-22-17-CVS",
+   "description": "7310 IP55 PH4 MINI 4M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "2",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-22-27-CVS",
+   "description": "7310 IP55 PH4 MINI 4M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "2",
+   "length": "2",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-U0-17-CVS",
+   "description": "7310 IP55 PH4 MIDI 2M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "U",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-U0-27-CVS",
+   "description": "7310 IP55 PH4 MIDI 2M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "U",
+   "length": "0",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-U1-17-CVS",
+   "description": "7310 IP55 PH4 MIDI 2M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "U",
+   "length": "1",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-U1-27-CVS",
+   "description": "7310 IP55 PH4 MIDI 2M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "U",
+   "length": "1",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-U2-17-CVS",
+   "description": "7310 IP55 PH4 MIDI 4M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "U",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-U2-27-CVS",
+   "description": "7310 IP55 PH4 MIDI 4M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "U",
+   "length": "2",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-U3-17-CVS",
+   "description": "7310 IP55 PH4 MIDI 4M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "U",
+   "length": "3",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-U3-27-CVS",
+   "description": "7310 IP55 PH4 MIDI 4M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "U",
+   "length": "3",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-U6-17-CVS",
+   "description": "7310 IP55 PH4 MIDI 6M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "U",
+   "length": "6",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-U6-27-CVS",
+   "description": "7310 IP55 PH4 MIDI 6M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "U",
+   "length": "6",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-U7-17-CVS",
+   "description": "7310 IP55 PH4 MIDI 6M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "U",
+   "length": "7",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-U7-27-CVS",
+   "description": "7310 IP55 PH4 MIDI 6M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "U",
+   "length": "7",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-W0-17-CVS",
+   "description": "7310 IP55 PH4 MIDI+ 2M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "W",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-W0-72-CVS",
+   "description": "7310 IP55 PH4 MIDI+ 2M 1079",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "W",
+   "length": "0",
+   "ink": "72"
+  },
+  {
+   "itemNo": "K411-W2-17-CVS",
+   "description": "7310 IP55 PH4 MIDI+ 4M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "W",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-W2-72-CVS",
+   "description": "7310 IP55 PH4 MIDI+ 4M 1079",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "W",
+   "length": "2",
+   "ink": "72"
+  },
+  {
+   "itemNo": "K411-X0-17-CVS",
+   "description": "7310 IP55 PH4 MIDI 2M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "X",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-X0-27-CVS",
+   "description": "7310 IP55 PH4 MIDI 2M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "X",
+   "length": "0",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-X2-17-CVS",
+   "description": "7310 IP55 PH4 MIDI 4M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "X",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-X2-27-CVS",
+   "description": "7310 IP55 PH4 MIDI 4M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "X",
+   "length": "2",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K411-X6-17-CVS",
+   "description": "7310 IP55 PH4 MIDI 6M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "X",
+   "length": "6",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K411-X6-27-CVS",
+   "description": "7310 IP55 PH4 MIDI 6M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "1",
+   "printhead": "X",
+   "length": "6",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-10-17-CVS",
+   "description": "7320 IP55 PH4 MINI 2M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "1",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-10-27-CVS",
+   "description": "7320 IP55 PH4 MINI 2M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "1",
+   "length": "0",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-11-17-CVS",
+   "description": "7320 IP55 PH4 MINI 2M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "1",
+   "length": "1",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-11-27-CVS",
+   "description": "7320 IP55 PH4 MINI 2M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "1",
+   "length": "1",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-12-17-CVS",
+   "description": "7320 IP55 PH4 MINI 4M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "1",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-12-27-CVS",
+   "description": "7320 IP55 PH4 MINI 4M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "1",
+   "length": "2",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-13-17-CVS",
+   "description": "7320 IP55 PH4 MINI 4M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "1",
+   "length": "3",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-13-27-CVS",
+   "description": "7320 IP55 PH4 MINI 4M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "1",
+   "length": "3",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-20-17-CVS",
+   "description": "7320 IP55 PH4 MINI 2M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "2",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-20-27-CVS",
+   "description": "7320 IP55 PH4 MINI 2M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "2",
+   "length": "0",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-22-17-CVS",
+   "description": "7320 IP55 PH4 MINI 4M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "2",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-22-27-CVS",
+   "description": "7320 IP55 PH4 MINI 4M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "2",
+   "length": "2",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-U0-17-CVS",
+   "description": "7320 IP55 PH4 MIDI 2M",
+   "availability": "Stocked",
+   "isActive": true,
+   "printer": "2",
+   "printhead": "U",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-U0-27-CVS",
+   "description": "7320 IP55 PH4 MIDI 2M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "U",
+   "length": "0",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-U1-17-CVS",
+   "description": "7320 IP55 PH4 MIDI 2M R/A",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "2",
+   "printhead": "U",
+   "length": "1",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-U1-27-CVS",
+   "description": "7320 IP55 PH4 MIDI 2M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "U",
+   "length": "1",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-U2-17-CVS",
+   "description": "7320 IP55 PH4 MIDI 4M",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "2",
+   "printhead": "U",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-U2-27-CVS",
+   "description": "7320 IP55 PH4 MIDI 4M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "U",
+   "length": "2",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-U3-17-CVS",
+   "description": "7320 IP55 PH4 MIDI 4M R/A",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "2",
+   "printhead": "U",
+   "length": "3",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-U3-27-CVS",
+   "description": "7320 IP55 PH4 MIDI 4M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "U",
+   "length": "3",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-U6-17-CVS",
+   "description": "7320 IP55 PH4 MIDI 6M",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "2",
+   "printhead": "U",
+   "length": "6",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-U6-27-CVS",
+   "description": "7320 IP55 PH4 MIDI 6M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "U",
+   "length": "6",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-U7-17-CVS",
+   "description": "7320 IP55 PH4 MIDI 6M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "U",
+   "length": "7",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-U7-27-CVS",
+   "description": "7320 IP55 PH4 MIDI 6M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "U",
+   "length": "7",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-W0-17-CVS",
+   "description": "7320 IP55 PH4 MIDI+ 2M",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "2",
+   "printhead": "W",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-W0-72-CVS",
+   "description": "7320 IP55 PH4 MIDI+ 2M 1079",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "2",
+   "printhead": "W",
+   "length": "0",
+   "ink": "72"
+  },
+  {
+   "itemNo": "K412-W1-17-CVS",
+   "description": "7320 IP55 PH4 MIDI+ 2M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "W",
+   "length": "1",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-W2-17-CVS",
+   "description": "7320 IP55 PH4 MIDI+ 4M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "W",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-W2-72-CVS",
+   "description": "7320 IP55 PH4 MIDI+ 4M",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "2",
+   "printhead": "W",
+   "length": "2",
+   "ink": "72"
+  },
+  {
+   "itemNo": "K412-W3-17-CVS",
+   "description": "7320 IP55 PH4 MIDI+ 4M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "W",
+   "length": "3",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-W3-72-CVS",
+   "description": "7320 IP55 PH4 MIDI+ 4M R/A 1079",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "W",
+   "length": "3",
+   "ink": "72"
+  },
+  {
+   "itemNo": "K412-W6-17-CVS",
+   "description": "7320 IP55 PH4 MIDI+ 6M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "W",
+   "length": "6",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-X0-17-CVS",
+   "description": "7320 IP55 PH4 MIDI 2M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "X",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-X0-27-CVS",
+   "description": "7320 IP55 PH4 MIDI 2M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "X",
+   "length": "0",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-X2-17-CVS",
+   "description": "7320 IP55 PH4 MIDI 4M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "X",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-X2-27-CVS",
+   "description": "7320 IP55 PH4 MIDI 4M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "X",
+   "length": "2",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K412-X6-17-CVS",
+   "description": "7320 IP55 PH4 MIDI 6M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "X",
+   "length": "6",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K412-X6-27-CVS",
+   "description": "7320 IP55 PH4 MIDI 6M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "2",
+   "printhead": "X",
+   "length": "6",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K414-10-17-CVS",
+   "description": "7340 IP65 PH4 MINI 2M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "1",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-10-27-CVS",
+   "description": "7340 IP65 PH4 MINI 2M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "1",
+   "length": "0",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K414-11-17-CVS",
+   "description": "7340 IP65 PH4 MINI 2M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "1",
+   "length": "1",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-11-27-CVS",
+   "description": "7340 IP65 PH4 MINI 2M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "1",
+   "length": "1",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K414-12-17-CVS",
+   "description": "7340 IP65 PH4 MINI 4M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "1",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-12-27-CVS",
+   "description": "7340 IP65 PH4 MINI 4M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "1",
+   "length": "2",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K414-13-17-CVS",
+   "description": "7340 IP65 PH4 MINI 4M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "1",
+   "length": "3",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-13-27-CVS",
+   "description": "7340 IP65 PH4 MINI 4M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "1",
+   "length": "3",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K414-20-17-CVS",
+   "description": "7340 IP65 PH4 MINI 2M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "2",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-20-27-CVS",
+   "description": "7340 IP65 PH4 MINI 2M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "2",
+   "length": "0",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K414-U0-17-CVS",
+   "description": "7340 IP65 PH4 MIDI 2M",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "4",
+   "printhead": "U",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-U0-27-CVS",
+   "description": "7340 IP65 PH4 MIDI 2M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "U",
+   "length": "0",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K414-U1-17-CVS",
+   "description": "7340 IP65 PH4 MIDI 2M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "U",
+   "length": "1",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-U1-27-CVS",
+   "description": "7340 IP65 PH4 MIDI 2M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "U",
+   "length": "1",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K414-U2-17-CVS",
+   "description": "7340 IP65 PH4 MIDI 4M",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "4",
+   "printhead": "U",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-U2-27-CVS",
+   "description": "7340 IP65 PH4 MIDI 4M 1121",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "4",
+   "printhead": "U",
+   "length": "2",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K414-U3-17-CVS",
+   "description": "7340 IP65 PH4 MIDI 4M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "U",
+   "length": "3",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-U3-27-CVS",
+   "description": "7340 IP65 PH4 MIDI 4M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "U",
+   "length": "3",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K414-U6-17-CVS",
+   "description": "7340 IP65 PH4 MIDI 6M",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "4",
+   "printhead": "U",
+   "length": "6",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-U6-27-CVS",
+   "description": "7340 IP65 PH4 MIDI 6M 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "U",
+   "length": "6",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K414-U7-17-CVS",
+   "description": "7340 IP65 PH4 MIDI 6M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "U",
+   "length": "7",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-U7-27-CVS",
+   "description": "7340 IP65 PH4 MIDI 6M R/A 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "U",
+   "length": "7",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K414-W0-17-CVS",
+   "description": "7340 IP65 PH4 MIDI+ 2M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "W",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-W0-72-CVS",
+   "description": "7340 IP65 PH4 MIDI+ 2M 1079",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "W",
+   "length": "0",
+   "ink": "72"
+  },
+  {
+   "itemNo": "K414-W2-17-CVS",
+   "description": "7340 IP65 PH4 MIDI+ 4M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "W",
+   "length": "2",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-W2-72-CVS",
+   "description": "7340 IP65 PH4 MIDI+ 4M 1079",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "4",
+   "printhead": "W",
+   "length": "2",
+   "ink": "72"
+  },
+  {
+   "itemNo": "K414-W6-17-CVS",
+   "description": "7340 IP65 PH4 MIDI+ 6M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "W",
+   "length": "6",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-X0-17-CVS",
+   "description": "7340 IP65 PH4 MIDI 2M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "X",
+   "length": "0",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-X0-27-CVS",
+   "description": "7340 IP65 PH4 MIDI 2M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "X",
+   "length": "0",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K414-X6-17-CVS",
+   "description": "7340 IP65 PH4 MIDI 6M HP RESISTANT",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "X",
+   "length": "6",
+   "ink": "17"
+  },
+  {
+   "itemNo": "K414-X6-27-CVS",
+   "description": "7340 IP65 PH4 MIDI 6M HP RESISTANT 1121",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "4",
+   "printhead": "X",
+   "length": "6",
+   "ink": "27"
+  },
+  {
+   "itemNo": "K416-30-74-CVS",
+   "description": "7340 SPEC IP65 PH4 MINI 2M",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "6",
+   "printhead": "3",
+   "length": "0",
+   "ink": "74"
+  },
+  {
+   "itemNo": "K416-33-74-CVS",
+   "description": "7340 SPEC IP65 PH4 MINI 4M R/A",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "6",
+   "printhead": "3",
+   "length": "3",
+   "ink": "74"
+  },
+  {
+   "itemNo": "K416-D0-67-CVS",
+   "description": "7340 SPEC IP65 PH4 MIDI+ 2M 1069",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "6",
+   "printhead": "D",
+   "length": "0",
+   "ink": "67"
+  },
+  {
+   "itemNo": "K416-D1-67-CVS",
+   "description": "7340 SPEC IP65 PH4 MIDI+ 2M R/A 1069",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "6",
+   "printhead": "D",
+   "length": "1",
+   "ink": "67"
+  },
+  {
+   "itemNo": "K416-D2-67-CVS",
+   "description": "7340 SPEC IP65 PH4 MIDI+ 4M 1069",
+   "availability": "Active - PTO, 20 days lead time",
+   "isActive": true,
+   "printer": "6",
+   "printhead": "D",
+   "length": "2",
+   "ink": "67"
+  },
+  {
+   "itemNo": "K416-D3-67-CVS",
+   "description": "7340 SPEC IP65 PH4 MIDI+ 4M R/A 1069",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "6",
+   "printhead": "D",
+   "length": "3",
+   "ink": "67"
+  },
+  {
+   "itemNo": "K416-H0-74-CVS",
+   "description": "7340 SPEC IP65 PH4 MIDI 2M 1316",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "6",
+   "printhead": "H",
+   "length": "0",
+   "ink": "74"
+  },
+  {
+   "itemNo": "K416-H3-74-CVS",
+   "description": "7340 SPEC IP65 PH4 MIDI 4M R/A 1316",
+   "availability": "Inactive",
+   "isActive": false,
+   "printer": "6",
+   "printhead": "H",
+   "length": "3",
+   "ink": "74"
+  }
+ ]
+}

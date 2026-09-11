@@ -1,0 +1,258 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>A planning platform, built with no database access &middot; Luke Hurter</title><meta property="og:type" content="website"><meta property="og:site_name" content="Luke Hurter"><meta property="og:title" content="A planning platform, built with no database access"><meta property="og:description" content="Fifteen weeks over a legacy ERP, holding no SSMS access. Includes the audit of the calculation it replaced: six defects, all at once."><meta property="og:url" content="https://lukehurter.github.io/Portfolio/case-study-planning.html"><meta property="og:image" content="https://lukehurter.github.io/Portfolio/og-case-planning.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="description" content="Fifteen weeks over a legacy ERP, holding no SSMS access. Includes the audit of the calculation it replaced: six defects, all at once.">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; background:#0B2E4F; color:#E3ECF4;
+         font:17px/1.65 "Segoe UI",system-ui,-apple-system,sans-serif; }
+  .wrap { max-width:46rem; margin:0 auto; padding:2.5rem 1.25rem 5rem; }
+  nav { font-size:.9rem; color:#9FB2C5; margin-bottom:2rem; }
+  nav a { color:#2CC5E8; text-decoration:none; }
+  nav a:hover { text-decoration:underline; }
+  h1 { font-size:1.9rem; line-height:1.25; margin:0 0 .4rem; }
+  h2 { font-size:1.25rem; margin:2.4rem 0 .6rem; color:#fff; }
+  h3 { font-size:1.05rem; margin:1.8rem 0 .5rem; color:#CFE0EE; }
+  p, li { color:#D7E3EE; }
+  strong { color:#fff; }
+  em { color:#9FB2C5; font-style:normal; }
+  a { color:#2CC5E8; }
+  hr { border:0; border-top:1px solid #22384E; margin:2.5rem 0; }
+  code { background:#132234; padding:.1em .35em; border-radius:4px;
+         font-size:.9em; }
+  blockquote { border-left:3px solid #2CC5E8; margin:1.2rem 0;
+                padding:.2rem 0 .2rem 1rem; color:#9FB2C5; }
+  .tablewrap { overflow-x:auto; margin:1.4rem 0; }
+  table { border-collapse:collapse; width:100%; font-size:.93rem; }
+  th, td { text-align:left; vertical-align:top; padding:.55rem .7rem;
+           border-bottom:1px solid #22384E; }
+  th { color:#9FB2C5; font-weight:600; }
+  footer { margin-top:3.5rem; padding-top:1.5rem; border-top:1px solid #22384E;
+           color:#6C8098; font-size:.9rem; }
+  footer a { color:#9FB2C5; }
+</style>
+<div class="wrap">
+<nav><a href="./">&larr; Luke Hurter</a> &middot; case study</nav>
+<h1>A planning platform, built with no database access</h1>
+<p><strong>Diagraph, an ITW Company · Contract engagement, May 2026 – Oct 2026 · St
+Charles, MO</strong></p>
+<p>Fifteen weeks to put a production planning platform over an ERP nobody had
+built reporting on, holding no SSMS access and no right to create or alter a
+single database object. Every view, every stored procedure, every agent job
+went to IT as a ticket and waited.</p>
+<p>Auditing the calculation it replaced turned up six defects running at the same
+time. <strong>$3M of excess found across three sites, about $1M released.</strong></p>
+<hr />
+<h2>The situation</h2>
+<p>Three manufacturing sites on one shared Macola database, no maintained
+reporting, nothing reusable on the SQL Server. A purchasing workbook set the
+stocking levels, and it had been running long enough that nobody questioned
+what came out of it.</p>
+<h2>Working without keys</h2>
+<p>Ten of the first sixty logged working days opened blocked on a deployment or an
+access grant. The pipeline deployed on 18 June. The ticket granting me read
+access to the database it had just created was actioned on 23 June, so the
+platform sat finished and unreachable for three working days.</p>
+<p>That shaped the delivery curve more than anything technical did. I spent those
+days on the process automation, the documentation and the CPQ prototype, none
+of which needed a deployment to make progress on.</p>
+<h2>Three decisions, and their price</h2>
+<p><strong>Three layers: materialisation pipeline, semantic views, Kimball star.</strong> The
+planning rules live in one layer underneath every consumer, so a Power BI
+report and a Python application read identical logic and can't contradict each
+other. The star on top came out of a review rather than out of my head. IT in
+Germany picked apart an earlier version of the semantic model and suggested a
+Kimball star as the import contract for BI. He was right, and I rebuilt that
+layer. The price is immediacy. Everything materialises on a schedule, so every
+figure carries an <em>as at</em> stamp and the afternoon numbers are the morning's.
+Recomputing the chain on demand takes minutes.</p>
+<p><strong>Read-only, always.</strong> Nothing writes back to the ERP; every Macola object is
+reached through a read-only synonym. The price is the obvious feature. A tool
+that writes approved stock levels back would save a manual import step and it's
+the first thing anyone asks for. It's also a tool that can corrupt the ERP, and
+I had no test environment to earn that right in.</p>
+<p><strong>Weekly heavy, daily light.</strong> Demand statistics only move when an ISO week
+completes. Promise dates ride live orders. Splitting the refresh by how fast the
+underlying answer can change puts the expensive half on a weekly run and the
+half that moves intraday on two runs a day, at 05:30 and 11:30.</p>
+<h2>What it does</h2>
+<ul>
+<li>Demand exploded from order-line history through BOM and kit structures</li>
+<li>Weekly demand statistics, ABC and XYZ classification per item</li>
+<li>Calculated safety stock, reorder point and order-up-to level per item</li>
+<li>A <strong>promise-date engine</strong> giving Sales defensible delivery dates</li>
+<li>A <strong>build-readiness view</strong> naming the specific component blocking each held
+  sales order line</li>
+<li>Seven-page Power BI suite on one governed semantic model, with object-level
+  security restricting cost, pricing and vendor data by role</li>
+<li>Quarterly stock level review and kanban card printing, automated end to end</li>
+</ul>
+<h2>The audit: six defects, all running at once</h2>
+<p>The workbook that set stocking levels was wrong in both directions at the same
+time. It carried too much of some items and too little of the ones that needed
+cover, which is why correcting it released cash and closed availability gaps
+instead of trading one for the other.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Defect</th>
+<th>What it did</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Finished goods demand read from <strong>shipment</strong> history</td>
+<td>Set stock against our own delivery performance instead of customer demand. Late and partial shipments fed straight back into the parameters</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Component demand read from <strong>work order usage</strong></td>
+<td>Lot and batch sizing decisions drove component levels, overstating them</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Variance on monthly buckets with <strong>zero-demand months left blank</strong></td>
+<td>Blanks were skipped instead of counted as zero, so the variance was wrong for exactly the intermittent items that need safety stock most</td>
+</tr>
+<tr>
+<td>4</td>
+<td>A <strong>20-day working month</strong> against an actual 21.75</td>
+<td>Usage overstated by about 9% across the board</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Lead times unmaintained and <strong>mixed calendar with working days</strong></td>
+<td>Made the lead-time demand term unreliable wherever it appeared</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Safety stock <strong>conflated buffer and cycle stock</strong>, computing neither</td>
+<td>On an item with target 100 and lead-time demand near 70, the first bin emptied at 50, so the card reached purchasing after the item was already short. The trigger sat below the demand it was meant to cover</td>
+</tr>
+</tbody>
+</table></div>
+<p>I documented each one and published it to the people who owned it.</p>
+<p>Correcting them moved stock in both directions at once: excess came down, and
+the availability gaps purchasing had spent years working around closed at the
+same time.</p>
+<h2>Two weeks chasing a ghost</h2>
+<p>Four consecutive correct deployments went in and came back wrong the next
+morning.</p>
+<p>The SQL Agent jobs were reverting me, nightly. The refresh jobs held the entire
+deploy script pasted inline as their step command, and it was an old copy.
+Every night they redeployed that copy over the top of whatever had gone in that
+day.</p>
+<p>From my desk this was invisible. With no SSMS and no rights on msdb I couldn't
+read a job step. All I could do was describe symptoms to IT and wait for
+somebody else to look, which meant reasoning out what could possibly revert a
+deployment on a schedule and then asking for exactly the right thing to be
+checked.</p>
+<p>The fix was one line of principle: a job step calls a stored procedure and
+contains nothing else. No logic should live somewhere you can't read it.</p>
+<p>Two read-only grants, <code>VIEW DEFINITION</code> and msdb read, would have turned two
+weeks into an afternoon. Neither one permits a change to anything, and I'd
+still ask for them before I asked for anything else.</p>
+<h3>Six I found in my own build</h3>
+<p>Listed because a findings register that only catalogues other people's mistakes
+isn't much of a register.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Defect</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>15 Jun</td>
+<td>A dashboard read Macola's usage figure instead of pipeline demand</td>
+<td>Two numbers for one concept. Repointed</td>
+</tr>
+<tr>
+<td>30 Jun</td>
+<td>PO line status stays open when the header closes</td>
+<td>Open PO counts overstated. Source of truth moved to the header</td>
+</tr>
+<tr>
+<td>23 Jul</td>
+<td>Implausible suggested stock levels surfaced a significant defect</td>
+<td>Caught in review with purchasing <strong>before any level was locked in</strong></td>
+</tr>
+<tr>
+<td>6 Aug</td>
+<td>Ordering logic double-counted production allocation</td>
+<td>Found by a user at the Marion site. Fixed and deployed the same day</td>
+</tr>
+<tr>
+<td>10 Aug</td>
+<td>Lead times filtered to approved vendors only</td>
+<td>Approval status isn't maintained here, so most items lost their lead time</td>
+</tr>
+<tr>
+<td>11 Aug</td>
+<td>Stocking class read Macola's unreliable stocked flag</td>
+<td>Removed from the logic. Levels moved a long way, all of it before anything was committed</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Where it landed</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cash</strong></td>
+<td>$3M excess found across three sites, about $1M released</td>
+</tr>
+<tr>
+<td><strong>Time</strong></td>
+<td>Fifteen weeks, first day to live platform</td>
+</tr>
+<tr>
+<td><strong>Reach</strong></td>
+<td>All three Macola sites. Presented company-wide, then to corporate supply chain, strategic sourcing, quality, the AI team and the German site</td>
+</tr>
+<tr>
+<td><strong>Purchasing</strong></td>
+<td>Supplier outreach cut from a multi-day cycle to one button: 300+ personalised files and email drafts, supplier master data to 80% completion</td>
+</tr>
+<tr>
+<td><strong>Left behind</strong></td>
+<td>The site's first supply chain SOPs, and a Macola SQL dictionary other teams now use</td>
+</tr>
+</tbody>
+</table></div>
+<h2>The one thing I'd change</h2>
+<p>I'd ask for the two read-only grants on day one and keep asking. I treated
+access as fixed and built around it, and the workarounds were good ones. Two weeks still went into a problem that read-only visibility would have
+closed in an afternoon.</p>
+<hr />
+<h2>The demos</h2>
+<p>Two runnable applications sit alongside this write-up. <strong>They are not
+Diagraph's software.</strong> They're rebuilt copies in which the company, the
+products, the catalogue and every part number are invented, under a fictional
+manufacturer called Axim, so you can read the engineering without any of the
+client's data.</p>
+<ul>
+<li><strong><a href="https://github.com/lukehurter/Portfolio/tree/main/quote-engine">quote-engine</a></strong>, the configure-price-quote tool.</li>
+<li><strong><a href="https://github.com/lukehurter/Portfolio/tree/main/planning-suite">planning-suite</a></strong>, the planning dashboard.</li>
+</ul>
+<p>Both compile to a single self-contained HTML file and <a href="https://lukehurter.github.io/Portfolio/">open in a
+browser</a>, no server and no clone. The
+planning suite also runs as the real FastAPI service it is, and against a live
+SQL Server with <code>PA_DEMO=0</code>.</p>
+<p>One habit carries straight over from the audit above. Every rule in the quote
+engine cites the document and line its figure came from, and the build fails if
+a citation doesn't resolve, because a number you can't trace is a number you
+can't defend.</p>
+<footer>Runnable demos and source:
+  <a href="./">the two tools</a> &middot;
+  <a href="https://github.com/lukehurter/Portfolio">github.com/lukehurter/Portfolio</a></footer>
+</div>
